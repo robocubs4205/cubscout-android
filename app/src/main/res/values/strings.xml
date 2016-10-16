@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">CubScout</string>
+    <string name="match_submit_activity_label">Match report Form</string>
+    <string name="main_activity_label">Main menu</string>
+    <string name="individual_report_activity_label">Search for specific teams</string>
+    <string name="report_list_activity_label">Search teams by performance</string>
+    <string name="launch_match_submit_activity_text">Submit a report on a team\'s performance</string>
+    <string name="launch_view_match_report_text">View top performers</string>
+    <string name="launch_view_individual_report_activity">View report on an individual team</string>
+    <string name="title_activity_match_submit">MatchSubmitActivity</string>
+    <string name="team_number_label_text">Team number</string>
+    <string name="match_number_label_text">Match number</string>
+    <string name="high_goal_made_label_text">High goals made</string>
+    <string name="high_goal_miss_label_text">High goals missed</string>
+    <string name="low_goal_made_label_text">Low goals made</string>
+    <string name="low_goal_miss_label_text">Low goals missed</string>
+    <string name="did_defense_label_text">This robot participated in defense</string>
+    <string name="obstacle_instructions_text">Please specify how many times the robot went over each of the following obstacles. If you don\'t remember, guess.</string>
+    <string name="portcullis_label_text">Portcullis</string>
+    <string name="cheval_label_text">Cheval De Frise</string>
+    <string name="moat_label_text">Moat</string>
+    <string name="ramparts_label_text">Ramparts</string>
+    <string name="drawbridge_label_text">Drawbridge</string>
+    <string name="sally_port_label_text">Sally Port</string>
+    <string name="terrain_label_text">Rough Terrain</string>
+    <string name="low_bar_label_text">Low Bar</string>
+    <string name="match_submit_button_text">Submit</string>
+    <string name="obstacle_default_value">0</string>
+    <string name="title_activity_individual_report">IndividualReportActivity</string>
+    <string name="team_search_default_text">Please enter a team number</string>
+    <string name="robot_search_button_text">Search</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="avg_high_goal_made_label_text">Avg. high goals made\n(per match)</string>
+    <string name="avg_high_goal_miss_label_text">Avg. high goals missed\n(per match)</string>
+    <string name="avg_low_goal_made_label_text">Avg. low goals made\n(per match)</string>
+    <string name="avg_low_goal_miss_label_text">Avg. low goals missed\n(per match)</string>
+    <string name="averages_per_match_note_text">Averages are per match</string>
+    <string name="high_goal_accuracy_label_text">High goal accuracy</string>
+    <string name="low_goal_accuracy_label_text">Low goal accuracy</string>
+    <string name="defense_rating_label_text">Defense Rating</string>
+    <string name="average_total_crossing_label_text">Avg. obstacles crossed\n(per match)</string>
+    <string name="first_obstacle_preference_label_text">1</string>
+    <string name="obstacle_preference_header_text">Most commonly crossed obstacles</string>
+    <string name="second_obstacle_preference_label_text">2</string>
+    <string name="third_obstacle_preference_label_text">3</string>
+    <string name="rock_wall_label_text">Rock Wall</string>
+    <string name="sort_by_first_label_text">Sort first by</string>
+    <string name="sort_by_second_label_text">Then by</string>
+    <string name="sort_by_last_label_text">Finally by</string>
+    <string name="report_list_sort_button_text">Go</string>
+    <string name="launch_create_new_game_activity_text">Enter a game design</string>
+    <string name="score_key_name_label_text">Key Name</string>
+    <string name="score_key_type_label_text">Score Type</string>
+
+    <string-array name="defense_ratings">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+    <string-array name="sortable_fields">
+        <item>None</item>
+        <item>High Goals per Match</item>
+        <item>Low Goals per Match</item>
+        <item>Obstacle Crossings</item>
+        <item>Defense Rating</item>
+        <item>High Goal Accuracy</item>
+        <item>Low Goal Accuracy</item>
+    </string-array>
+</resources>

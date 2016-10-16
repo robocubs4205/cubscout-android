@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.robocubs4205.cubscout.MainActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TableLayout
+            android:id="@+id/match_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:stretchColumns="1">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/team_number_label_text" />
+
+                <EditText
+                    android:id="@+id/team_number_input_field"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/match_number_label_text" />
+
+                <EditText
+                    android:id="@+id/match_number_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number" />
+            </TableRow>
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/goals_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/match_table"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:stretchColumns="1"
+            android:shrinkColumns="1">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/high_goal_made_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/high_goal_made_input_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/button5"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementHighGoalMade" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/button6"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/button5"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementHighGoalMade" />
+                </RelativeLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/high_goal_miss_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/high_goal_miss_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementHighGoalMiss" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton2"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementHighGoalMiss" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/low_goal_made_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/low_goal_made_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton3"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementLowGoalMade" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton4"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton3"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementLowGoalMade" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/low_goal_miss_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/low_goal_miss_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton5"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementLowGoalMiss" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton6"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton5"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementLowGoalMiss" />
+                </RelativeLayout>
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/did_defense_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/goals_table"
+            android:layout_marginBottom="10dp"
+            android:singleLine="true"
+            android:text="@string/did_defense_label_text" />
+
+        <TextView
+            android:id="@+id/obstacle_instructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/defense_spinner_frame"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/obstacle_instructions_text" />
+
+        <CheckBox
+            android:id="@+id/did_defense_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/did_defense_label"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="true"
+            android:onClick="onDidDefenseChecked" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/did_defense_label"
+            android:id="@+id/defense_spinner_frame"></FrameLayout>
+
+        <TableLayout
+            android:id="@+id/obstacle_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/obstacle_instructions"
+            android:stretchColumns="1"
+            android:layout_marginBottom="10dp"
+            android:shrinkColumns="1">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView23"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/portcullis_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/portcullis_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton7"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementPortcullis"
+                        android:nestedScrollingEnabled="false" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton8"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton7"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementPortcullis" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/cheval_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/cheval_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton9"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementCheval" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton10"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton9"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementCheval" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/moat_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/moat_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton11"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementMoat" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton12"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton11"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementMoat" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/ramparts_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/rampart_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton13"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementRamparts" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton14"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton13"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementRamparts" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView27"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/drawbridge_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/drawbridge_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton15"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementDrawbridge" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton16"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton15"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementDrawbridge" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/sally_port_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/sally_port_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton17"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementSallyPort" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton18"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton17"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementSallyPort" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView29"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/terrain_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/rough_terrain_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton19"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementRoughTerrain" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton20"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton19"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementRoughTerrain" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/rock_wall_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/rock_wall_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton21"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementRockWall" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton22"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton21"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementRockWall" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:singleLine="true"
+                    android:text="@string/low_bar_label_text"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <EditText
+                    android:id="@+id/low_bar_crossing_input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="@string/obstacle_default_value"
+                    android:singleLine="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton23"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_up_float"
+                        android:scrollHorizontally="false"
+                        android:adjustViewBounds="false"
+                        android:onClick="onIncrementLowBar" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton24"
+                        android:layout_alignParentRight="true"
+                        android:background="@android:drawable/arrow_down_float"
+                        android:layout_below="@+id/imageButton23"
+                        android:adjustViewBounds="false"
+                        android:onClick="onDecrementLowBar" />
+                </RelativeLayout>
+            </TableRow>
+        </TableLayout>
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/obstacle_table"
+            android:text="@string/match_submit_button_text"
+            android:layout_centerHorizontal="true"
+            android:minWidth="150dp"
+            android:onClick="onSubmitButtonClick" />
+    </RelativeLayout>
+</ScrollView>
+
+
