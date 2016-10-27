@@ -50,8 +50,7 @@
     <string name="sort_by_last_label_text">Finally by</string>
     <string name="report_list_sort_button_text">Go</string>
     <string name="launch_create_new_game_activity_text">Enter a game design</string>
-    <string name="score_key_name_label_text">Key Name</string>
-    <string name="score_key_type_label_text">Score Type</string>
+
 
     <string-array name="defense_ratings">
         <item>1</item>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="score_title_label_text">(Section) Title</string>
+    <string name="score_key_name_label_text">Key Name</string>
+    <string name="score_key_type_label_text">Score Type</string>
+    <string name="score_key_nullable_label_text">Nullable</string>
+    <string name="add_scored_key_button_text">Add</string>
+    <string name="admin_add_scored_key_popup_text">Add score metric</string>
+    <string name="game_name_field_label_text">Game Name</string>
+    <string name="admin_score_title_popup_text">Section Title</string>
+    <string-array name="scored_key_types">
+        <item>Count</item>
+        <item>Rating</item>
+    </string-array>
+</resources>

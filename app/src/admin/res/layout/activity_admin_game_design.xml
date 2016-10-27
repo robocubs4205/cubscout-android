@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:ems="10"
+        android:id="@+id/name_field"
+        android:layout_toRightOf="@+id/textView22" />
+
+    <TextView
+        android:text="@string/game_name_field_label_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView22"
+        android:layout_alignBaseline="@+id/name_field"
+        android:layout_marginLeft="10dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/entries"
+        android:layout_below="@+id/textView22"
+        >
+
+    </LinearLayout>
+
+    <Button
+        android:text="@string/add_scored_key_button_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button8"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@+id/entries"
+        android:layout_marginRight="10dp"
+        android:onClick="onAddKeyButtonClick"
+        />
+
+    <Button
+        android:text="@string/match_submit_button_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button9"
+        android:layout_below="@+id/button8"
+        android:layout_centerHorizontal="true"
+        android:onClick="onSubmitButtonClick"
+        android:layout_marginTop="30dp" />
+</RelativeLayout>

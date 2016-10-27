@@ -35,5 +35,6 @@
         android:text="@string/launch_create_new_game_activity_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button7" />
+        android:id="@+id/button7"
+        android:onClick="LaunchGameDesignActivity" />
 </LinearLayout>

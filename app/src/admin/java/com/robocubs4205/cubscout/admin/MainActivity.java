@@ -35,4 +35,9 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this,ReportListActivity.class);
         startActivity(intent);
     }
+    public void LaunchGameDesignActivity(View view)
+    {
+        Intent intent = new Intent(this,GameDesignActivity.class);
+        startActivity(intent);
+    }
 }
