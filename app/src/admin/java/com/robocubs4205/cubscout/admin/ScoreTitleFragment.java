@@ -21,7 +21,7 @@ public class ScoreTitleFragment extends GameDesignerFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_admin_score_title,container,false);
+        View view = inflater.inflate(R.layout.fragment_scorecard_design_title,container,false);
         view.findViewById(R.id.remove_button).setOnClickListener(new RemoveButtonOnClickListener());
         view.findViewById(R.id.up_button).setOnClickListener(new UpButtonOnClickListener());
         view.findViewById(R.id.down_button).setOnClickListener(new DownButtonOnClickListener());

@@ -18,15 +18,15 @@ import org.json.JSONObject;
  * Created by trevor on 10/14/16.
  */
 
-public class ScoredKeyFragment extends GameDesignerFragment
+public class ScorecardScoredValueFragment extends GameDesignerFragment
 {
 
-    public ScoredKeyFragment(){}
+    public ScorecardScoredValueFragment(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_admin_scored_key,container,false);
+        View view = inflater.inflate(R.layout.fragment_scorecard_design_scored_value,container,false);
         view.findViewById(R.id.remove_button).setOnClickListener(new RemoveButtonOnClickListener());
         view.findViewById(R.id.up_button).setOnClickListener(new UpButtonOnClickListener());
         view.findViewById(R.id.down_button).setOnClickListener(new DownButtonOnClickListener());

@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_main);
+        setContentView(R.layout.activity_main);
     }
     public void LaunchMatchSubmitActivity(View view)
     {
@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
     }
     public void LaunchGameDesignActivity(View view)
     {
-        Intent intent = new Intent(this,GameDesignActivity.class);
+        Intent intent = new Intent(this,ScorecardDesignActivity.class);
         startActivity(intent);
     }
 }

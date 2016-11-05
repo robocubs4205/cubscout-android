@@ -19,7 +19,7 @@ import java.util.List;
  * Created by trevor on 10/24/16.
  */
 
-public class GameDesignActivity extends Activity implements GameDesignerFragmentListener {
+public class ScorecardDesignActivity extends Activity implements GameDesignerFragmentListener {
 
     public List<GameDesignerFragment> scoredKeys = new ArrayList<>();
     LinearLayout entries;
@@ -27,7 +27,7 @@ public class GameDesignActivity extends Activity implements GameDesignerFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_game_design);
+        setContentView(R.layout.activity_scorecard_design);
         entries = (LinearLayout)findViewById(R.id.entries);
     }
     @Override
@@ -45,7 +45,7 @@ public class GameDesignActivity extends Activity implements GameDesignerFragment
     @Override
     public void GameDesignerFragmentUpButtonClicked(GameDesignerFragment fragment)
     {
-        int currentIndex = ((LinearLayout)findViewById(R.id.entries)).indexOfChild(fragment.getView());
+        int currentIndex = entries.indexOfChild(fragment.getView());
         if(currentIndex>0)
         {
             entries.removeViewAt(currentIndex);
@@ -55,7 +55,7 @@ public class GameDesignActivity extends Activity implements GameDesignerFragment
     @Override
     public void GameDesignerFragmentDownButtonClicked(GameDesignerFragment fragment)
     {
-        int currentIndex = ((LinearLayout)findViewById(R.id.entries)).indexOfChild(fragment.getView());
+        int currentIndex = entries.indexOfChild(fragment.getView());
         if(currentIndex<entries.getChildCount()-1)
         {
             entries.removeViewAt(currentIndex);
@@ -68,7 +68,7 @@ public class GameDesignActivity extends Activity implements GameDesignerFragment
         {
 
         }
-        Log.d("GameDesignActivity",Integer.toString(scoredKeys.size()));
+        Log.d("ScorecardDesignActivity",Integer.toString(scoredKeys.size()));
     }
     public void onAddKeyButtonClick(View view)
     {
@@ -83,12 +83,12 @@ public class GameDesignActivity extends Activity implements GameDesignerFragment
         @Override
         public boolean onMenuItemClick(MenuItem item)
         {
-            Log.d("GameDesignActivity",getResources().getResourceEntryName(item.getItemId()));
+            Log.d("ScorecardDesignActivity",getResources().getResourceEntryName(item.getItemId()));
             switch(item.getItemId())
             {
                 case R.id.menu_item_add_scored_key:
-                    ScoredKeyFragment newScoredKeyFragment = new ScoredKeyFragment();
-                    getFragmentManager().beginTransaction().add(R.id.entries,newScoredKeyFragment).commit();
+                    ScorecardScoredValueFragment newScorecardScoredValueFragment = new ScorecardScoredValueFragment();
+                    getFragmentManager().beginTransaction().add(R.id.entries, newScorecardScoredValueFragment).commit();
                     return true;
                 case R.id.menu_item_add_score_title:
                     ScoreTitleFragment newScoreTitleFragment = new ScoreTitleFragment();

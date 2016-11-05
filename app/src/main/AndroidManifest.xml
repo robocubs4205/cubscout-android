@@ -35,7 +35,7 @@
             android:label = "@string/report_list_activity_label"
             android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".admin.GameDesignActivity" />
+        <activity android:name=".admin.ScorecardDesignActivity" />
     </application>
 
 </manifest>
