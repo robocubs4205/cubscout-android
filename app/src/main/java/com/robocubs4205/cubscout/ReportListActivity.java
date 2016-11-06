@@ -29,7 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class ReportListActivity extends Activity {
 
-    List<ListIndividualReportFragment> reports = new ArrayList<>();
+    private List<ListIndividualReportFragment> reports = new ArrayList<>();
 
     public void onSortButtonClick(View view)
     {
@@ -101,7 +101,7 @@ public class ReportListActivity extends Activity {
             }
             catch (UnknownHostException e)
             {
-                Log.e("bob","UnknownJostException");
+                Log.e("bob","UnknownHostException");
                 return  new TaskResult(false,results,"");
             }
             catch (Exception e) {

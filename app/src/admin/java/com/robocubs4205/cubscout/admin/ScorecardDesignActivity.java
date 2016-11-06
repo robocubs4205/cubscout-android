@@ -19,10 +19,10 @@ import java.util.List;
  * Created by trevor on 10/24/16.
  */
 
-public class ScorecardDesignActivity extends Activity implements GameDesignerFragmentListener {
+public class ScorecardDesignActivity extends Activity implements ScorecardDesignerFragmentListener {
 
-    public List<GameDesignerFragment> scoredKeys = new ArrayList<>();
-    LinearLayout entries;
+    private final List<ScorecardDesignerFragment> scoredKeys = new ArrayList<>();
+    private LinearLayout entries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,17 +33,17 @@ public class ScorecardDesignActivity extends Activity implements GameDesignerFra
     @Override
     public void onAttachFragment(Fragment fragment)
     {
-        if(fragment instanceof GameDesignerFragment)
-            scoredKeys.add((GameDesignerFragment) fragment);
+        if(fragment instanceof ScorecardDesignerFragment)
+            scoredKeys.add((ScorecardDesignerFragment) fragment);
     }
     @Override
-    public void GameDesignerFragmentRemoveButtonClicked(GameDesignerFragment fragment)
+    public void GameDesignerFragmentRemoveButtonClicked(ScorecardDesignerFragment fragment)
     {
         scoredKeys.remove(fragment);
         getFragmentManager().beginTransaction().remove(fragment).commit();
     }
     @Override
-    public void GameDesignerFragmentUpButtonClicked(GameDesignerFragment fragment)
+    public void GameDesignerFragmentUpButtonClicked(ScorecardDesignerFragment fragment)
     {
         int currentIndex = entries.indexOfChild(fragment.getView());
         if(currentIndex>0)
@@ -53,7 +53,7 @@ public class ScorecardDesignActivity extends Activity implements GameDesignerFra
         }
     }
     @Override
-    public void GameDesignerFragmentDownButtonClicked(GameDesignerFragment fragment)
+    public void GameDesignerFragmentDownButtonClicked(ScorecardDesignerFragment fragment)
     {
         int currentIndex = entries.indexOfChild(fragment.getView());
         if(currentIndex<entries.getChildCount()-1)
@@ -64,7 +64,7 @@ public class ScorecardDesignActivity extends Activity implements GameDesignerFra
     }
     public void onSubmitButtonClick(View view)
     {
-        for(GameDesignerFragment fragment : scoredKeys)
+        for(ScorecardDesignerFragment fragment : scoredKeys)
         {
 
         }
@@ -78,7 +78,7 @@ public class ScorecardDesignActivity extends Activity implements GameDesignerFra
         menu.show();
     }
 
-    public class addKeyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener
+    private class addKeyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener
     {
         @Override
         public boolean onMenuItemClick(MenuItem item)
@@ -87,12 +87,12 @@ public class ScorecardDesignActivity extends Activity implements GameDesignerFra
             switch(item.getItemId())
             {
                 case R.id.menu_item_add_scored_key:
-                    ScorecardScoredValueFragment newScorecardScoredValueFragment = new ScorecardScoredValueFragment();
-                    getFragmentManager().beginTransaction().add(R.id.entries, newScorecardScoredValueFragment).commit();
+                    ScorecardDesignerScoredValueFragment newScorecardDesignerScoredValueFragment = new ScorecardDesignerScoredValueFragment();
+                    getFragmentManager().beginTransaction().add(R.id.entries, newScorecardDesignerScoredValueFragment).commit();
                     return true;
                 case R.id.menu_item_add_score_title:
-                    ScoreTitleFragment newScoreTitleFragment = new ScoreTitleFragment();
-                    getFragmentManager().beginTransaction().add(R.id.entries,newScoreTitleFragment).commit();
+                    ScorecardDesignerTitleFragment newScorecardDesignerTitleFragment = new ScorecardDesignerTitleFragment();
+                    getFragmentManager().beginTransaction().add(R.id.entries, newScorecardDesignerTitleFragment).commit();
                     return true;
                 default:
                     return false;

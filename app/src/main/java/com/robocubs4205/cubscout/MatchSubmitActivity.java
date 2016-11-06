@@ -1,7 +1,6 @@
 package com.robocubs4205.cubscout;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,10 +16,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -322,7 +319,6 @@ public class MatchSubmitActivity extends Activity {
         {
             for(MatchData data : matchData)
             {
-                List<Pair<String,String>> parameters = new ArrayList<>();
                 try
                 {
                     Uri.Builder uri = new Uri.Builder();

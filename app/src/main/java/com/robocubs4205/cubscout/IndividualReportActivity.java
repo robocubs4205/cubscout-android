@@ -45,7 +45,7 @@ public class IndividualReportActivity extends Activity {
     private class GetResultTask extends AsyncTask<Integer,Void,TaskResult> {
         @Override
         protected TaskResult doInBackground(Integer... robotNumbers) {
-            Integer robotnumber = robotNumbers[0];
+            Integer robotNumber = robotNumbers[0];
             try {
                 URL url = new URL("http://data.robocubs4205.com/retrieve");
                 HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -67,9 +67,9 @@ public class IndividualReportActivity extends Activity {
                     return new TaskResult(null,true,"There were errors processing your request. Please try again later.");
                 }
                 NodeList robots = doc.getElementsByTagName("robot");
-                Log.i("bob", "target:" + robotnumber.toString());
+                Log.i("bob", "target:" + robotNumber.toString());
                 for (int i = 0; i < robots.getLength(); i++) {
-                    if (((Element) (robots.item(i))).getAttribute("team").equals(robotnumber.toString())) {
+                    if (((Element) (robots.item(i))).getAttribute("team").equals(robotNumber.toString())) {
                         RobotData data = new RobotData();
                         data.teamNumber = Integer.parseInt(((Element) (robots.item(i))).getAttribute("team"));
                         data.avgHighGoal = Float.parseFloat(((Element) (robots.item(i))).getAttribute("avg_high_goal"));

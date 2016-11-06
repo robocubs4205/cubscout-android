@@ -16,7 +16,7 @@ import org.json.JSONObject;
  * Created by trevor on 10/26/16.
  */
 
-public class ScoreTitleFragment extends GameDesignerFragment {
+public class ScorecardDesignerTitleFragment extends ScorecardDesignerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -34,7 +34,7 @@ public class ScoreTitleFragment extends GameDesignerFragment {
         try {
             return new JSONObject().put("title",titleText.getText().toString());
         } catch (JSONException e) {
-            Log.e("ScoreTitleFragment","JSONException",e);
+            Log.e("ScorecardDesigner","JSONException",e);
         }
         return new JSONObject();
     }

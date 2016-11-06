@@ -11,16 +11,16 @@ import com.robocubs4205.cubscout.JSONSerializableInputFragment;
  * Created by trevor on 10/26/16.
  */
 
-abstract class GameDesignerFragment extends Fragment  implements JSONSerializableInputFragment {
-    GameDesignerFragmentListener listener;
+abstract class ScorecardDesignerFragment extends Fragment  implements JSONSerializableInputFragment {
+    private ScorecardDesignerFragmentListener listener;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (GameDesignerFragmentListener) context;
+            listener = (ScorecardDesignerFragmentListener) context;
         } catch (ClassCastException e) {
-            Log.e("GameDesignerFragment"," must implement OnHeadlineSelectedListener");
+            Log.e("ScorecardDesigner","Activity for ScorecardDesignerFragments must implement OnHeadlineSelectedListener");
         }
 
     }
@@ -30,7 +30,7 @@ abstract class GameDesignerFragment extends Fragment  implements JSONSerializabl
         @Override
         public void onClick(View view)
         {
-            listener.GameDesignerFragmentRemoveButtonClicked(GameDesignerFragment.this);
+            listener.GameDesignerFragmentRemoveButtonClicked(ScorecardDesignerFragment.this);
         }
     }
     protected class UpButtonOnClickListener implements View.OnClickListener
@@ -38,7 +38,7 @@ abstract class GameDesignerFragment extends Fragment  implements JSONSerializabl
         @Override
         public void onClick(View view)
         {
-            listener.GameDesignerFragmentUpButtonClicked(GameDesignerFragment.this);
+            listener.GameDesignerFragmentUpButtonClicked(ScorecardDesignerFragment.this);
         }
     }
     protected class DownButtonOnClickListener implements View.OnClickListener
@@ -46,7 +46,7 @@ abstract class GameDesignerFragment extends Fragment  implements JSONSerializabl
         @Override
         public void onClick(View view)
         {
-            listener.GameDesignerFragmentDownButtonClicked(GameDesignerFragment.this);
+            listener.GameDesignerFragmentDownButtonClicked(ScorecardDesignerFragment.this);
         }
     }
 }

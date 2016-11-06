@@ -33,8 +33,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
-                    android:text="@string/team_number_label_text" />
+                    android:text="@string/team_number_label_text"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/team_number_input_field"
@@ -52,8 +52,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
-                    android:text="@string/match_number_label_text" />
+                    android:text="@string/match_number_label_text"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/match_number_input_field"
@@ -85,10 +85,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/high_goal_made_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/high_goal_made_input_field"
@@ -135,10 +135,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/high_goal_miss_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/high_goal_miss_input_field"
@@ -185,10 +185,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/low_goal_made_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/low_goal_made_input_field"
@@ -235,10 +235,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/low_goal_miss_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/low_goal_miss_input_field"
@@ -283,8 +283,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/goals_table"
             android:layout_marginBottom="10dp"
-            android:singleLine="true"
-            android:text="@string/did_defense_label_text" />
+            android:text="@string/did_defense_label_text"
+            android:maxLines="1" />
 
         <TextView
             android:id="@+id/obstacle_instructions"
@@ -308,7 +308,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/did_defense_label"
-            android:id="@+id/defense_spinner_frame"></FrameLayout>
+            android:id="@+id/defense_spinner_frame" />
 
         <TableLayout
             android:id="@+id/obstacle_table"
@@ -328,10 +328,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/portcullis_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/portcullis_crossing_input_field"
@@ -340,9 +340,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -356,8 +356,7 @@
                         android:background="@android:drawable/arrow_up_float"
                         android:scrollHorizontally="false"
                         android:adjustViewBounds="false"
-                        android:onClick="onIncrementPortcullis"
-                        android:nestedScrollingEnabled="false" />
+                        android:onClick="onIncrementPortcullis" />
 
                     <ImageButton
                         android:layout_width="30dp"
@@ -380,10 +379,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/cheval_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/cheval_crossing_input_field"
@@ -392,9 +391,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -431,10 +430,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/moat_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/moat_crossing_input_field"
@@ -443,9 +442,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -482,10 +481,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/ramparts_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/rampart_crossing_input_field"
@@ -494,9 +493,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -533,10 +532,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/drawbridge_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/drawbridge_crossing_input_field"
@@ -545,9 +544,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -584,10 +583,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/sally_port_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/sally_port_crossing_input_field"
@@ -596,9 +595,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -635,10 +634,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/terrain_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/rough_terrain_crossing_input_field"
@@ -647,9 +646,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -686,10 +685,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/rock_wall_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/rock_wall_crossing_input_field"
@@ -698,9 +697,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -737,10 +736,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:singleLine="true"
                     android:text="@string/low_bar_label_text"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <EditText
                     android:id="@+id/low_bar_crossing_input_field"
@@ -749,9 +748,9 @@
                     android:ems="10"
                     android:inputType="number"
                     android:text="@string/obstacle_default_value"
-                    android:singleLine="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:maxLines="1" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"

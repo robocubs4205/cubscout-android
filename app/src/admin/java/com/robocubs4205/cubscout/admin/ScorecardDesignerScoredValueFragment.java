@@ -18,10 +18,10 @@ import org.json.JSONObject;
  * Created by trevor on 10/14/16.
  */
 
-public class ScorecardScoredValueFragment extends GameDesignerFragment
+public class ScorecardDesignerScoredValueFragment extends ScorecardDesignerFragment
 {
 
-    public ScorecardScoredValueFragment(){}
+    public ScorecardDesignerScoredValueFragment(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,10 +45,7 @@ public class ScorecardScoredValueFragment extends GameDesignerFragment
         String type = ((Spinner)getView().findViewById(R.id.key_type_spinner)).getSelectedItem().toString();
         String nullableString = ((Spinner)getView().findViewById(R.id.key_type_spinner)).getSelectedItem().toString();
         Boolean isNullable;
-        if(nullableString.equals("Yes"))
-            isNullable = true;
-        else
-            isNullable = false;
+        isNullable = nullableString.equals("Yes");
         try {
             return new JSONObject().put("name",name).put("type",type).put("isNullable",isNullable);
         } catch (JSONException e) {
