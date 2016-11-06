@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">CubScout-Admin</string>
     <string name="score_title_label_text">(Section) Title</string>
     <string name="score_key_name_label_text">Key Name</string>
     <string name="score_key_type_label_text">Score Type</string>
