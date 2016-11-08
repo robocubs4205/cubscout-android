@@ -28,7 +28,7 @@ public class ScorecardDesignerTitleFragment extends ScorecardDesignerFragment {
         return view;
     }
     @Override
-    public JSONObject Serialize()
+    public JSONObject serialize()
     {
         EditText titleText = (EditText)getView().findViewById(R.id.score_title_field);
         try {

@@ -39,7 +39,7 @@ public class ScorecardDesignerScoredValueFragment extends ScorecardDesignerFragm
         return view;
     }
     @Override
-    public JSONObject Serialize()
+    public JSONObject serialize()
     {
         String name = ((EditText)getView().findViewById(R.id.name_field)).getText().toString();
         String type = ((Spinner)getView().findViewById(R.id.key_type_spinner)).getSelectedItem().toString();

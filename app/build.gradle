@@ -20,9 +20,7 @@ android {
     }
     productFlavors {
         admin {
-            minSdkVersion 17
             applicationId 'com.robocubs4205.cubscout.admin'
-            targetSdkVersion 24
             versionCode 1
             versionName '1.0'
         }

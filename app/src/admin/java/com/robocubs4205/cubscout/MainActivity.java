@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin;
+package com.robocubs4205.cubscout;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import com.robocubs4205.cubscout.IndividualReportActivity;
 import com.robocubs4205.cubscout.MatchSubmitActivity;
 import com.robocubs4205.cubscout.R;
 import com.robocubs4205.cubscout.ReportListActivity;
+import com.robocubs4205.cubscout.admin.ScorecardDesignActivity;
 
 /**
  * Created by trevor on 10/3/16.

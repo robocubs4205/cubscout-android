@@ -7,5 +7,5 @@ import org.json.JSONObject;
  */
 
 public interface JSONSerializableInputFragment {
-    JSONObject Serialize();
+    JSONObject serialize();
 }

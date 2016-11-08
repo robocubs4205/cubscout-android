@@ -11,6 +11,10 @@ import android.widget.PopupMenu;
 
 import com.robocubs4205.cubscout.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,9 +68,18 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
     }
     public void onSubmitButtonClick(View view)
     {
-        for(ScorecardDesignerFragment fragment : scoredKeys)
+        try {
+            JSONObject output = new JSONObject();
+            JSONArray scorecardSectionArray = new JSONArray();
+            for (ScorecardDesignerFragment fragment : scoredKeys) {
+                scorecardSectionArray.put(fragment.serialize());
+            }
+            output.put("sections", scorecardSectionArray);
+            Log.d("ScorecardDesigner","serialization output: "+output.toString());
+        }
+        catch (JSONException e)
         {
-
+            Log.e("ScorecardDesigner","exception while serializing",e);
         }
         Log.d("ScorecardDesignActivity",Integer.toString(scoredKeys.size()));
     }
