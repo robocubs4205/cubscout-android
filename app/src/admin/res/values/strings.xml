@@ -2,14 +2,24 @@
 <resources>
     <string name="app_name">CubScout-Admin</string>
     <string name="score_title_label_text">(Section) Title</string>
-    <string name="score_key_name_label_text">Key Name</string>
-    <string name="score_key_type_label_text">Score Type</string>
-    <string name="score_key_nullable_label_text">Nullable</string>
-    <string name="add_scored_key_button_text">Add</string>
-    <string name="admin_add_scored_key_popup_text">Add score metric</string>
+    <string name="score_field_name_label_text">Field Name</string>
+    <string name="score_field_type_label_text">Score Type</string>
+    <string name="score_field_nullable_label_text">Nullable</string>
+    <string name="add_score_field_button_text">Add</string>
+    <string name="admin_add_score_field_popup_text">Add score metric</string>
     <string name="game_name_field_label_text">Game Name</string>
     <string name="admin_score_title_popup_text">Section Title</string>
-    <string-array name="scored_key_types">
+    <string-array name="scored_field_type_spinner_options">
+        <item>Count</item>
+        <item>Rating</item>
+    </string-array>
+    <string-array name="nullable_spinner_options">
+        <item>No</item>
+        <item>Yes</item>
+    </string-array>
+    <integer name="is_nullable_index">1</integer>
+    <!-- indices of values must match the indices of cooresponding values in scored_field_type_spinner_options -->
+    <string-array name="scored_field_type_json_options">
         <item>Count</item>
         <item>Rating</item>
     </string-array>

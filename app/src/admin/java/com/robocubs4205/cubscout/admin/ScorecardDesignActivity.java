@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
@@ -70,6 +71,8 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
     {
         try {
             JSONObject output = new JSONObject();
+            EditText nameField = (EditText)findViewById(R.id.game_name_field);
+            output.put("game_name",nameField.getText().toString());
             JSONArray scorecardSectionArray = new JSONArray();
             for (ScorecardDesignerFragment fragment : scoredKeys) {
                 scorecardSectionArray.put(fragment.serialize());
@@ -100,8 +103,8 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
             switch(item.getItemId())
             {
                 case R.id.menu_item_add_scored_key:
-                    ScorecardDesignerScoredValueFragment newScorecardDesignerScoredValueFragment = new ScorecardDesignerScoredValueFragment();
-                    getFragmentManager().beginTransaction().add(R.id.entries, newScorecardDesignerScoredValueFragment).commit();
+                    ScorecardDesignerScoreFieldFragment newScorecardDesignerScoreFieldFragment = new ScorecardDesignerScoreFieldFragment();
+                    getFragmentManager().beginTransaction().add(R.id.entries, newScorecardDesignerScoreFieldFragment).commit();
                     return true;
                 case R.id.menu_item_add_score_title:
                     ScorecardDesignerTitleFragment newScorecardDesignerTitleFragment = new ScorecardDesignerTitleFragment();

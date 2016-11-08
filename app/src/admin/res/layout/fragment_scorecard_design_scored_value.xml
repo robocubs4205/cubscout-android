@@ -4,15 +4,24 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:columnCount="4"
-    android:rowCount="4"
+    android:rowCount="5"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp">
+
+    <FrameLayout
+        android:id="@+id/null_checkbox_label_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_columnSpan="2"
+        android:layout_row="4"
+        android:layout_column="1"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:id="@+id/key_name_field"
+        android:id="@+id/score_name_field"
         android:layout_row="1"
         android:layout_column="1"
         android:layout_columnSpan="2"
@@ -30,11 +39,11 @@
         tools:ignore="RtlHardcoded,UnusedAttribute" />
 
     <TextView
-        android:text="@string/score_key_name_label_text"
+        android:text="@string/score_field_name_label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView21"
-        android:labelFor="@id/key_name_field"
+        android:labelFor="@id/game_name_field"
         android:layout_column="1"
         android:layout_columnSpan="2"
         android:layout_columnWeight="1"
@@ -67,7 +76,7 @@
         tools:ignore="RtlHardcoded" />
 
     <TextView
-        android:text="@string/score_key_nullable_label_text"
+        android:text="@string/score_field_nullable_label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView31"
@@ -79,14 +88,14 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner"
+        android:id="@+id/nullable_spinner"
         android:layout_row="3"
         android:layout_column="2"
         android:layout_marginLeft="5dp"
         tools:ignore="RtlHardcoded" />
 
     <TextView
-        android:text="@string/score_key_type_label_text"
+        android:text="@string/score_field_type_label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/key_type_label"

@@ -18,10 +18,10 @@ import org.json.JSONObject;
  * Created by trevor on 10/14/16.
  */
 
-public class ScorecardDesignerScoredValueFragment extends ScorecardDesignerFragment
+public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragment
 {
 
-    public ScorecardDesignerScoredValueFragment(){}
+    public ScorecardDesignerScoreFieldFragment(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,22 +32,30 @@ public class ScorecardDesignerScoredValueFragment extends ScorecardDesignerFragm
         view.findViewById(R.id.down_button).setOnClickListener(new DownButtonOnClickListener());
 
         Spinner typeSpinner = (Spinner)view.findViewById(R.id.key_type_spinner);
-        ArrayAdapter<CharSequence> typeSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),R.array.scored_key_types,android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> typeSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),R.array.scored_field_type_spinner_options,android.R.layout.simple_spinner_item);
         typeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeSpinnerAdapter);
+
+        Spinner nullableSpinner = (Spinner)view.findViewById(R.id.nullable_spinner);
+        ArrayAdapter<CharSequence> nullableSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),R.array.nullable_spinner_options,android.R.layout.simple_spinner_item);
+        nullableSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        nullableSpinner.setAdapter(nullableSpinnerAdapter);
 
         return view;
     }
     @Override
     public JSONObject serialize()
     {
-        String name = ((EditText)getView().findViewById(R.id.name_field)).getText().toString();
-        String type = ((Spinner)getView().findViewById(R.id.key_type_spinner)).getSelectedItem().toString();
-        String nullableString = ((Spinner)getView().findViewById(R.id.key_type_spinner)).getSelectedItem().toString();
-        Boolean isNullable;
-        isNullable = nullableString.equals("Yes");
+        String name = ((EditText)getView().findViewById(R.id.score_name_field)).getText().toString();
+
+        String[] typeStrings = getResources().getStringArray(R.array.scored_field_type_json_options);
+
+        int typeSelection = ((Spinner)getView().findViewById(R.id.key_type_spinner)).getSelectedItemPosition();
+        String type = typeStrings[typeSelection];
+        int nullableSelection = ((Spinner)getView().findViewById(R.id.nullable_spinner)).getSelectedItemPosition();
+        Boolean isNullable = nullableSelection==getResources().getInteger(R.integer.is_nullable_index);
         try {
-            return new JSONObject().put("name",name).put("type",type).put("isNullable",isNullable);
+            return new JSONObject().put("field_name",name).put("type",type).put("isNullable",isNullable);
         } catch (JSONException e) {
             Log.e("ScoreKeyFragment","JSONException",e);
         }

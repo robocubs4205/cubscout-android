@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/name_field"
+        android:id="@+id/game_name_field"
         android:layout_toRightOf="@+id/textView22" />
 
     <TextView
@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView22"
-        android:layout_alignBaseline="@+id/name_field"
+        android:layout_alignBaseline="@+id/game_name_field"
         android:layout_marginLeft="10dp" />
 
     <LinearLayout
@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <Button
-        android:text="@string/add_scored_key_button_text"
+        android:text="@string/add_score_field_button_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button8"
