@@ -9,6 +9,7 @@
     <string name="admin_add_score_field_popup_text">Add score metric</string>
     <string name="game_name_field_label_text">Game Name</string>
     <string name="admin_score_title_popup_text">Section Title</string>
+    <string name="null_when_label_text">Null When Checkbox is</string>
     <string-array name="scored_field_type_spinner_options">
         <item>Count</item>
         <item>Rating</item>
@@ -18,9 +19,13 @@
         <item>Yes</item>
     </string-array>
     <integer name="is_nullable_index">1</integer>
-    <!-- indices of values must match the indices of cooresponding values in scored_field_type_spinner_options -->
-    <string-array name="scored_field_type_json_options">
+    <!-- indices of values must match the indices of corresponding values in scored_field_type_spinner_options -->
+    <string-array name="scored_field_type_json_options" translatable="false">
         <item>Count</item>
         <item>Rating</item>
+    </string-array>
+    <string-array name="null_when_spinner_options">
+        <item>Checked</item>
+        <item>Unchecked</item>
     </string-array>
 </resources>

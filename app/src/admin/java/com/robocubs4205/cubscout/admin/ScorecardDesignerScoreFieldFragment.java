@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 
 public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragment
 {
+    ScorecardDesignerNullCheckboxSettingsFragment settingsFragment;
 
     public ScorecardDesignerScoreFieldFragment(){}
 
@@ -31,6 +33,8 @@ public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragme
         view.findViewById(R.id.up_button).setOnClickListener(new UpButtonOnClickListener());
         view.findViewById(R.id.down_button).setOnClickListener(new DownButtonOnClickListener());
 
+        settingsFragment = (ScorecardDesignerNullCheckboxSettingsFragment)getChildFragmentManager().findFragmentById(R.id.null_checkbox_settings_container);
+
         Spinner typeSpinner = (Spinner)view.findViewById(R.id.key_type_spinner);
         ArrayAdapter<CharSequence> typeSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),R.array.scored_field_type_spinner_options,android.R.layout.simple_spinner_item);
         typeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -40,6 +44,7 @@ public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragme
         ArrayAdapter<CharSequence> nullableSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),R.array.nullable_spinner_options,android.R.layout.simple_spinner_item);
         nullableSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         nullableSpinner.setAdapter(nullableSpinnerAdapter);
+        nullableSpinner.setOnItemSelectedListener(new NullableDropdownOnItemSelectedListener());
 
         return view;
     }
@@ -61,4 +66,35 @@ public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragme
         }
         return new JSONObject();
     }
+
+    class NullableDropdownOnItemSelectedListener implements AdapterView.OnItemSelectedListener
+    {
+        @Override
+        public void onItemSelected(AdapterView<?> parentView, View selectedItem, int position, long id)
+        {
+            if(position == getResources().getInteger(R.integer.is_nullable_index))
+            {
+                if(settingsFragment == null)
+                {
+                    settingsFragment = new ScorecardDesignerNullCheckboxSettingsFragment();
+                    getChildFragmentManager().beginTransaction().add(R.id.null_checkbox_settings_container,settingsFragment).commit();
+                }
+                else
+                {
+                    getChildFragmentManager().beginTransaction().show(settingsFragment).commit();
+                }
+
+            }
+            else if(settingsFragment!=null)
+            {
+                getChildFragmentManager().beginTransaction().hide(settingsFragment).commit();
+            }
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> parentView) {
+            if(settingsFragment!=null)
+            getChildFragmentManager().beginTransaction().hide(settingsFragment).commit();
+        }
+    }
+
 }
