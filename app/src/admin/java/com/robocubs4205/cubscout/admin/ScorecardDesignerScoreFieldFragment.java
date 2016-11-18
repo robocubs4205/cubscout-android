@@ -49,8 +49,7 @@ public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragme
         return view;
     }
     @Override
-    public JSONObject serialize()
-    {
+    public JSONObject serialize() throws JSONException {
         String name = ((EditText)getView().findViewById(R.id.score_name_field)).getText().toString();
 
         String[] typeStrings = getResources().getStringArray(R.array.scored_field_type_json_options);
@@ -59,12 +58,12 @@ public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragme
         String type = typeStrings[typeSelection];
         int nullableSelection = ((Spinner)getView().findViewById(R.id.nullable_spinner)).getSelectedItemPosition();
         Boolean isNullable = nullableSelection==getResources().getInteger(R.integer.is_nullable_index);
-        try {
-            return new JSONObject().put("field_name",name).put("type",type).put("isNullable",isNullable);
-        } catch (JSONException e) {
-            Log.e("ScoreKeyFragment","JSONException",e);
+        JSONObject result = new JSONObject().put("section_type","field").put("field_name",name).put("type",type).put("isNullable",isNullable);
+        if(settingsFragment!=null)
+        {
+            result.put("nullable-settings",settingsFragment.serialize());
         }
-        return new JSONObject();
+        return result;
     }
 
     class NullableDropdownOnItemSelectedListener implements AdapterView.OnItemSelectedListener

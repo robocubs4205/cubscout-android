@@ -7,19 +7,20 @@
         android:layout_height="wrap_content"
         android:layout_column="1"
         android:layout_row="1"
-        android:id="@+id/spinner" />
+        android:id="@+id/null_when_spinner" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textShortMessage"
+        android:maxEms="5"
         android:layout_column="0"
         android:layout_row="1"
         android:layout_columnWeight="1"
-        android:id="@+id/editText" />
+        android:id="@+id/checkbox_message_field" />
 
     <TextView
-        android:text="TextView"
+        android:text="@string/null_when_label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_column="1"
@@ -27,7 +28,7 @@
         android:id="@+id/textView33" />
 
     <TextView
-        android:text="TextView"
+        android:text="@string/checkbox_message_field_label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_column="0"

@@ -5,8 +5,10 @@
     tools:context="com.me.myApp.activities.StartActivity">
 
     <item
-        android:title="@string/admin_add_score_field_popup_text"
-        android:id="@+id/menu_item_add_scored_key"  />
-    <item android:title="@string/admin_score_title_popup_text"
+        android:title="@string/add_score_field_popup_text"
+        android:id="@+id/menu_item_add_score_field"  />
+    <item android:title="@string/add_score_title_popup_text"
         android:id="@+id/menu_item_add_score_title" />
+    <item android:title="@string/add_score_paragraph_popup_text"
+        android:id="@+id/menu_item_add_score_paragraph"/>
 </menu>

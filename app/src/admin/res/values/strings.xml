@@ -2,13 +2,15 @@
 <resources>
     <string name="app_name">CubScout-Admin</string>
     <string name="score_title_label_text">(Section) Title</string>
+    <string name="score_paragraph_label_text">Paragraph Text</string>
     <string name="score_field_name_label_text">Field Name</string>
     <string name="score_field_type_label_text">Score Type</string>
     <string name="score_field_nullable_label_text">Nullable</string>
     <string name="add_score_field_button_text">Add</string>
-    <string name="admin_add_score_field_popup_text">Add score metric</string>
+    <string name="add_score_field_popup_text">Add score metric</string>
     <string name="game_name_field_label_text">Game Name</string>
-    <string name="admin_score_title_popup_text">Section Title</string>
+    <string name="add_score_title_popup_text">Section Title</string>
+    <string name="add_score_paragraph_popup_text">Paragraph</string>
     <string name="null_when_label_text">Null When Checkbox is</string>
     <string-array name="scored_field_type_spinner_options">
         <item>Count</item>

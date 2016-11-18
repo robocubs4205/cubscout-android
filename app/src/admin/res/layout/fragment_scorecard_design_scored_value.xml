@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:id="@+id/score_name_field"
+        android:maxEms="10"
         android:layout_row="1"
         android:layout_column="1"
         android:layout_columnSpan="2"

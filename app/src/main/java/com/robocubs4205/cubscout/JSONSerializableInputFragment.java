@@ -1,5 +1,6 @@
 package com.robocubs4205.cubscout;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -7,5 +8,5 @@ import org.json.JSONObject;
  */
 
 public interface JSONSerializableInputFragment {
-    JSONObject serialize();
+    JSONObject serialize() throws JSONException;
 }

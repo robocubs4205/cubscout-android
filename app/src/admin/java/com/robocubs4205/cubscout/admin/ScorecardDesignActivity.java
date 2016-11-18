@@ -75,7 +75,7 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
             output.put("game_name",nameField.getText().toString());
             JSONArray scorecardSectionArray = new JSONArray();
             for (ScorecardDesignerFragment fragment : scoredKeys) {
-                scorecardSectionArray.put(fragment.serialize());
+                scorecardSectionArray.put(fragment.serialize().put("index",entries.indexOfChild(fragment.getView())));
             }
             output.put("sections", scorecardSectionArray);
             Log.d("ScorecardDesigner","serialization output: "+output.toString());
@@ -102,7 +102,7 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
             Log.d("ScorecardDesignActivity",getResources().getResourceEntryName(item.getItemId()));
             switch(item.getItemId())
             {
-                case R.id.menu_item_add_scored_key:
+                case R.id.menu_item_add_score_field:
                     ScorecardDesignerScoreFieldFragment newScorecardDesignerScoreFieldFragment = new ScorecardDesignerScoreFieldFragment();
                     getFragmentManager().beginTransaction().add(R.id.entries, newScorecardDesignerScoreFieldFragment).commit();
                     return true;
@@ -110,6 +110,9 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
                     ScorecardDesignerTitleFragment newScorecardDesignerTitleFragment = new ScorecardDesignerTitleFragment();
                     getFragmentManager().beginTransaction().add(R.id.entries, newScorecardDesignerTitleFragment).commit();
                     return true;
+                case R.id.menu_item_add_score_paragraph:
+                    ScorecardDesignerParagraphFragment newScorecardDesignerParagraphFragment = new ScorecardDesignerParagraphFragment();
+                    getFragmentManager().beginTransaction().add(R.id.entries,newScorecardDesignerParagraphFragment).commit();
                 default:
                     return false;
             }
