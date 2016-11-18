@@ -12,6 +12,8 @@
     <string name="add_score_title_popup_text">Section Title</string>
     <string name="add_score_paragraph_popup_text">Paragraph</string>
     <string name="null_when_label_text">Null When Checkbox is</string>
+    <string name="game_type_field_labe_text">Game Type</string>
+    <string name="game_year_field_label_text">Year</string>
     <string-array name="scored_field_type_spinner_options">
         <item>Count</item>
         <item>Rating</item>
@@ -29,5 +31,9 @@
     <string-array name="null_when_spinner_options">
         <item>Checked</item>
         <item>Unchecked</item>
+    </string-array>
+    <string-array name="game_types">
+        <item>FRC</item>
+        <item>FTC</item>
     </string-array>
 </resources>

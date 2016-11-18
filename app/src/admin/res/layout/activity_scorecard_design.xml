@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 <RelativeLayout 
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <EditText
         android:layout_width="wrap_content"
@@ -13,7 +14,18 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/game_name_field"
-        android:layout_toRightOf="@+id/textView22" />
+        android:layout_toRightOf="@+id/textView22"
+        tools:ignore="RtlHardcoded" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/game_type_spinner"
+        android:layout_toRightOf="@+id/textView23"
+        android:layout_below="@+id/game_name_field"
+        android:layout_alignLeft="@+id/game_name_field"
+        android:layout_alignRight="@+id/game_name_field"
+        tools:ignore="RtlHardcoded" />
 
     <TextView
         android:text="@string/game_name_field_label_text"
@@ -21,14 +33,39 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView22"
         android:layout_alignBaseline="@+id/game_name_field"
-        android:layout_marginLeft="10dp" />
+        android:layout_marginLeft="10dp"
+        tools:ignore="RtlHardcoded" />
+    <TextView
+        android:text="@string/game_type_field_labe_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/game_type_spinner"
+        android:id="@+id/textView23"
+        android:layout_marginLeft="10dp"
+        tools:ignore="RtlHardcoded" />
+    <TextView
+        android:text="@string/game_year_field_label_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/game_year_spinner"
+        android:id="@+id/textView24"
+        android:layout_marginLeft="10dp"
+        tools:ignore="RtlHardcoded" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/game_name_field"
+        android:layout_alignRight="@id/game_name_field"
+        android:layout_below="@id/game_type_spinner"
+        android:id="@+id/game_year_spinner" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/entries"
-        android:layout_below="@+id/textView22"
+        android:layout_below="@+id/game_year_spinner"
         >
 
     </LinearLayout>
@@ -43,7 +80,7 @@
         android:layout_below="@+id/entries"
         android:layout_marginRight="10dp"
         android:onClick="onAddKeyButtonClick"
-        />
+        tools:ignore="RtlHardcoded" />
 
     <Button
         android:text="@string/match_submit_button_text"

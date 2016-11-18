@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 
 import com.robocubs4205.cubscout.R;
 
@@ -17,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -29,11 +32,30 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
     private final List<ScorecardDesignerFragment> scoredKeys = new ArrayList<>();
     private LinearLayout entries;
 
+    ArrayList<Integer> gameYears = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scorecard_design);
         entries = (LinearLayout)findViewById(R.id.entries);
+
+        Spinner gameTypeSpinner = (Spinner)findViewById(R.id.game_type_spinner);
+        ArrayAdapter<CharSequence> gameTypeSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.game_types,android.R.layout.simple_spinner_item);
+        gameTypeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        gameTypeSpinner.setAdapter(gameTypeSpinnerAdapter);
+
+        Spinner gameYearSpinner = (Spinner)findViewById(R.id.game_year_spinner);
+        ArrayList<CharSequence> yearArray = new ArrayList<>();
+        for(int year = 1992; year <= Calendar.getInstance().get(Calendar.YEAR); year++)
+        {
+            yearArray.add(Integer.toString(year));
+            gameYears.add(year);
+        }
+
+        ArrayAdapter<CharSequence> gameYearSpinnerAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,yearArray);
+        gameYearSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        gameYearSpinner.setAdapter(gameYearSpinnerAdapter);
     }
     @Override
     public void onAttachFragment(Fragment fragment)
@@ -72,10 +94,16 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
         try {
             JSONObject output = new JSONObject();
             EditText nameField = (EditText)findViewById(R.id.game_name_field);
-            output.put("game_name",nameField.getText().toString());
+            Spinner gameTypeSpinner = (Spinner)findViewById(R.id.game_type_spinner);
+            CharSequence[] gameTypes = getResources().getStringArray(R.array.game_types);
+            Spinner gameYearSpinner= (Spinner)findViewById(R.id.game_year_spinner);
+            output.put("game_name",nameField.getText().toString())
+                  .put("game_type",gameTypes[gameTypeSpinner.getSelectedItemPosition()])
+                  .put("game_year",gameYears.get(gameYearSpinner.getSelectedItemPosition()));
             JSONArray scorecardSectionArray = new JSONArray();
             for (ScorecardDesignerFragment fragment : scoredKeys) {
-                scorecardSectionArray.put(fragment.serialize().put("index",entries.indexOfChild(fragment.getView())));
+                scorecardSectionArray.put(fragment.serialize()
+                                     .put("index",entries.indexOfChild(fragment.getView())));
             }
             output.put("sections", scorecardSectionArray);
             Log.d("ScorecardDesigner","serialization output: "+output.toString());
