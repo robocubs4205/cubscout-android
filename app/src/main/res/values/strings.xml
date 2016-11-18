@@ -51,7 +51,7 @@
     <string name="report_list_sort_button_text">Go</string>
     <string name="launch_create_new_game_activity_text">Enter a game design</string>
     <string name="checkbox_message_field_label_text">Message by null checkbox</string>
-
+    <string name="scout_server_url">http://data.robocubs4205.com</string>
 
     <string-array name="defense_ratings">
         <item>1</item>
