@@ -45,12 +45,10 @@
             android:id="@+id/select_game_spinner" />
 
         <TextView
-            android:text="No games available for that category"
+            android:text="@string/no_games_available_for_category_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView34"
             android:textSize="18sp"
-            android:elevation="1dp"
             android:paddingLeft="10dp" />
 
     </ViewSwitcher>

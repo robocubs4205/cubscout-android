@@ -1,9 +1,8 @@
 package com.robocubs4205.cubscout;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
+@SuppressLint("all")
 public class IndividualReportFragment extends Fragment {
 
     public IndividualReportFragment() {
@@ -30,7 +31,7 @@ public class IndividualReportFragment extends Fragment {
             ((TextView) view.findViewById(R.id.average_high_goal_text)).setText(((Float) getArguments().getFloat("avgHighGoal")).toString());
             if(getArguments().getFloat("avgHighGoal") + getArguments().getFloat("avgHighMiss") != 0)
             {
-                ((TextView) view.findViewById(R.id.high_goal_accuracy_text)).setText(String.format("%.2f%%", ((Float) (getArguments().getFloat("avgHighGoal") / (getArguments().getFloat("avgHighGoal") + getArguments().getFloat("avgHighMiss")) * 100))));
+                ((TextView) view.findViewById(R.id.high_goal_accuracy_text)).setText(String.format(Locale.getDefault(),"%.2f%%", ((Float) (getArguments().getFloat("avgHighGoal") / (getArguments().getFloat("avgHighGoal") + getArguments().getFloat("avgHighMiss")) * 100))));
             }
             else
             {
@@ -39,7 +40,7 @@ public class IndividualReportFragment extends Fragment {
             ((TextView) view.findViewById(R.id.average_low_goal_text)).setText(((Float) getArguments().getFloat("avgLowGoal")).toString());
             if(getArguments().getFloat("avgLowGoal") + getArguments().getFloat("avgLowMiss") != 0)
             {
-                ((TextView) view.findViewById(R.id.low_goal_accuracy_text)).setText(String.format("%.2f%%", ((Float) (getArguments().getFloat("avgLowGoal") / (getArguments().getFloat("avgLowGoal") + getArguments().getFloat("avgLowMiss")) * 100))));
+                ((TextView) view.findViewById(R.id.low_goal_accuracy_text)).setText(String.format(Locale.getDefault(),"%.2f%%", ((Float) (getArguments().getFloat("avgLowGoal") / (getArguments().getFloat("avgLowGoal") + getArguments().getFloat("avgLowMiss")) * 100))));
             }
             else
             {

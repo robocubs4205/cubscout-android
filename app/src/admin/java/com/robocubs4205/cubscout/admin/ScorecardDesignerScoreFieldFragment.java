@@ -1,7 +1,6 @@
 package com.robocubs4205.cubscout.admin;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +16,9 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
-/**
- * Created by trevor on 10/14/16.
- */
-
 public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragment
 {
-    ScorecardDesignerNullCheckboxSettingsFragment settingsFragment;
+    private ScorecardDesignerNullCheckboxSettingsFragment settingsFragment;
 
     public ScorecardDesignerScoreFieldFragment(){}
 
@@ -50,6 +45,7 @@ public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragme
 
         return view;
     }
+    @SuppressWarnings("ConstantConditions")
     @Override
     public JSONObject serialize() throws JSONException {
         String name = ((EditText)getView().findViewById(R.id.score_name_field)).getText().toString();
@@ -74,7 +70,7 @@ public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragme
         return result;
     }
 
-    class NullableDropdownOnItemSelectedListener implements AdapterView.OnItemSelectedListener
+    private class NullableDropdownOnItemSelectedListener implements AdapterView.OnItemSelectedListener
     {
         @Override
         public void onItemSelected(AdapterView<?> parentView, View selectedItem, int position, long id)

@@ -5,8 +5,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 
+@SuppressWarnings("all")
 public class IndividualReportActivity extends Activity {
 
     private IndividualReportFragment report = new IndividualReportFragment();
@@ -164,9 +165,9 @@ public class IndividualReportActivity extends Activity {
     }
     private class TaskResult
     {
-        public RobotData robotData;
-        public Boolean isServerReachable;
-        public String errorText;
+        public final RobotData robotData;
+        public final Boolean isServerReachable;
+        public final String errorText;
         public TaskResult(RobotData robotData, Boolean isServerReachable, String errorText)
         {
             this.robotData = robotData;

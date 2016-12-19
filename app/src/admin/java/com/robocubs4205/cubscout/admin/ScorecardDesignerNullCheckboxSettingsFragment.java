@@ -15,10 +15,6 @@ import com.robocubs4205.cubscout.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by trevor on 11/8/16.
- */
-
 public class ScorecardDesignerNullCheckboxSettingsFragment extends Fragment implements JSONSerializableInputFragment {
     public ScorecardDesignerNullCheckboxSettingsFragment() {}
     @Override
@@ -34,6 +30,7 @@ public class ScorecardDesignerNullCheckboxSettingsFragment extends Fragment impl
 
         return view;
     }
+    @SuppressWarnings("ConstantConditions")
     @Override
     public JSONObject serialize() throws JSONException {
         String checkboxMessage = ((EditText)getView().findViewById(R.id.checkbox_message_field)).getText().toString();

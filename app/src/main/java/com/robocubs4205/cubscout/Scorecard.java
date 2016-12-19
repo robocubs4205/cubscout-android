@@ -2,10 +2,8 @@ package com.robocubs4205.cubscout;
 
 import java.util.List;
 
-/**
- * Created by trevor on 12/14/16.
- */
 public class Scorecard {
+    @SuppressWarnings("unused")
     public int id;
     public String type;
     public String name;
@@ -13,6 +11,7 @@ public class Scorecard {
     List<ScorecardSection> sections;
     public static abstract class ScorecardSection
     {
+        @SuppressWarnings("unused")
         public int id;
         public int index;
     }
@@ -26,7 +25,6 @@ public class Scorecard {
         public Type type;
         public String name;
         public boolean isNullable;
-        public int value;
     }
 
     public static class ScorecardNullableFieldSection extends ScorecardFieldSection {
@@ -36,7 +34,6 @@ public class Scorecard {
         }
         public NullWhen nullWhen;
         public String checkBoxMessage;
-        public boolean checked;
     }
 
     public static class ScorecardTitleSection extends ScorecardSection

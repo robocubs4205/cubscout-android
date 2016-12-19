@@ -14,20 +14,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/launch_match_submit_activity_text"
-        android:id="@+id/button"
         android:onClick="LaunchMatchSubmitActivity" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/launch_view_match_report_text"
-        android:id="@+id/button2"
         android:onClick="LaunchReportListActivity" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/launch_view_individual_report_activity"
-        android:id="@+id/button3"
         android:onClick="LaunchIndividualReportActivity" />
 </LinearLayout>

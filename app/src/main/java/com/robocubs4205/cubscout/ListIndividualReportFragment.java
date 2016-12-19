@@ -1,8 +1,8 @@
 package com.robocubs4205.cubscout;
 
-import android.content.Context;
-import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@SuppressLint("all")
 public class ListIndividualReportFragment extends Fragment {
 
     public ListIndividualReportFragment() {

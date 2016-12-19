@@ -7,10 +7,6 @@ import android.view.View;
 
 import com.robocubs4205.cubscout.JSONSerializableInputFragment;
 
-/**
- * Created by trevor on 10/26/16.
- */
-
 abstract class ScorecardDesignerFragment extends Fragment  implements JSONSerializableInputFragment {
     private ScorecardDesignerFragmentListener listener;
 

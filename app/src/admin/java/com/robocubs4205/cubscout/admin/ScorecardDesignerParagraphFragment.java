@@ -11,10 +11,6 @@ import com.robocubs4205.cubscout.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by trevor on 11/17/16.
- */
-
 public class ScorecardDesignerParagraphFragment extends ScorecardDesignerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -26,6 +22,7 @@ public class ScorecardDesignerParagraphFragment extends ScorecardDesignerFragmen
         view.findViewById(R.id.down_button).setOnClickListener(new DownButtonOnClickListener());
         return view;
     }
+    @SuppressWarnings("ConstantConditions")
     @Override
     public JSONObject serialize() throws JSONException {
         EditText titleText = (EditText)getView().findViewById(R.id.score_paragraph_field);

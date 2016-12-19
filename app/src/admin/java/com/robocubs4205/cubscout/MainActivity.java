@@ -7,31 +7,31 @@ import android.view.View;
 
 import com.robocubs4205.cubscout.admin.ScorecardDesignActivity;
 
-/**
- * Created by trevor on 10/3/16.
- */
-
 public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+    @SuppressWarnings("UnusedParameters")
     public void LaunchMatchSubmitActivity(View view)
     {
         Intent intent = new Intent(this,MatchSubmitActivity.class);
         startActivity(intent);
     }
+    @SuppressWarnings("UnusedParameters")
     public void LaunchIndividualReportActivity(View view)
     {
         Intent intent = new Intent(this,IndividualReportActivity.class);
         startActivity(intent);
     }
+    @SuppressWarnings("UnusedParameters")
     public void LaunchReportListActivity(View view)
     {
         Intent intent = new Intent(this,ReportListActivity.class);
         startActivity(intent);
     }
+    @SuppressWarnings("UnusedParameters")
     public void LaunchGameDesignActivity(View view)
     {
         Intent intent = new Intent(this,ScorecardDesignActivity.class);

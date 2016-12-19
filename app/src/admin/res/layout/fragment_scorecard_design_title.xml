@@ -22,13 +22,13 @@
         android:text="@string/score_title_label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView21"
         android:layout_column="1"
         android:layout_columnWeight="1"
         android:layout_row="0"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        tools:ignore="UnusedAttribute" />
+        tools:ignore="UnusedAttribute"
+        android:labelFor="@+id/score_title_field"/>
 
     <Button
         android:layout_width="wrap_content"

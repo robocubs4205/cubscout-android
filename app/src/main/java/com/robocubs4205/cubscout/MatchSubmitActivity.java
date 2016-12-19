@@ -41,20 +41,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-import static com.robocubs4205.cubscout.Scorecard.ScorecardSection;
-import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection;
-import static com.robocubs4205.cubscout.Scorecard.ScorecardTitleSection;
-import static com.robocubs4205.cubscout.Scorecard.ScorecardParagraphSection;
-import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.*;
-import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.*;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.COUNT;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.RATING;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.CHECKED;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.UNCHECKED;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardParagraphSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardTitleSection;
 
 public class MatchSubmitActivity extends Activity {
     //private List<Scorecard> scorecards = new ArrayList<>();
     //private List<ScorecardSectionAdapter.Data> scorecardSectionAdapterData = new ArrayList<>();
     private List<ScorecardData> scorecardData = new ArrayList<>();
     private boolean isShowingNoGameMessage = false;
+    @SuppressWarnings("FieldCanBeLocal")
     private RecyclerView scorecardView;
     private ScorecardSectionAdapter scorecardSectionAdapter;
     private StateFragment stateFragment;
@@ -130,91 +133,7 @@ public class MatchSubmitActivity extends Activity {
                     JSONArray games = result.getJSONArray("games");
                     if (errors.length() == 0) {
                         Log.d("MatchSubmitActivity", "games found: " + games.length());
-                        for (int i = 0; i < games.length(); i++) {
-                            JSONObject gameJSON = games.getJSONObject(i);
-                            Scorecard scorecard = new Scorecard();
-                            scorecard.id = gameJSON.getInt("id");
-                            scorecard.year = gameJSON.getInt("game_year");
-                            scorecard.type = gameJSON.getString("game_type");
-                            scorecard.name = gameJSON.getString("game_name");
-                            scorecard.sections = new ArrayList<>();
-                            JSONArray sections = gameJSON.getJSONArray("sections");
-                            for (int j = 0; j < sections.length(); j++) {
-                                JSONObject sectionJSON = sections.getJSONObject(j);
-                                String sectionType = sectionJSON.getString("section_type");
-                                switch (sectionType) {
-                                    case "field":
-                                        Boolean isNullable = sectionJSON.getBoolean("is_nullable");
-                                        if (isNullable) {
-                                            ScorecardNullableFieldSection section = new ScorecardNullableFieldSection();
-                                            section.id = sectionJSON.getInt("id");
-                                            section.index = sectionJSON.getInt("index");
-                                            section.name = sectionJSON.getString("field_name");
-                                            String fieldType = sectionJSON.getString("type");
-                                            switch (fieldType) {
-                                                case "Count":
-                                                    section.type = COUNT;
-                                                    break;
-                                                case "Rating":
-                                                    section.type = RATING;
-                                                    break;
-                                                default:
-                                                    throw new IllegalStateException("Scorecard field section has illegal value \"" + fieldType + "\" for \"type\"");
-                                            }
-                                            section.isNullable = isNullable;
-                                            String nullWhen = sectionJSON.getString("null_when");
-                                            switch (nullWhen) {
-                                                case "Checked":
-                                                    section.nullWhen = CHECKED;
-                                                    break;
-                                                case "Unchecked":
-                                                    section.nullWhen = UNCHECKED;
-                                                    break;
-                                                default:
-                                                    throw new IllegalStateException("Scorecard field section has illegal value \"" + nullWhen + "\" for \"null_when\"");
-                                            }
-                                            section.checkBoxMessage = sectionJSON.getString("checkbox_message");
-                                            scorecard.sections.add(section);
-                                        } else {
-                                            ScorecardFieldSection section = new ScorecardFieldSection();
-                                            section.id = sectionJSON.getInt("id");
-                                            section.index = sectionJSON.getInt("index");
-                                            section.name = sectionJSON.getString("field_name");
-                                            String fieldType = sectionJSON.getString("type");
-                                            switch (fieldType) {
-                                                case "Count":
-                                                    section.type = COUNT;
-                                                    break;
-                                                case "Rating":
-                                                    section.type = RATING;
-                                                    break;
-                                                default:
-                                                    throw new IllegalStateException("Scorecard field section has illegal value \"" + fieldType + "\" for \"type\"");
-                                            }
-                                            section.isNullable = isNullable;
-                                            scorecard.sections.add(section);
-                                        }
-                                        break;
-                                    case "title": {
-                                        ScorecardTitleSection section = new ScorecardTitleSection();
-                                        section.id = sectionJSON.getInt("id");
-                                        section.index = sectionJSON.getInt("index");
-                                        section.title = sectionJSON.getString("title");
-                                        scorecard.sections.add(section);
-                                        break;
-                                    }
-                                    case "paragraph": {
-                                        ScorecardParagraphSection section = new ScorecardParagraphSection();
-                                        section.id = sectionJSON.getInt("id");
-                                        section.index = sectionJSON.getInt("index");
-                                        section.paragraph = sectionJSON.getString("paragraph");
-                                        scorecard.sections.add(section);
-                                        break;
-                                    }
-                                }
-                            }
-                            scorecardData.add(new ScorecardData(scorecard, new ArrayList<ScorecardSectionAdapter.Data>()));
-                        }
+                        ParseJSONGames(games);
                         return true;
                     } else {
                         for (int i = 0; i < errors.length(); i++) {
@@ -227,6 +146,104 @@ public class MatchSubmitActivity extends Activity {
                 Log.e("MatchSubmitActivity", "exception while retrieving games", e);
             }
             return false;
+        }
+
+        private void ParseJSONGames(JSONArray games) throws JSONException {
+            for (int i = 0; i < games.length(); i++) {
+                JSONObject gameJSON = games.getJSONObject(i);
+                Scorecard scorecard = new Scorecard();
+                scorecard.id = gameJSON.getInt("id");
+                scorecard.year = gameJSON.getInt("game_year");
+                scorecard.type = gameJSON.getString("game_type");
+                scorecard.name = gameJSON.getString("game_name");
+                scorecard.sections = new ArrayList<>();
+                JSONArray sections = gameJSON.getJSONArray("sections");
+                scorecard.sections = ParseJSONScorecardSections(sections);
+                scorecardData.add(new ScorecardData(scorecard, new ArrayList<ScorecardSectionAdapter.Data>()));
+            }
+        }
+
+        private List<ScorecardSection> ParseJSONScorecardSections(JSONArray sections) throws JSONException {
+            List<ScorecardSection> result = new ArrayList<>();
+            for (int j = 0; j < sections.length(); j++) {
+                JSONObject sectionJSON = sections.getJSONObject(j);
+                String sectionType = sectionJSON.getString("section_type");
+                switch (sectionType) {
+                    case "field":
+                        result.add(ParseJSONFieldSection(sectionJSON));
+                        break;
+                    case "title": {
+                        ScorecardTitleSection section = new ScorecardTitleSection();
+                        section.id = sectionJSON.getInt("id");
+                        section.index = sectionJSON.getInt("index");
+                        section.title = sectionJSON.getString("title");
+                        result.add(section);
+                        break;
+                    }
+                    case "paragraph": {
+                        ScorecardParagraphSection section = new ScorecardParagraphSection();
+                        section.id = sectionJSON.getInt("id");
+                        section.index = sectionJSON.getInt("index");
+                        section.paragraph = sectionJSON.getString("paragraph");
+                        result.add(section);
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        private ScorecardFieldSection ParseJSONFieldSection(JSONObject sectionJSON) throws JSONException {
+            Boolean isNullable = sectionJSON.getBoolean("is_nullable");
+            if (isNullable) {
+                ScorecardNullableFieldSection section = new ScorecardNullableFieldSection();
+                section.id = sectionJSON.getInt("id");
+                section.index = sectionJSON.getInt("index");
+                section.name = sectionJSON.getString("field_name");
+                String fieldType = sectionJSON.getString("type");
+                switch (fieldType) {
+                    case "Count":
+                        section.type = COUNT;
+                        break;
+                    case "Rating":
+                        section.type = RATING;
+                        break;
+                    default:
+                        throw new IllegalStateException("Scorecard field section has illegal value \"" + fieldType + "\" for \"type\"");
+                }
+                section.isNullable = isNullable;
+                String nullWhen = sectionJSON.getString("null_when");
+                switch (nullWhen) {
+                    case "Checked":
+                        section.nullWhen = CHECKED;
+                        break;
+                    case "Unchecked":
+                        section.nullWhen = UNCHECKED;
+                        break;
+                    default:
+                        throw new IllegalStateException("Scorecard field section has illegal value \"" + nullWhen + "\" for \"null_when\"");
+                }
+                section.checkBoxMessage = sectionJSON.getString("checkbox_message");
+                return section;
+            } else {
+                ScorecardFieldSection section = new ScorecardFieldSection();
+                section.id = sectionJSON.getInt("id");
+                section.index = sectionJSON.getInt("index");
+                section.name = sectionJSON.getString("field_name");
+                String fieldType = sectionJSON.getString("type");
+                switch (fieldType) {
+                    case "Count":
+                        section.type = COUNT;
+                        break;
+                    case "Rating":
+                        section.type = RATING;
+                        break;
+                    default:
+                        throw new IllegalStateException("Scorecard field section has illegal value \"" + fieldType + "\" for \"type\"");
+                }
+                section.isNullable = isNullable;
+                return section;
+            }
         }
     }
 
@@ -302,6 +319,7 @@ public class MatchSubmitActivity extends Activity {
                 convertView = LayoutInflater.from(this.getContext()).inflate(R.layout.item_scorecard, parent, false);
             }
             TextView textView = (TextView) convertView.getRootView();
+            @SuppressWarnings("ConstantConditions")
             Scorecard scorecard = getItem(position).mScorecard;
             //TODO: year localization
             textView.setText(scorecard.name + " (" + scorecard.year + ")");
@@ -317,7 +335,7 @@ public class MatchSubmitActivity extends Activity {
 
     private static class ScorecardSectionAdapter extends RecyclerView.Adapter<ScorecardSectionAdapter.ScoreCardSectionViewHolder> {
         private List<Data> mData;
-        private Context mContext;
+        private final Context mContext;
 
 
         public ScorecardSectionAdapter(Context context, List<Data> scorecardSections) {
@@ -363,7 +381,8 @@ public class MatchSubmitActivity extends Activity {
             private static final int TYPE_TITLE_SECTION = 4;
             private static final int TYPE_PARAGRAPH_SECTION = 5;
 
-            protected ScorecardSectionAdapter mScorecardSectionAdapter;
+            @SuppressWarnings("unused")
+            protected final ScorecardSectionAdapter mScorecardSectionAdapter;
             protected ScorecardSectionDataHolder mDataHolder;
 
             private static int getSectionViewType(ScorecardSection section) {
@@ -393,18 +412,6 @@ public class MatchSubmitActivity extends Activity {
                     return TYPE_TITLE_SECTION;
                 } else {
                     throw new NotImplementedException("ScorecardSection in ScorecardSectionAdapter is not an instance of ScorecardFieldSection, ScorecardParagraphSection, or ScorecardTitleSection");
-                }
-            }
-
-            private static class ScoreCardSectionViewHolderTemp extends ScoreCardSectionViewHolder {
-
-                protected ScoreCardSectionViewHolderTemp(View itemView, ScorecardSectionAdapter scoreCardSectionViewHolder) {
-                    super(itemView, scoreCardSectionViewHolder);
-                }
-
-                @Override
-                public void initFromScorecardSection(@NonNull ScorecardSection section) {
-
                 }
             }
 
@@ -453,7 +460,7 @@ public class MatchSubmitActivity extends Activity {
             }
         }
         static class ScorecardFieldSectionViewHolder extends ScoreCardSectionViewHolder {
-            protected FieldViewSection viewSection;
+            protected final FieldViewSection viewSection;
 
             public ScorecardFieldSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter, FieldViewSection viewSection) {
                 super(itemView, scorecardSectionAdapter);
@@ -487,8 +494,8 @@ public class MatchSubmitActivity extends Activity {
             }
         }
         static class ScorecardNullableFieldSectionViewHolder extends ScorecardFieldSectionViewHolder {
-            private View fieldContainer;
-            private CheckBox checkbox;
+            private final View fieldContainer;
+            private final CheckBox checkbox;
             private NullWhen nullWhen;
 
             private void setFieldContainerVisibility(boolean isChecked) {
@@ -547,6 +554,7 @@ public class MatchSubmitActivity extends Activity {
             public static class MyScorecardSectionDataHolder extends ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder {
                 public boolean mChecked;
 
+                @SuppressWarnings("SameParameterValue")
                 public MyScorecardSectionDataHolder(int score, boolean checked) {
                     super(score);
                     mChecked = checked;
@@ -554,7 +562,7 @@ public class MatchSubmitActivity extends Activity {
             }
         }
         static class ScorecardTitleSectionViewHolder extends ScoreCardSectionViewHolder {
-            TextView titleView;
+            final TextView titleView;
 
             protected ScorecardTitleSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter) {
                 super(itemView, scorecardSectionAdapter);
@@ -568,7 +576,7 @@ public class MatchSubmitActivity extends Activity {
             }
         }
         static class ScorecardParagraphSectionViewHolder extends ScoreCardSectionViewHolder {
-            TextView paragraphView;
+            final TextView paragraphView;
 
             protected ScorecardParagraphSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter) {
                 super(itemView, scorecardSectionAdapter);
@@ -583,7 +591,9 @@ public class MatchSubmitActivity extends Activity {
         }
 
         static abstract class FieldViewSection {
-            protected ScorecardSectionAdapter mScorecardSectionAdapter;
+            @SuppressWarnings("unused")
+            protected final ScorecardSectionAdapter mScorecardSectionAdapter;
+            @SuppressWarnings("unused")
             protected ScorecardFieldSectionViewHolder mViewHolder;
             protected ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder mDataHolder;
 
@@ -602,8 +612,8 @@ public class MatchSubmitActivity extends Activity {
             }
         }
         static class CountFieldViewSection extends FieldViewSection {
-            private EditText fieldSectionValue;
-            private TextView fieldSectionLabel;
+            private final EditText fieldSectionValue;
+            private final TextView fieldSectionLabel;
 
             public CountFieldViewSection(ScorecardSectionAdapter scorecardSectionAdapter, View view) {
                 super(scorecardSectionAdapter);
@@ -652,8 +662,8 @@ public class MatchSubmitActivity extends Activity {
             }
         }
         static class RatingFieldViewSection extends FieldViewSection {
-            private RatingBar fieldSectionValue;
-            private TextView fieldSectionLabel;
+            private final RatingBar fieldSectionValue;
+            private final TextView fieldSectionLabel;
 
             public RatingFieldViewSection(ScorecardSectionAdapter scorecardSectionAdapter, View view) {
                 super(scorecardSectionAdapter);
@@ -684,7 +694,7 @@ public class MatchSubmitActivity extends Activity {
         }
         public static class Data {
             public ScorecardSectionDataHolder scorecardSectionDataHolder;
-            public ScorecardSection scorecardSection;
+            public final ScorecardSection scorecardSection;
 
             public static List<Data> makeListFromScorecard(Scorecard scorecard) {
                 List<Data> output = new ArrayList<>();
@@ -698,6 +708,7 @@ public class MatchSubmitActivity extends Activity {
                 this(section, null);
             }
 
+            @SuppressWarnings("SameParameterValue")
             public Data(ScorecardSection section, ScorecardSectionDataHolder dataHolder) {
                 scorecardSection = section;
                 scorecardSectionDataHolder = dataHolder;
@@ -706,8 +717,8 @@ public class MatchSubmitActivity extends Activity {
     }
 
     private static class ScorecardData {
-        List<ScorecardSectionAdapter.Data> mAdapterData;
-        Scorecard mScorecard;
+        final List<ScorecardSectionAdapter.Data> mAdapterData;
+        final Scorecard mScorecard;
 
         public ScorecardData(Scorecard scorecard, List<ScorecardSectionAdapter.Data> adapterData) {
             mScorecard = scorecard;

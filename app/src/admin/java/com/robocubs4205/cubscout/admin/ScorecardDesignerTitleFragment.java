@@ -1,7 +1,6 @@
 package com.robocubs4205.cubscout.admin;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +10,6 @@ import com.robocubs4205.cubscout.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-/**
- * Created by trevor on 10/26/16.
- */
 
 public class ScorecardDesignerTitleFragment extends ScorecardDesignerFragment {
     @Override
@@ -27,6 +22,7 @@ public class ScorecardDesignerTitleFragment extends ScorecardDesignerFragment {
         view.findViewById(R.id.down_button).setOnClickListener(new DownButtonOnClickListener());
         return view;
     }
+    @SuppressWarnings("ConstantConditions")
     @Override
     public JSONObject serialize() throws JSONException {
         EditText titleText = (EditText)getView().findViewById(R.id.score_title_field);

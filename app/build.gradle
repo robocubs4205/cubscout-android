@@ -4,11 +4,11 @@ android {
     signingConfigs {
     }
     compileSdkVersion 25
-    buildToolsVersion "24.0.1"
+    buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "com.robocubs4205.cubscout"
         minSdkVersion 17
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }

@@ -11,10 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -29,8 +29,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class ReportListActivity extends Activity {
 
-    private List<ListIndividualReportFragment> reports = new ArrayList<>();
+    private final List<ListIndividualReportFragment> reports = new ArrayList<>();
 
+    @SuppressWarnings("UnusedParameters")
     public void onSortButtonClick(View view)
     {
         new GetResultTask().execute();
@@ -166,9 +167,9 @@ public class ReportListActivity extends Activity {
     }
     private class TaskResult
     {
-        Boolean isServerReachable;
-        String errorString;
-        List<RobotData> robotDatas;
+        final Boolean isServerReachable;
+        final String errorString;
+        final List<RobotData> robotDatas;
         TaskResult(Boolean isServerReachable, List<RobotData> robotDatas, String errorString)
         {
             this.isServerReachable = isServerReachable;

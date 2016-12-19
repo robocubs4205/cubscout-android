@@ -43,16 +43,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 
-/**
- * Created by trevor on 10/24/16.
- */
-
 public class ScorecardDesignActivity extends Activity implements ScorecardDesignerFragmentListener {
 
     private final List<ScorecardDesignerFragment> scoredKeys = new ArrayList<>();
     private LinearLayout entries;
 
-    ArrayList<Integer> gameYears = new ArrayList<>();
+    private final ArrayList<Integer> gameYears = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +106,7 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
             entries.addView(fragment.getView(),currentIndex+1);
         }
     }
+    @SuppressWarnings("UnusedParameters")
     public void onSubmitButtonClick(View view)
     {
         try {
@@ -174,6 +171,7 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
             try {
                 URL url = new URL("https://"+getResources().getString(R.string.scout_server_url)+"/enter_game_design");
 
+                @SuppressWarnings("UnusedAssignment")
                 boolean redirect = false;
 
                 do {
@@ -186,7 +184,15 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
                         cert = cf.generateCertificate(certStream);
                         System.out.println("ca=" + ((X509Certificate) cert).getSubjectDN());
                     } finally {
-                        certStream.close();
+                        try
+                        {
+                            certStream.close();
+                        }
+                        catch (IOException e)
+                        {
+                            Log.e("UploadScorecard","Unable to close InputStream for server certificate");
+                        }
+
                     }
 
                     KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
