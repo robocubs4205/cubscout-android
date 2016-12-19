@@ -5,10 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.robocubs4205.cubscout.IndividualReportActivity;
-import com.robocubs4205.cubscout.MatchSubmitActivity;
-import com.robocubs4205.cubscout.R;
-import com.robocubs4205.cubscout.ReportListActivity;
 import com.robocubs4205.cubscout.admin.ScorecardDesignActivity;
 
 /**
