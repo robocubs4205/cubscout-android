@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/value_label"
+        android:layout_alignBaseline="@+id/value"
+        tools:ignore="HardcodedText,RtlHardcoded"
+        android:layout_toLeftOf="@+id/value"
+        android:layout_alignParentLeft="true"
+        android:labelFor="@+id/value" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@id/value"
+        android:layout_toLeftOf="@+id/up_button"
+        android:layout_alignBottom="@+id/up_button"
+        tools:ignore="HardcodedText,RtlHardcoded" />
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:id="@+id/up_button"
+        android:background="@android:drawable/arrow_up_float"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:id="@+id/down_button"
+        android:background="@android:drawable/arrow_down_float"
+        android:layout_below="@+id/up_button"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

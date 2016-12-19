@@ -52,6 +52,8 @@
     <string name="launch_create_new_game_activity_text">Enter a game design</string>
     <string name="checkbox_message_field_label_text">Message by null checkbox</string>
     <string name="scout_server_url">http://data.robocubs4205.com</string>
+    <string name="select_game_spinner_label_text">Select Game</string>
+    <string name="select_game_type_label_text">Game type</string>
 
     <string-array name="defense_ratings">
         <item>1</item>

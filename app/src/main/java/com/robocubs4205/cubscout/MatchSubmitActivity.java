@@ -1,434 +1,735 @@
 package com.robocubs4205.cubscout;
 
 import android.app.Activity;
-import android.net.Uri;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.Contract;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.UnknownHostException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardTitleSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardParagraphSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.*;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.*;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen;
 
 public class MatchSubmitActivity extends Activity {
+    //private List<Scorecard> scorecards = new ArrayList<>();
+    //private List<ScorecardSectionAdapter.Data> scorecardSectionAdapterData = new ArrayList<>();
+    private List<ScorecardData> scorecardData = new ArrayList<>();
+    private boolean isShowingNoGameMessage = false;
+    private RecyclerView scorecardView;
+    private ScorecardSectionAdapter scorecardSectionAdapter;
+    private StateFragment stateFragment;
+    private int currentGamePosition = -1;
+    private int currentGameTypePosition = -1;
+    private int oldGameTypePosition = -2;
 
-    private DefenseRatingFragment defense_fragment = new DefenseRatingFragment();
+    private AsyncGetGames task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_submit);
-        getFragmentManager().beginTransaction().add(R.id.defense_spinner_frame, defense_fragment).commit();
-        getFragmentManager().beginTransaction().hide(defense_fragment).commit();
+
+        FragmentManager manager = getFragmentManager();
+        stateFragment = (StateFragment) manager.findFragmentByTag("data");
+        if (stateFragment == null) {
+            stateFragment = new StateFragment();
+            manager.beginTransaction().add(stateFragment, "data").commit();
+            task = new AsyncGetGames();
+            task.execute();
+        } else {
+            scorecardData = stateFragment.getScorecardData();
+        }
+        Spinner gameTypeSpinner = (Spinner) findViewById(R.id.select_game_type_spinner);
+        ArrayAdapter<CharSequence> gameTypeSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.game_types, android.R.layout.simple_spinner_item);
+        gameTypeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        gameTypeSpinner.setAdapter(gameTypeSpinnerAdapter);
+
+        gameTypeSpinner.setOnItemSelectedListener(new GameTypeSpinnerItemSelectedListener());
+        scorecardView = (RecyclerView) findViewById(R.id.scorecard);
+        if (savedInstanceState != null) {
+            currentGamePosition = savedInstanceState.getInt("currentGamePosition", -1);
+            currentGameTypePosition = savedInstanceState.getInt("currentGameTypePosition", -1);
+            oldGameTypePosition = savedInstanceState.getInt("oldGameTypePosition", -2);
+        }
+        if (scorecardSectionAdapter == null) {
+            scorecardSectionAdapter = new ScorecardSectionAdapter(this, new ArrayList<ScorecardSectionAdapter.Data>());
+        }
+        scorecardView.setAdapter(scorecardSectionAdapter);
+        scorecardView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-        if (savedInstanceState.getBoolean("didDefense")) {
-            ((CheckBox) findViewById(R.id.did_defense_checkbox)).setChecked(true);
-            getFragmentManager().beginTransaction().show(defense_fragment).commit();
-        }
-
-        ((EditText)findViewById(R.id.high_goal_made_input_field)).setText(savedInstanceState.getString("highGoalsMade"));
-        ((EditText)findViewById(R.id.high_goal_miss_input_field)).setText(savedInstanceState.getString("highGoalsMissed"));
-        ((EditText)findViewById(R.id.low_goal_made_input_field)).setText(savedInstanceState.getString("lowGoalsMade"));
-        ((EditText)findViewById(R.id.low_goal_miss_input_field)).setText(savedInstanceState.getString("lowGoalsMissed"));
-
-        ((EditText)findViewById(R.id.portcullis_crossing_input_field)).setText(savedInstanceState.getString("Portcullis"));
-        ((EditText)findViewById(R.id.cheval_crossing_input_field)).setText(savedInstanceState.getString("Cheval"));
-        ((EditText)findViewById(R.id.moat_crossing_input_field)).setText(savedInstanceState.getString("Moat"));
-        ((EditText)findViewById(R.id.rampart_crossing_input_field)).setText(savedInstanceState.getString("Ramparts"));
-        ((EditText)findViewById(R.id.drawbridge_crossing_input_field)).setText(savedInstanceState.getString("Drawbridge"));
-        ((EditText)findViewById(R.id.sally_port_crossing_input_field)).setText(savedInstanceState.getString("SallyPort"));
-        ((EditText)findViewById(R.id.rough_terrain_crossing_input_field)).setText(savedInstanceState.getString("RoughTerrain"));
-        ((EditText)findViewById(R.id.rock_wall_crossing_input_field)).setText(savedInstanceState.getString("RockWall"));
-        ((EditText)findViewById(R.id.low_bar_crossing_input_field)).setText(savedInstanceState.getString("LowBar"));
-
-        ((Spinner)findViewById(R.id.defense_rating_spinner)).setSelection(savedInstanceState.getInt("Defense"));
+    public void onDestroy() {
+        super.onDestroy();
+        stateFragment.setScorecardData(scorecardData);
     }
 
-    //must not call super.onSaveInstanceState to prevent
-    //fragments from being duplicated on activity recreation
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-
-        outState.putBoolean("didDefense", ((CheckBox) findViewById(R.id.did_defense_checkbox)).isChecked());
-
-        outState.putString("highGoalsMade",((EditText)findViewById(R.id.high_goal_made_input_field)).getText().toString());
-        outState.putString("highGoalsMissed",((EditText)findViewById(R.id.high_goal_miss_input_field)).getText().toString());
-        outState.putString("lowGoalsMade",((EditText)findViewById(R.id.low_goal_made_input_field)).getText().toString());
-        outState.putString("lowGoalsMissed",((EditText)findViewById(R.id.low_goal_miss_input_field)).getText().toString());
-
-        outState.putString("Portcullis",((EditText)findViewById(R.id.portcullis_crossing_input_field)).getText().toString());
-        outState.putString("Cheval",((EditText)findViewById(R.id.cheval_crossing_input_field)).getText().toString());
-        outState.putString("Moat",((EditText)findViewById(R.id.moat_crossing_input_field)).getText().toString());
-        outState.putString("Ramparts",((EditText)findViewById(R.id.rampart_crossing_input_field)).getText().toString());
-        outState.putString("Drawbridge",((EditText)findViewById(R.id.drawbridge_crossing_input_field)).getText().toString());
-        outState.putString("SallyPort",((EditText)findViewById(R.id.sally_port_crossing_input_field)).getText().toString());
-        outState.putString("RoughTerrain",((EditText)findViewById(R.id.rough_terrain_crossing_input_field)).getText().toString());
-        outState.putString("RockWall",((EditText)findViewById(R.id.rock_wall_crossing_input_field)).getText().toString());
-        outState.putString("LowBar",((EditText)findViewById(R.id.low_bar_crossing_input_field)).getText().toString());
-
-        outState.putInt("Defense",((Spinner)findViewById(R.id.defense_rating_spinner)).getSelectedItemPosition());
-
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("currentGamePosition", currentGamePosition);
+        savedInstanceState.putInt("currentGameTypePosition", currentGameTypePosition);
+        savedInstanceState.putInt("oldGameTypePosition", oldGameTypePosition);
     }
 
-    public void onIncrementHighGoalMade(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.high_goal_made_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
+    private class AsyncGetGames extends AsyncTask<Void, Void, Boolean> {
 
-    public void onDecrementHighGoalMade(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.high_goal_made_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementHighGoalMiss(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.high_goal_miss_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementHighGoalMiss(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.high_goal_miss_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementLowGoalMade(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.low_goal_made_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementLowGoalMade(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.low_goal_made_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementLowGoalMiss(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.low_goal_miss_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementLowGoalMiss(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.low_goal_miss_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementPortcullis(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.portcullis_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementPortcullis(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.portcullis_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementCheval(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.cheval_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementCheval(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.cheval_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementMoat(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.moat_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementMoat(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.moat_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementRamparts(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.rampart_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementRamparts(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.rampart_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementDrawbridge(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.drawbridge_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementDrawbridge(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.drawbridge_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementSallyPort(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.sally_port_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementSallyPort(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.sally_port_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementRoughTerrain(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.rough_terrain_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementRoughTerrain(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.rough_terrain_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementRockWall(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.rock_wall_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementRockWall(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.rock_wall_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onIncrementLowBar(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.low_bar_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) + 1;
-        highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDecrementLowBar(View view) {
-        EditText highGoalMadeText = (EditText) findViewById(R.id.low_bar_crossing_input_field);
-        Integer nextNumber = Integer.parseInt(highGoalMadeText.getText().toString()) - 1;
-        if (nextNumber >= 0)
-            highGoalMadeText.setText(nextNumber.toString());
-    }
-
-    public void onDidDefenseChecked(View view)
-    {
-        if(((CheckBox)view).isChecked())
-        {
-            getFragmentManager().beginTransaction().show(defense_fragment).commit();
-        }
-        else
-        {
-           getFragmentManager().beginTransaction().hide(defense_fragment).commit();
-        }
-    }
-
-    public void onSubmitButtonClick(View view)
-    {
-        MatchData data = new MatchData();
-        if(((EditText)findViewById(R.id.team_number_input_field)).getText().toString().isEmpty())
-        {
-            Toast.makeText(getApplicationContext(),"Please enter a team number",Toast.LENGTH_LONG).show();
-            return;
-        }
-        if(((EditText)findViewById(R.id.match_number_input_field)).getText().toString().isEmpty())
-        {
-            Toast.makeText(getApplicationContext(),"Please enter current the match number",Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        try {
-            data.teamNumber = Integer.parseInt(((EditText)findViewById(R.id.team_number_input_field)).getText().toString());
-            data.matchNumber = Integer.parseInt(((EditText)findViewById(R.id.match_number_input_field)).getText().toString());
-
-            data.highGoal = Integer.parseInt(((EditText)findViewById(R.id.high_goal_made_input_field)).getText().toString());
-            data.highMiss = Integer.parseInt(((EditText)findViewById(R.id.high_goal_miss_input_field)).getText().toString());
-            data.lowGoal = Integer.parseInt(((EditText)findViewById(R.id.low_goal_made_input_field)).getText().toString());
-            data.lowMiss = Integer.parseInt(((EditText)findViewById(R.id.low_goal_miss_input_field)).getText().toString());
-
-            data.portcullis = Integer.parseInt(((EditText)findViewById(R.id.portcullis_crossing_input_field)).getText().toString());
-            data.cheval = Integer.parseInt(((EditText)findViewById(R.id.cheval_crossing_input_field)).getText().toString());
-            data.moat = Integer.parseInt(((EditText)findViewById(R.id.moat_crossing_input_field)).getText().toString());
-            data.rampart = Integer.parseInt(((EditText)findViewById(R.id.rampart_crossing_input_field)).getText().toString());
-            data.drawBridge = Integer.parseInt(((EditText)findViewById(R.id.drawbridge_crossing_input_field)).getText().toString());
-            data.sallyPort = Integer.parseInt(((EditText)findViewById(R.id.sally_port_crossing_input_field)).getText().toString());
-            data.roughTerrain = Integer.parseInt(((EditText)findViewById(R.id.rough_terrain_crossing_input_field)).getText().toString());
-            data.rockWall = Integer.parseInt(((EditText)findViewById(R.id.rock_wall_crossing_input_field)).getText().toString());
-            data.lowBar = Integer.parseInt(((EditText)findViewById(R.id.low_bar_crossing_input_field)).getText().toString());
-
-            data.defense = ((Spinner)defense_fragment.getView().findViewById(R.id.defense_rating_spinner)).getSelectedItemPosition()+1;
-            data.didDefense = ((CheckBox)findViewById(R.id.did_defense_checkbox)).isChecked();
-        } catch (NumberFormatException e) {
-            Log.e("bob","error",e);
-            Toast.makeText(getApplicationContext(),"One or more fields are blank or do not contain numbers. Please make sure all fields have numbers. if you do not know what number to put, guess.",Toast.LENGTH_LONG).show();
-        }
-
-        new SubmitMatchTask().execute(data);
-    }
-    private class SubmitMatchTask extends AsyncTask<MatchData,Void,TaskResult>
-    {
         @Override
-        protected TaskResult doInBackground(MatchData... matchData)
-        {
-            for(MatchData data : matchData)
-            {
-                try
-                {
-                    Uri.Builder uri = new Uri.Builder();
-                    uri.scheme("http").authority("data.robocubs4205.com").appendPath("submit")
-                            .appendQueryParameter("robot", Integer.toString(data.teamNumber))
-                            .appendQueryParameter("match", Integer.toString(data.matchNumber))
-                            .appendQueryParameter("high", Integer.toString(data.highGoal))
-                            .appendQueryParameter("highMiss", Integer.toString(data.highMiss))
-                            .appendQueryParameter("low", Integer.toString(data.lowGoal))
-                            .appendQueryParameter("lowMiss", Integer.toString(data.lowMiss))
-                            .appendQueryParameter("portcullis", Integer.toString(data.portcullis))
-                            .appendQueryParameter("cheval", Integer.toString(data.cheval))
-                            .appendQueryParameter("ramparts", Integer.toString(data.rampart))
-                            .appendQueryParameter("drawbridge", Integer.toString(data.drawBridge))
-                            .appendQueryParameter("sallyPort", Integer.toString(data.sallyPort))
-                            .appendQueryParameter("rockWall", Integer.toString(data.rockWall))
-                            .appendQueryParameter("roughTerrain", Integer.toString(data.roughTerrain))
-                            .appendQueryParameter("lowBar", Integer.toString(data.lowBar))
-                            .appendQueryParameter("moat", Integer.toString(data.moat));
-                    if(data.didDefense)
-                    {
-                        uri.appendQueryParameter("defense", Integer.toString(data.defense));
-                    }
-                    else
-                    {
-                        uri.appendQueryParameter("defense", "");
-                    }
-                    uri.build();
-                    Log.d("bob","submission url: "+uri.toString());
-                    URL url = new URL(uri.toString());
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    Log.d("bob",Integer.toString(connection.getResponseCode()));
-                    if(connection.getResponseCode() != 200)
-                    {
-                        Log.e("bob","unable to reach server");
-                        return new TaskResult(false,false);
-                    }
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder = factory.newDocumentBuilder();
-                    Document doc = builder.parse(connection.getInputStream());
-                    NodeList errors = doc.getElementsByTagName("error");
-                    for (int i = 0; i < errors.getLength(); i++)
-                    {
-                        Log.e("bob",((Element)errors.item(i)).getAttribute("type")+" "+errors.item(i).getTextContent());
-                    }
-                    if(errors.getLength()==0)
-                        return new TaskResult(true,true);
-                    else if(errors.getLength()==1)
-                    {
-                        Toast.makeText(getApplicationContext(),"There was an error of the following type: "+((Element)errors.item(1)).getAttribute("type")+". Please try again later",Toast.LENGTH_LONG).show();
-                        return new TaskResult(true,false);
-                    }
-                    else
-                    {
-                        Toast.makeText(getApplicationContext(),"There were errors processing your request. Please try again later.",Toast.LENGTH_LONG).show();
-                        return new TaskResult(true,false);
+        protected Boolean doInBackground(Void... voids) {
+            Log.d("MatchSubmitActivity", "getting games");
+            try {
+                URL url = new URL("http://" + getResources().getString(R.string.scout_server_url) + "/get_games");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoOutput(true);
+                connection.setDoInput(true);
+                connection.setRequestProperty("Accept", "application/json");
+                int httpResult = connection.getResponseCode();
+                if (httpResult == HttpURLConnection.HTTP_OK) {
+                    JSONObject result = new JSONObject(IOUtils.toString(connection.getInputStream()));
+                    JSONArray errors = result.getJSONArray("errors");
+                    JSONArray games = result.getJSONArray("games");
+                    if (errors.length() == 0) {
+                        Log.d("MatchSubmitActivity", "games found: " + games.length());
+                        for (int i = 0; i < games.length(); i++) {
+                            JSONObject gameJSON = games.getJSONObject(i);
+                            Scorecard scorecard = new Scorecard();
+                            scorecard.id = gameJSON.getInt("id");
+                            scorecard.year = gameJSON.getInt("game_year");
+                            scorecard.type = gameJSON.getString("game_type");
+                            scorecard.name = gameJSON.getString("game_name");
+                            scorecard.sections = new ArrayList<>();
+                            JSONArray sections = gameJSON.getJSONArray("sections");
+                            for (int j = 0; j < sections.length(); j++) {
+                                JSONObject sectionJSON = sections.getJSONObject(j);
+                                String sectionType = sectionJSON.getString("section_type");
+                                switch (sectionType) {
+                                    case "field":
+                                        Boolean isNullable = sectionJSON.getBoolean("is_nullable");
+                                        if (isNullable) {
+                                            ScorecardNullableFieldSection section = new ScorecardNullableFieldSection();
+                                            section.id = sectionJSON.getInt("id");
+                                            section.index = sectionJSON.getInt("index");
+                                            section.name = sectionJSON.getString("field_name");
+                                            String fieldType = sectionJSON.getString("type");
+                                            switch (fieldType) {
+                                                case "Count":
+                                                    section.type = COUNT;
+                                                    break;
+                                                case "Rating":
+                                                    section.type = RATING;
+                                                    break;
+                                                default:
+                                                    throw new IllegalStateException("Scorecard field section has illegal value \"" + fieldType + "\" for \"type\"");
+                                            }
+                                            section.isNullable = isNullable;
+                                            String nullWhen = sectionJSON.getString("null_when");
+                                            switch (nullWhen) {
+                                                case "Checked":
+                                                    section.nullWhen = CHECKED;
+                                                    break;
+                                                case "Unchecked":
+                                                    section.nullWhen = UNCHECKED;
+                                                    break;
+                                                default:
+                                                    throw new IllegalStateException("Scorecard field section has illegal value \"" + nullWhen + "\" for \"null_when\"");
+                                            }
+                                            section.checkBoxMessage = sectionJSON.getString("checkbox_message");
+                                            scorecard.sections.add(section);
+                                        } else {
+                                            ScorecardFieldSection section = new ScorecardFieldSection();
+                                            section.id = sectionJSON.getInt("id");
+                                            section.index = sectionJSON.getInt("index");
+                                            section.name = sectionJSON.getString("field_name");
+                                            String fieldType = sectionJSON.getString("type");
+                                            switch (fieldType) {
+                                                case "Count":
+                                                    section.type = COUNT;
+                                                    break;
+                                                case "Rating":
+                                                    section.type = RATING;
+                                                    break;
+                                                default:
+                                                    throw new IllegalStateException("Scorecard field section has illegal value \"" + fieldType + "\" for \"type\"");
+                                            }
+                                            section.isNullable = isNullable;
+                                            scorecard.sections.add(section);
+                                        }
+                                        break;
+                                    case "title": {
+                                        ScorecardTitleSection section = new ScorecardTitleSection();
+                                        section.id = sectionJSON.getInt("id");
+                                        section.index = sectionJSON.getInt("index");
+                                        section.title = sectionJSON.getString("title");
+                                        scorecard.sections.add(section);
+                                        break;
+                                    }
+                                    case "paragraph": {
+                                        ScorecardParagraphSection section = new ScorecardParagraphSection();
+                                        section.id = sectionJSON.getInt("id");
+                                        section.index = sectionJSON.getInt("index");
+                                        section.paragraph = sectionJSON.getString("paragraph");
+                                        scorecard.sections.add(section);
+                                        break;
+                                    }
+                                }
+                            }
+                            scorecardData.add(new ScorecardData(scorecard, new ArrayList<ScorecardSectionAdapter.Data>()));
+                        }
+                        return true;
+                    } else {
+                        for (int i = 0; i < errors.length(); i++) {
+                            Log.e("MatchSubmitActivity", "error while submitting: " + errors.get(i).toString());
+                        }
+                        return false;
                     }
                 }
-                catch (UnknownHostException e)
-                {
-                    Log.e("bob","unable to reach server");
-                    return new TaskResult(false,false);
-                }
-                catch (Exception e)
-                {
-                    Log.e("bob","exception",e);
-                }
+            } catch (IOException | JSONException e) {
+                Log.e("MatchSubmitActivity", "exception while retrieving games", e);
             }
-            return new TaskResult(true,false);
+            return false;
+        }
+    }
+
+    private class GameTypeSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            try {
+                if (scorecardData.isEmpty() && task != null) {
+                    task.get();
+                } else if (scorecardData.isEmpty() && task == null) {
+                    task = new AsyncGetGames();
+                    task.execute();
+                    task.get();
+                }
+                String gameType = getResources().getStringArray(R.array.game_types)[position];
+                List<ScorecardData> games = new ArrayList<>();
+                for (ScorecardData innerScorecardData : scorecardData) {
+                    if (innerScorecardData.mScorecard.type.equals(gameType)) {
+                        games.add(innerScorecardData);
+                    }
+                }
+                if ((games.isEmpty() && !isShowingNoGameMessage) || (!games.isEmpty() && isShowingNoGameMessage)) {
+                    ((ViewSwitcher) findViewById(R.id.select_game_spinner_switcher)).showNext();
+                    isShowingNoGameMessage = !isShowingNoGameMessage;
+                } else {
+                    GameTypeSpinnerArrayAdapter selectGameSpinnerAdapter = new GameTypeSpinnerArrayAdapter(MatchSubmitActivity.this, games);
+                    selectGameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    Spinner gameSpinner = (Spinner) findViewById(R.id.select_game_spinner);
+                    gameSpinner.setAdapter(selectGameSpinnerAdapter);
+                    gameSpinner.setOnItemSelectedListener(new GameSpinnerItemSelectedListener());
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                Log.e("MatchSubmitActivity", "exception while retrieving games", e);
+            }
+            currentGameTypePosition = position;
         }
 
         @Override
-        protected void onPostExecute(TaskResult success) {
-            if(success.isSuccessful)
-            {
-                finish();
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    }
+
+    private class GameSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            ScorecardData innerScorecardData = (ScorecardData) parent.getItemAtPosition(position);
+            if (innerScorecardData.mAdapterData.size() == 0) {
+                innerScorecardData.mAdapterData.addAll(ScorecardSectionAdapter.Data.makeListFromScorecard(innerScorecardData.mScorecard));
             }
-            else if(!success.isServerReachable)
-            {
-                Toast.makeText(getApplicationContext(),"Unable to connect to server. Please check your internet connection.",Toast.LENGTH_LONG).show();
+            scorecardSectionAdapter.setData(innerScorecardData.mAdapterData);
+            scorecardSectionAdapter.notifyDataSetChanged();
+            currentGamePosition = position;
+            oldGameTypePosition = currentGameTypePosition;
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            scorecardSectionAdapter.setData(new ArrayList<ScorecardSectionAdapter.Data>());
+            scorecardSectionAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private static class GameTypeSpinnerArrayAdapter extends ArrayAdapter<ScorecardData> {
+        public GameTypeSpinnerArrayAdapter(Context context, List<ScorecardData> items) {
+            super(context, 0, items);
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(this.getContext()).inflate(R.layout.item_scorecard, parent, false);
+            }
+            TextView textView = (TextView) convertView.getRootView();
+            Scorecard scorecard = getItem(position).mScorecard;
+            //TODO: year localization
+            textView.setText(scorecard.name + " (" + scorecard.year + ")");
+            return convertView;
+        }
+
+        @NonNull
+        @Override
+        public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+            return getView(position, convertView, parent);
+        }
+    }
+
+    private static class ScorecardSectionAdapter extends RecyclerView.Adapter<ScorecardSectionAdapter.ScoreCardSectionViewHolder> {
+        private List<Data> mData;
+        private Context mContext;
+
+
+        public ScorecardSectionAdapter(Context context, List<Data> scorecardSections) {
+            mData = scorecardSections;
+            mContext = context;
+        }
+
+        public void setData(List<Data> data) {
+            mData = data;
+        }
+
+        @Override
+        public ScoreCardSectionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return ScoreCardSectionViewHolder.createInstance(this, mContext, parent, viewType);
+        }
+
+        @Override
+        public void onBindViewHolder(ScoreCardSectionViewHolder holder, int position) {
+            Data data = mData.get(position);
+            if (data.scorecardSectionDataHolder == null) {
+                data.scorecardSectionDataHolder = holder.getNewDataHolder();
+            }
+            holder.initFromScorecardSection(mData.get(position).scorecardSection);
+            holder.bindToDataHolder(data.scorecardSectionDataHolder);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mData.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            ScorecardSection section = mData.get(position).scorecardSection;
+            return ScoreCardSectionViewHolder.getSectionViewType(section);
+        }
+
+        static abstract class ScoreCardSectionViewHolder extends RecyclerView.ViewHolder {
+            private static final int TYPE_FIELD_COUNT_SECTION = 0;
+            private static final int TYPE_NULLABLE_FIELD_COUNT_SECTION = 1;
+            private static final int TYPE_FIELD_RATING_SECTION = 2;
+            private static final int TYPE_NULLABLE_FIELD_RATING_SECTION = 3;
+            private static final int TYPE_TITLE_SECTION = 4;
+            private static final int TYPE_PARAGRAPH_SECTION = 5;
+
+            protected ScorecardSectionAdapter mScorecardSectionAdapter;
+            protected ScorecardSectionDataHolder mDataHolder;
+
+            private static int getSectionViewType(ScorecardSection section) {
+                if (section instanceof ScorecardFieldSection) {
+                    if (section instanceof ScorecardNullableFieldSection) {
+                        ScorecardFieldSection scorecardFieldSection = (ScorecardFieldSection) section;
+                        if (scorecardFieldSection.type == COUNT) {
+                            return TYPE_NULLABLE_FIELD_COUNT_SECTION;
+                        } else if (scorecardFieldSection.type == RATING) {
+                            return TYPE_NULLABLE_FIELD_RATING_SECTION;
+                        } else {
+                            throw new NotImplementedException("ScorecardFieldSection in ScorecardSectionAdapter has unknown type " + scorecardFieldSection.type);
+                        }
+                    } else {
+                        ScorecardFieldSection scorecardFieldSection = (ScorecardFieldSection) section;
+                        if (scorecardFieldSection.type == COUNT) {
+                            return TYPE_FIELD_COUNT_SECTION;
+                        } else if (scorecardFieldSection.type == RATING) {
+                            return TYPE_FIELD_RATING_SECTION;
+                        } else {
+                            throw new NotImplementedException("ScorecardFieldSection in ScorecardSectionAdapter has unknown type " + scorecardFieldSection.type);
+                        }
+                    }
+                } else if (section instanceof ScorecardParagraphSection) {
+                    return TYPE_PARAGRAPH_SECTION;
+                } else if (section instanceof ScorecardTitleSection) {
+                    return TYPE_TITLE_SECTION;
+                } else {
+                    throw new NotImplementedException("ScorecardSection in ScorecardSectionAdapter is not an instance of ScorecardFieldSection, ScorecardParagraphSection, or ScorecardTitleSection");
+                }
+            }
+
+            private static class ScoreCardSectionViewHolderTemp extends ScoreCardSectionViewHolder {
+
+                protected ScoreCardSectionViewHolderTemp(View itemView, ScorecardSectionAdapter scoreCardSectionViewHolder) {
+                    super(itemView, scoreCardSectionViewHolder);
+                }
+
+                @Override
+                public void initFromScorecardSection(@NonNull ScorecardSection section) {
+
+                }
+            }
+
+            static final ScoreCardSectionViewHolder createInstance(ScorecardSectionAdapter scorecardSectionAdapter, Context context, ViewGroup parent, int viewType) {
+                View view;
+                switch (viewType) {
+                    case TYPE_FIELD_COUNT_SECTION:
+                        view = LayoutInflater.from(context).inflate(R.layout.item_scorecard_count_field_section, parent, false);
+                        return new ScorecardFieldSectionViewHolder(view, scorecardSectionAdapter, new CountFieldViewSection(scorecardSectionAdapter, view));
+                    case TYPE_FIELD_RATING_SECTION:
+                        view = LayoutInflater.from(context).inflate(R.layout.item_scorecard_rating_field_section, parent, false);
+                        return new ScorecardFieldSectionViewHolder(view, scorecardSectionAdapter, new RatingFieldViewSection(scorecardSectionAdapter, view));
+                    case TYPE_NULLABLE_FIELD_COUNT_SECTION:
+                        view = LayoutInflater.from(context).inflate(R.layout.item_scorecard_nullable_count_field_section, parent, false);
+                        return new ScorecardNullableFieldSectionViewHolder(view, scorecardSectionAdapter, new CountFieldViewSection(scorecardSectionAdapter, view));
+                    case TYPE_NULLABLE_FIELD_RATING_SECTION:
+                        view = LayoutInflater.from(context).inflate(R.layout.item_scorecard_nullable_rating_field_section, parent, false);
+                        return new ScorecardNullableFieldSectionViewHolder(view, scorecardSectionAdapter, new RatingFieldViewSection(scorecardSectionAdapter, view));
+                    case TYPE_PARAGRAPH_SECTION:
+                        view = LayoutInflater.from(context).inflate(R.layout.item_scorecard_paragraph_section, parent, false);
+                        return new ScorecardParagraphSectionViewHolder(view,scorecardSectionAdapter);
+                    case TYPE_TITLE_SECTION:
+                        view = LayoutInflater.from(context).inflate(R.layout.item_scorecard_title_section, parent, false);
+                        return new ScorecardTitleSectionViewHolder(view,scorecardSectionAdapter);
+                    default:
+                        throw new IllegalStateException("attempt to create a ScoreCardSectionViewHolder with unknown view type " + Integer.toString(viewType));
+                }
+            }
+
+            protected ScoreCardSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter) {
+                super(itemView);
+                mScorecardSectionAdapter = scorecardSectionAdapter;
+            }
+
+            public abstract void initFromScorecardSection(ScorecardSection section);
+
+            public void bindToDataHolder(@NonNull ScorecardSectionDataHolder dataHolder) {
+                mDataHolder = dataHolder;
+            }
+
+            @NonNull
+            @Contract(pure = true)
+            public ScorecardSectionDataHolder getNewDataHolder() {
+                return new ScorecardSectionDataHolder() {
+                };
+            }
+        }
+        static class ScorecardFieldSectionViewHolder extends ScoreCardSectionViewHolder {
+            protected FieldViewSection viewSection;
+
+            public ScorecardFieldSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter, FieldViewSection viewSection) {
+                super(itemView, scorecardSectionAdapter);
+                this.viewSection = viewSection;
+                viewSection.setViewHolder(this);
+            }
+
+            @Override
+            public void initFromScorecardSection(ScorecardSection section) {
+                viewSection.InitFromScorecardSection((ScorecardFieldSection) section);
+            }
+
+            @NonNull
+            @Override
+            public ScorecardSectionDataHolder getNewDataHolder() {
+                return new MyScorecardSectionDataHolder(0);
+            }
+
+            @Override
+            public void bindToDataHolder(@NonNull ScorecardSectionDataHolder dataHolder) {
+                super.bindToDataHolder(dataHolder);
+                viewSection.bindToDataHolder((MyScorecardSectionDataHolder) dataHolder);
+            }
+
+            public static class MyScorecardSectionDataHolder extends ScorecardSectionDataHolder {
+                int score;
+
+                public MyScorecardSectionDataHolder(int score) {
+                    this.score = score;
+                }
+            }
+        }
+        static class ScorecardNullableFieldSectionViewHolder extends ScorecardFieldSectionViewHolder {
+            private View fieldContainer;
+            private CheckBox checkbox;
+            private NullWhen nullWhen;
+
+            private void setFieldContainerVisibility(boolean isChecked) {
+                if (nullWhen == CHECKED && isChecked) {
+                    fieldContainer.setVisibility(View.GONE);
+                } else if (nullWhen == CHECKED) //&&!isChecked
+                {
+                    fieldContainer.setVisibility(View.VISIBLE);
+                } else if (nullWhen == UNCHECKED && isChecked) {
+                    fieldContainer.setVisibility(View.VISIBLE);
+                } else //nullWhen==UNCHECKED&&!isChecked
+                {
+                    fieldContainer.setVisibility(View.GONE);
+                }
+            }
+
+            public ScorecardNullableFieldSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter, FieldViewSection viewSection) {
+                super(itemView, scorecardSectionAdapter, viewSection);
+                fieldContainer = itemView.findViewById(R.id.container);
+                checkbox = (CheckBox) itemView.findViewById(R.id.null_checkbox);
+                checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        setFieldContainerVisibility(isChecked);
+                        ((MyScorecardSectionDataHolder) mDataHolder).mChecked = isChecked;
+                    }
+                });
+            }
+
+            @Override
+            public void initFromScorecardSection(ScorecardSection section) {
+                super.initFromScorecardSection(section);
+                ScorecardNullableFieldSection concreteScorecardSection = (ScorecardNullableFieldSection) section;
+                nullWhen = concreteScorecardSection.nullWhen;
+                if (concreteScorecardSection.nullWhen == UNCHECKED) {
+                    fieldContainer.setVisibility(View.GONE);
+                }
+                checkbox.setText(concreteScorecardSection.checkBoxMessage);
+            }
+
+            @Override
+            public void bindToDataHolder(@NonNull ScorecardSectionDataHolder dataHolder) {
+                super.bindToDataHolder(dataHolder);
+                MyScorecardSectionDataHolder concreteDataHolder = (MyScorecardSectionDataHolder) dataHolder;
+                viewSection.bindToDataHolder(concreteDataHolder);
+                checkbox.setChecked(concreteDataHolder.mChecked);
+                setFieldContainerVisibility(concreteDataHolder.mChecked);//onCheckChanged may not be called with above line, so visibility must be reset manually first time.
+            }
+
+            @NonNull
+            @Override
+            public ScorecardSectionDataHolder getNewDataHolder() {
+                return new MyScorecardSectionDataHolder(0, false);
+            }
+
+            public static class MyScorecardSectionDataHolder extends ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder {
+                public boolean mChecked;
+
+                public MyScorecardSectionDataHolder(int score, boolean checked) {
+                    super(score);
+                    mChecked = checked;
+                }
+            }
+        }
+        static class ScorecardTitleSectionViewHolder extends ScoreCardSectionViewHolder {
+            TextView titleView;
+
+            protected ScorecardTitleSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter) {
+                super(itemView, scorecardSectionAdapter);
+                titleView = (TextView) itemView.findViewById(R.id.title);
+            }
+
+            @Override
+            public void initFromScorecardSection(ScorecardSection section) {
+                ScorecardTitleSection concreteScorecardSection = (ScorecardTitleSection) section;
+                titleView.setText(concreteScorecardSection.title);
+            }
+        }
+        static class ScorecardParagraphSectionViewHolder extends ScoreCardSectionViewHolder {
+            TextView paragraphView;
+
+            protected ScorecardParagraphSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter) {
+                super(itemView, scorecardSectionAdapter);
+                paragraphView = (TextView) itemView.findViewById(R.id.paragraph);
+            }
+
+            @Override
+            public void initFromScorecardSection(ScorecardSection section) {
+                ScorecardParagraphSection concreteScorecardSection = (ScorecardParagraphSection) section;
+                paragraphView.setText(concreteScorecardSection.paragraph);
+            }
+        }
+
+        static abstract class FieldViewSection {
+            protected ScorecardSectionAdapter mScorecardSectionAdapter;
+            protected ScorecardFieldSectionViewHolder mViewHolder;
+            protected ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder mDataHolder;
+
+            public void bindToDataHolder(ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder dataHolder) {
+                mDataHolder = dataHolder;
+            }
+
+            public abstract void InitFromScorecardSection(ScorecardFieldSection section);
+
+            public FieldViewSection(ScorecardSectionAdapter scorecardSectionAdapter) {
+                mScorecardSectionAdapter = scorecardSectionAdapter;
+            }
+
+            public void setViewHolder(ScorecardFieldSectionViewHolder viewHolder) {
+                mViewHolder = viewHolder;
+            }
+        }
+        static class CountFieldViewSection extends FieldViewSection {
+            private EditText fieldSectionValue;
+            private TextView fieldSectionLabel;
+
+            public CountFieldViewSection(ScorecardSectionAdapter scorecardSectionAdapter, View view) {
+                super(scorecardSectionAdapter);
+                fieldSectionValue = (EditText) view.findViewById(R.id.value);
+                fieldSectionLabel = (TextView) view.findViewById(R.id.value_label);
+                fieldSectionValue.setText(String.format(Locale.getDefault(), "%d", 0));
+                Button upButton = (Button) view.findViewById(R.id.up_button);
+                Button downButton = (Button) view.findViewById(R.id.down_button);
+                upButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            int oldValue = (NumberFormat.getNumberInstance(Locale.getDefault()).parse(fieldSectionValue.getText().toString())).intValue();
+                            fieldSectionValue.setText(String.format(Locale.getDefault(), "%d", oldValue + 1));
+                            mDataHolder.score = oldValue + 1;
+                        } catch (ParseException e) {
+                            Log.e("CountFieldViewSection", "exception while incrementing count", e);
+                        }
+                    }
+                });
+                downButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            int oldValue = (NumberFormat.getNumberInstance(Locale.getDefault()).parse(fieldSectionValue.getText().toString())).intValue();
+                            if (oldValue > 0) {
+                                fieldSectionValue.setText(String.format(Locale.getDefault(), "%d", (oldValue - 1)));
+                                mDataHolder.score = oldValue + 1;
+                            }
+                        } catch (ParseException e) {
+                            Log.e("CountFieldViewSection", "exception while decrementing count", e);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void bindToDataHolder(ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder dataHolder) {
+                super.bindToDataHolder(dataHolder);
+                fieldSectionValue.setText(String.format(Locale.getDefault(), "%d", dataHolder.score));
+            }
+
+            @Override
+            public void InitFromScorecardSection(ScorecardFieldSection section) {
+                fieldSectionLabel.setText(section.name);
+            }
+        }
+        static class RatingFieldViewSection extends FieldViewSection {
+            private RatingBar fieldSectionValue;
+            private TextView fieldSectionLabel;
+
+            public RatingFieldViewSection(ScorecardSectionAdapter scorecardSectionAdapter, View view) {
+                super(scorecardSectionAdapter);
+                fieldSectionValue = (RatingBar) view.findViewById(R.id.rating);
+                fieldSectionLabel = (TextView) view.findViewById(R.id.rating_label);
+                fieldSectionValue.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                        mDataHolder.score = Math.round(rating);
+                    }
+                });
+            }
+
+            @Override
+            public void bindToDataHolder(ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder dataHolder) {
+                super.bindToDataHolder(dataHolder);
+                fieldSectionValue.setRating(dataHolder.score);
+            }
+
+            @Override
+            public void InitFromScorecardSection(ScorecardFieldSection section) {
+                fieldSectionLabel.setText(section.name);
+            }
+        }
+
+        static abstract class ScorecardSectionDataHolder {
+
+        }
+        public static class Data {
+            public ScorecardSectionDataHolder scorecardSectionDataHolder;
+            public ScorecardSection scorecardSection;
+
+            public static List<Data> makeListFromScorecard(Scorecard scorecard) {
+                List<Data> output = new ArrayList<>();
+                for (ScorecardSection section : scorecard.sections) {
+                    output.add(new Data(section));
+                }
+                return output;
+            }
+
+            public Data(ScorecardSection section) {
+                this(section, null);
+            }
+
+            public Data(ScorecardSection section, ScorecardSectionDataHolder dataHolder) {
+                scorecardSection = section;
+                scorecardSectionDataHolder = dataHolder;
             }
         }
     }
-    private class TaskResult
-    {
-        Boolean isServerReachable;
-        Boolean isSuccessful;
-        TaskResult(Boolean isServerReachable, Boolean isSuccessful)
-        {
-            this.isServerReachable = isServerReachable;
-            this.isSuccessful = isSuccessful;
+
+    private static class ScorecardData {
+        List<ScorecardSectionAdapter.Data> mAdapterData;
+        Scorecard mScorecard;
+
+        public ScorecardData(Scorecard scorecard, List<ScorecardSectionAdapter.Data> adapterData) {
+            mScorecard = scorecard;
+            mAdapterData = adapterData;
         }
     }
-    private class MatchData {
-        public int teamNumber;
-        public int matchNumber;
-        public int highGoal;
-        public int lowGoal;
-        public int highMiss;
-        public int lowMiss;
-        public int portcullis;
-        public int cheval;
-        public int moat;
-        public int rampart;
-        public int drawBridge;
-        public int sallyPort;
-        public int rockWall;
-        public int roughTerrain;
-        public int lowBar;
-        public int defense;
-        public Boolean didDefense;
+
+    public static class StateFragment extends Fragment {
+        private List<ScorecardData> mScorecardData;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+        }
+
+        public void setScorecardData(List<ScorecardData> data) {
+            mScorecardData = data;
+        }
+
+        public List<ScorecardData> getScorecardData() {
+            return mScorecardData;
+        }
     }
 }
