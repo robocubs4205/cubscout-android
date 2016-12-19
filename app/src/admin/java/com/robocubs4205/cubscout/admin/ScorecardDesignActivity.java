@@ -16,30 +16,31 @@ import android.widget.Toast;
 
 import com.robocubs4205.cubscout.R;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 
 /**
@@ -75,6 +76,7 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
         ArrayAdapter<CharSequence> gameYearSpinnerAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,yearArray);
         gameYearSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gameYearSpinner.setAdapter(gameYearSpinnerAdapter);
+        gameYearSpinner.setSelection(yearArray.size()-1);
     }
     @Override
     public void onAttachFragment(Fragment fragment)
@@ -126,13 +128,12 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
             }
             output.put("sections", scorecardSectionArray);
             Log.d("ScorecardDesigner","serialization output: "+output.toString());
-
+            new AsyncUploadScorecard().execute(output.toString());
         }
         catch (JSONException e)
         {
             Log.e("ScorecardDesigner","exception while serializing",e);
         }
-        Log.d("ScorecardDesignActivity",Integer.toString(scoredKeys.size()));
     }
     public void onAddKeyButtonClick(View view)
     {
@@ -171,52 +172,83 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
         @Override
         protected Boolean doInBackground(String... strings) {
             try {
-                URL url = new URL(getResources().getString(R.string.scout_server_url));
+                URL url = new URL("https://"+getResources().getString(R.string.scout_server_url)+"/enter_game_design");
 
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                connection.setUseCaches(false);
-                connection.setDoOutput(true);
-                connection.setDoInput(true);
+                boolean redirect = false;
 
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Connection", "Keep-Alive");
-                connection.setRequestProperty("Cache-Control", "no-cache");
-                connection.setRequestProperty("Content-Type","application/json");
-                connection.setRequestProperty("Accept","application/json");
+                do {
+                    redirect = false;
 
-                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-                writer.write(strings[0]);
-                writer.flush();
-
-                int httpResult = connection.getResponseCode();
-                if(httpResult == HttpURLConnection.HTTP_OK)
-                {
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder = factory.newDocumentBuilder();
-                    Document doc = builder.parse(connection.getInputStream());
-                    NodeList errors = doc.getElementsByTagName("error");
-                    for (int i = 0; i < errors.getLength(); i++)
-                    {
-                        Log.e("bob",((Element)errors.item(i)).getAttribute("type")+" "+errors.item(i).getTextContent());
+                    InputStream certStream = getResources().openRawResource(R.raw.mycert);
+                    CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                    Certificate cert;
+                    try {
+                        cert = cf.generateCertificate(certStream);
+                        System.out.println("ca=" + ((X509Certificate) cert).getSubjectDN());
+                    } finally {
+                        certStream.close();
                     }
-                    if(errors.getLength()<0) return false;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
 
-            } catch (MalformedURLException e) {
-                Log.e("ScorecardDesigner","exception while sending data to server",e);
-            } catch (ProtocolException e) {
-                Log.e("ScorecardDesigner","exception while sending data to server",e);
-            } catch (IOException e) {
-                Log.e("ScorecardDesigner","exception while sending data to server",e);
-            } catch (ParserConfigurationException e) {
-                Log.e("ScorecardDesigner","exception while parsing data from server",e);
-            } catch (SAXException e) {
-                Log.e("ScorecardDesigner","exception while parsing data from server",e);
+                    KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                    keyStore.load(null, null);
+                    keyStore.setCertificateEntry("cubscout",cert);
+
+                    TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                    tmf.init(keyStore);
+                    SSLContext sslContext = SSLContext.getInstance("TLS");
+                    sslContext.init(null,tmf.getTrustManagers(),null);
+
+                    HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+
+                    connection.setSSLSocketFactory(sslContext.getSocketFactory());
+
+                    connection.setUseCaches(false);
+                    connection.setDoOutput(true);
+                    connection.setDoInput(true);
+
+                    connection.setInstanceFollowRedirects(false);
+
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Connection", "Keep-Alive");
+                    connection.setRequestProperty("Cache-Control", "no-cache");
+                    connection.setRequestProperty("Content-Type","application/json;charset=utf-8");
+                    connection.setRequestProperty("Accept","application/json");
+
+                    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+                    writer.write(strings[0]);
+                    writer.flush();
+                    writer.close();
+
+                    int httpResult = connection.getResponseCode();
+                    Log.d("ScorecardDesignActivity","http response code: "+httpResult);
+                    if(httpResult == HttpURLConnection.HTTP_OK)
+                    {
+                        JSONObject result = new JSONObject(IOUtils.toString(connection.getInputStream()));
+                        JSONArray errors = result.getJSONArray("errors");
+                        if(errors.length()==0)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            for(int i = 0; i < errors.length(); i++)
+                            {
+                                Log.e("ScorecardDesignActivity","error while submitting: "+errors.get(i).toString());
+                            }
+
+                            return false;
+                        }
+                    }
+                    else if(   httpResult == HttpURLConnection.HTTP_MOVED_PERM
+                            || httpResult == HttpURLConnection.HTTP_MOVED_TEMP
+                            || httpResult == HttpURLConnection.HTTP_SEE_OTHER)
+                    {
+                        redirect = true;
+                        url = new URL(connection.getHeaderField("Location"));
+                    }
+                } while (redirect);
+            } catch (KeyManagementException | IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException | JSONException e) {
+                Log.e("ScorecardDesignActivity","exception while sending data to server",e);
             }
             return false;
         }
@@ -231,7 +263,7 @@ public class ScorecardDesignActivity extends Activity implements ScorecardDesign
             }
             else
             {
-                Toast toast = Toast.makeText(getApplicationContext(),"Scorecard successfully created",Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(),"Unable to create scorecard",Toast.LENGTH_SHORT);
                 toast.show();
             }
         }
