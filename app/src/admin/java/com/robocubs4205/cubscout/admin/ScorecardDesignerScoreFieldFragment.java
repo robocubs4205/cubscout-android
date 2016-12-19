@@ -15,6 +15,8 @@ import com.robocubs4205.cubscout.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+
 /**
  * Created by trevor on 10/14/16.
  */
@@ -58,10 +60,16 @@ public class ScorecardDesignerScoreFieldFragment extends ScorecardDesignerFragme
         String type = typeStrings[typeSelection];
         int nullableSelection = ((Spinner)getView().findViewById(R.id.nullable_spinner)).getSelectedItemPosition();
         Boolean isNullable = nullableSelection==getResources().getInteger(R.integer.is_nullable_index);
-        JSONObject result = new JSONObject().put("section_type","field").put("field_name",name).put("type",type).put("isNullable",isNullable);
+        JSONObject result = new JSONObject().put("section_type","field").put("field_name",name).put("type",type).put("is_nullable",isNullable);
         if(settingsFragment!=null)
         {
-            result.put("nullable-settings",settingsFragment.serialize());
+            JSONObject nullableSettingsObject = settingsFragment.serialize();
+            Iterator<String> iter = nullableSettingsObject.keys();
+            while(iter.hasNext())
+            {
+                String key = iter.next();
+                result.put(key,nullableSettingsObject.get(key));
+            }
         }
         return result;
     }
