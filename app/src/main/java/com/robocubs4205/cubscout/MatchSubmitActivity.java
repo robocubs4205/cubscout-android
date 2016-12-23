@@ -627,8 +627,9 @@ public class MatchSubmitActivity extends Activity {
                     public void onClick(View v) {
                         try {
                             int oldValue = (NumberFormat.getNumberInstance(Locale.getDefault()).parse(fieldSectionValue.getText().toString())).intValue();
-                            fieldSectionValue.setText(String.format(Locale.getDefault(), "%d", oldValue + 1));
-                            mDataHolder.score = oldValue + 1;
+                            int newValue = oldValue + 1;
+                            fieldSectionValue.setText(String.format(Locale.getDefault(), "%d", newValue));
+                            mDataHolder.score = newValue;
                         } catch (ParseException e) {
                             Log.e("CountFieldViewSection", "exception while incrementing count", e);
                         }
@@ -640,8 +641,9 @@ public class MatchSubmitActivity extends Activity {
                         try {
                             int oldValue = (NumberFormat.getNumberInstance(Locale.getDefault()).parse(fieldSectionValue.getText().toString())).intValue();
                             if (oldValue > 0) {
-                                fieldSectionValue.setText(String.format(Locale.getDefault(), "%d", (oldValue - 1)));
-                                mDataHolder.score = oldValue + 1;
+                                int newValue = oldValue - 1;
+                                fieldSectionValue.setText(String.format(Locale.getDefault(), "%d", newValue));
+                                mDataHolder.score = newValue;
                             }
                         } catch (ParseException e) {
                             Log.e("CountFieldViewSection", "exception while decrementing count", e);
