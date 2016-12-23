@@ -61,9 +61,6 @@ public class MatchSubmitActivity extends Activity {
     private RecyclerView scorecardView;
     private ScorecardSectionAdapter scorecardSectionAdapter;
     private StateFragment stateFragment;
-    private int currentGamePosition = -1;
-    private int currentGameTypePosition = -1;
-    private int oldGameTypePosition = -2;
 
     private AsyncGetGames task;
 
@@ -89,11 +86,6 @@ public class MatchSubmitActivity extends Activity {
 
         gameTypeSpinner.setOnItemSelectedListener(new GameTypeSpinnerItemSelectedListener());
         scorecardView = (RecyclerView) findViewById(R.id.scorecard);
-        if (savedInstanceState != null) {
-            currentGamePosition = savedInstanceState.getInt("currentGamePosition", -1);
-            currentGameTypePosition = savedInstanceState.getInt("currentGameTypePosition", -1);
-            oldGameTypePosition = savedInstanceState.getInt("oldGameTypePosition", -2);
-        }
         if (scorecardSectionAdapter == null) {
             scorecardSectionAdapter = new ScorecardSectionAdapter(this, new ArrayList<ScorecardSectionAdapter.Data>());
         }
@@ -105,14 +97,6 @@ public class MatchSubmitActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         stateFragment.setScorecardData(scorecardData);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("currentGamePosition", currentGamePosition);
-        savedInstanceState.putInt("currentGameTypePosition", currentGameTypePosition);
-        savedInstanceState.putInt("oldGameTypePosition", oldGameTypePosition);
     }
 
     private class AsyncGetGames extends AsyncTask<Void, Void, Boolean> {
@@ -278,7 +262,6 @@ public class MatchSubmitActivity extends Activity {
             } catch (InterruptedException | ExecutionException e) {
                 Log.e("MatchSubmitActivity", "exception while retrieving games", e);
             }
-            currentGameTypePosition = position;
         }
 
         @Override
@@ -296,8 +279,6 @@ public class MatchSubmitActivity extends Activity {
             }
             scorecardSectionAdapter.setData(innerScorecardData.mAdapterData);
             scorecardSectionAdapter.notifyDataSetChanged();
-            currentGamePosition = position;
-            oldGameTypePosition = currentGameTypePosition;
         }
 
         @Override
