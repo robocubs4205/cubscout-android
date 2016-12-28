@@ -5,7 +5,7 @@
     <string name="report_list_activity_label">Search teams by performance</string>
     <string name="launch_match_submit_activity_text">Submit a report on a team\'s performance</string>
     <string name="launch_view_match_report_text">View top performers</string>
-    <string name="launch_view_individual_report_activity">View report on an individual team</string>
+    <string name="launch_view_individual_report_activity_text">View report on an individual team</string>
     <string name="match_submit_button_text">Submit</string>
     <string name="team_search_default_text">Please enter a team number</string>
     <string name="robot_search_button_text">Search</string>
@@ -30,6 +30,7 @@
     <string name="select_game_spinner_label_text">Select Game</string>
     <string name="select_game_type_label_text">Game type</string>
     <string name="no_games_available_for_category_text">No games available for that category</string>
+    <string name="search_events_hint">Search Events</string>
 
     <string-array name="defense_ratings">
         <item>1</item>
