@@ -34,6 +34,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -105,10 +109,8 @@ public class MatchSubmitActivity extends Activity {
         protected Boolean doInBackground(Void... voids) {
             Log.d("MatchSubmitActivity", "getting games");
             try {
-                URL url = new URL("http://" + getResources().getString(R.string.scout_server_url) + "/get_games");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoOutput(true);
-                connection.setDoInput(true);
+                URL url = new URL(getResources().getString(R.string.get_current_events_url));
+                HttpURLConnection connection = RobocubsNetworkUtils.SendGetRequest(url,getApplicationContext());
                 connection.setRequestProperty("Accept", "application/json");
                 int httpResult = connection.getResponseCode();
                 if (httpResult == HttpURLConnection.HTTP_OK) {
@@ -126,10 +128,11 @@ public class MatchSubmitActivity extends Activity {
                         return false;
                     }
                 }
-            } catch (IOException | JSONException e) {
+                else return false;
+            } catch (IOException | JSONException | CertificateException | NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
                 Log.e("MatchSubmitActivity", "exception while retrieving games", e);
+                return false;
             }
-            return false;
         }
 
         private void ParseJSONGames(JSONArray games) throws JSONException {

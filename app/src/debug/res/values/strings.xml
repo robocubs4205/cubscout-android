@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CubScout(Debug)</string>
-    <string name="scout_server_url">data.cubscout.local</string>
+    <string name="get_current_events_url">https://data.cubscout.local/get_current_events</string>
+    <string name="match_submit_url">https://data.cubscout.local/match_submit</string>
 </resources>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CubScout-Admin(Debug)</string>
+    <string name="scorecard_design_submit_url">https://data.cubscout.local/enter_scorecard_design</string>
 </resources>
