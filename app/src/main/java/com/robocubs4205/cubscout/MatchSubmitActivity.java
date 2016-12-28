@@ -34,10 +34,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -111,7 +107,6 @@ public class MatchSubmitActivity extends Activity {
             try {
                 URL url = new URL(getResources().getString(R.string.get_current_events_url));
                 HttpURLConnection connection = RobocubsNetworkUtils.SendGetRequest(url,getApplicationContext());
-                connection.setRequestProperty("Accept", "application/json");
                 int httpResult = connection.getResponseCode();
                 if (httpResult == HttpURLConnection.HTTP_OK) {
                     JSONObject result = new JSONObject(IOUtils.toString(connection.getInputStream()));
