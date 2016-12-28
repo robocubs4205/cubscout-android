@@ -111,7 +111,6 @@ public class MatchSubmitActivity extends Activity {
             try {
                 URL url = new URL(getResources().getString(R.string.get_current_events_url));
                 HttpURLConnection connection = RobocubsNetworkUtils.SendGetRequest(url,getApplicationContext());
-                connection.setRequestProperty("Accept", "application/json");
                 int httpResult = connection.getResponseCode();
                 if (httpResult == HttpURLConnection.HTTP_OK) {
                     JSONObject result = new JSONObject(IOUtils.toString(connection.getInputStream()));
