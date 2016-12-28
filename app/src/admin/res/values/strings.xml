@@ -14,6 +14,7 @@
     <string name="null_when_label_text">Null When Checkbox is</string>
     <string name="game_type_field_labe_text">Game Type</string>
     <string name="game_year_field_label_text">Year</string>
+    <string name="launch_game_manager_button_text">Manage Games</string>
     <string-array name="scored_field_type_spinner_options">
         <item>Count</item>
         <item>Rating</item>

@@ -30,7 +30,7 @@
     <string name="select_game_spinner_label_text">Select Game</string>
     <string name="select_game_type_label_text">Game type</string>
     <string name="no_games_available_for_category_text">No games available for that category</string>
-    <string name="search_events_hint">Search robots and teams</string>
+    <string name="search_events_hint">Search Events</string>
 
     <string-array name="defense_ratings">
         <item>1</item>
