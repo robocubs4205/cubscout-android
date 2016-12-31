@@ -133,4 +133,9 @@ public class RobocubsNetworkUtils {
         Log.d("SendPostData","response code: "+httpResult);
         return connection;
     }
+
+    /*public static JSONObject searchCubscout(String query){
+
+    }*/
+
 }

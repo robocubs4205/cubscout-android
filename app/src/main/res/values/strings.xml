@@ -31,6 +31,10 @@
     <string name="select_game_type_label_text">Game type</string>
     <string name="no_games_available_for_category_text">No games available for that category</string>
     <string name="search_events_hint">Search Events</string>
+    <string name="game_tab_label_text">Games</string>
+    <string name="event_tab_label_text">Events</string>
+    <string name="robot_tab_label_text">Robots</string>
+    <string name="launch_admin_activity_button_text">Admin tools</string>
 
     <string-array name="defense_ratings">
         <item>1</item>

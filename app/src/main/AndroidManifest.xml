@@ -37,6 +37,7 @@
             android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".admin.ScorecardDesignActivity" />
+        <activity android:name=".admin.AdminActivity"/>
     </application>
 
 </manifest>
