@@ -24,6 +24,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.robocubs4205.cubscout.net.RobocubsNetworkUtils;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Contract;
@@ -110,7 +112,8 @@ public class MatchSubmitActivity extends Activity {
             Log.d("MatchSubmitActivity", "getting games");
             try {
                 URL url = new URL(getResources().getString(R.string.get_current_events_url));
-                HttpURLConnection connection = RobocubsNetworkUtils.SendGetRequest(url,getApplicationContext());
+                HttpURLConnection connection = RobocubsNetworkUtils
+                        .SendGetRequest(url, getApplicationContext());
                 int httpResult = connection.getResponseCode();
                 if (httpResult == HttpURLConnection.HTTP_OK) {
                     JSONObject result = new JSONObject(IOUtils.toString(connection.getInputStream()));
