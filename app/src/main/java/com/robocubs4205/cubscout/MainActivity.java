@@ -11,6 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.SearchView;
 
+import com.robocubs4205.cubscout.net.CubscoutAPI;
+import com.robocubs4205.cubscout.net.CubscoutAPI_Factory;
+import com.robocubs4205.cubscout.net.DaggerNetComponent;
+
 /**
  * Created by trevor on 12/28/16.
  */

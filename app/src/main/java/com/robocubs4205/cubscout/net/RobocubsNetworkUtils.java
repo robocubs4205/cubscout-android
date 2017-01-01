@@ -1,10 +1,9 @@
-package com.robocubs4205.cubscout;
+package com.robocubs4205.cubscout.net;
 
 import android.content.Context;
 import android.util.Log;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONObject;
+import com.robocubs4205.cubscout.R;
 
 import java.io.IOException;
 import java.io.InputStream;
