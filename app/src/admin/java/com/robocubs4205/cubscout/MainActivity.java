@@ -11,9 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.SearchView;
 
-import com.robocubs4205.cubscout.net.CubscoutAPI;
-import com.robocubs4205.cubscout.net.CubscoutAPI_Factory;
-import com.robocubs4205.cubscout.net.DaggerNetComponent;
+import com.robocubs4205.cubscout.admin.AdminActivity;
 
 /**
  * Created by trevor on 12/28/16.
@@ -73,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
     @SuppressWarnings("UnusedParameters")
     public void LaunchReportListActivity(View view) {
         Intent intent = new Intent(this, ReportListActivity.class);
+        startActivity(intent);
+    }
+
+    public void LaunchAdminActivity(View view) {
+        Intent intent = new Intent(this, AdminActivity.class);
         startActivity(intent);
     }
 }

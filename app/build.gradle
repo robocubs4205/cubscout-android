@@ -18,19 +18,49 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "user", "staging"
+
     productFlavors {
         admin {
             applicationId 'com.robocubs4205.cubscout.admin'
             versionCode 1
             versionName '1.0'
+            dimension 'user'
         }
         user {
+            applicationId 'com.robocubs4205.cubscout'
+            dimension 'user'
+        }
+        staging {
+            dimension 'staging'
+        }
+        production {
+            dimension 'staging'
+        }
+        fakeNet{
+            dimension 'staging'
         }
     }
+
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        // To check for a certain build type, use variant.buildType.name == "<buildType>"
+        if ((names.contains("staging") || names.contains("fakeNet")) && variant.buildType.name=="release") {
+            // Gradle ignores any variants that satisfy the conditions above.
+            setIgnore(true)
+        }
+    }
+
+
     sourceSets {
         main {
             manifest.srcFile 'src/main/AndroidManifest.xml'
         }
+    }
+    packagingOptions{
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/DEPENDENCIES'
     }
 }
 
@@ -50,7 +80,9 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     compile 'com.squareup.okhttp3:okhttp-android-support:3.5.0'
     compile 'com.android.volley:volley:1.0.0'
-    compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'org.apache.httpcomponents:httpcore:4.4.5'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 }

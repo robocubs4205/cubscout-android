@@ -1,22 +1,20 @@
 package com.robocubs4205.cubscout.net;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import com.robocubs4205.cubscout.Event;
 
-import okhttp3.OkHttpClient;
+import java.util.List;
+
+import io.reactivex.Observable;
 
 /**
- * Created by trevor on 12/31/16.
+ * Created by trevor on 1/1/17.
  */
+public interface CubscoutAPI {
+    public Observable<GetEventsResponse> getCurrentEvents();
 
-@Singleton
-public class CubscoutAPI {
 
-    private final OkHttpClient mClient;
-
-    @Inject
-    public CubscoutAPI(OkHttpClient client){
-        mClient = client;
+    class GetEventsResponse {
+        public List<Error> errors;
+        public List<Event> events;
     }
-
 }

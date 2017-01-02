@@ -35,6 +35,7 @@
     <string name="event_tab_label_text">Events</string>
     <string name="robot_tab_label_text">Robots</string>
     <string name="launch_admin_activity_button_text">Admin tools</string>
+    <string name="scorecard_design_submit_url">https://cubscout.robocubs4205.local</string>
 
     <string-array name="defense_ratings">
         <item>1</item>
