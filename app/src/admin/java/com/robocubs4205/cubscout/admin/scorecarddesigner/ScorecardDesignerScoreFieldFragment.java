@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin;
+package com.robocubs4205.cubscout.admin.scorecarddesigner;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

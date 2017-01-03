@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin;
+package com.robocubs4205.cubscout.admin.gamemanager;
 
 
 import android.os.Bundle;
@@ -23,23 +23,24 @@ public class GameManagerFragment extends Fragment {
     private List<Game> games;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_game_manager,parent,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_game_manager, parent, false);
         gameListView = (RecyclerView) view.findViewById(R.id.game_list);
         gameListView.setAdapter(new GameListAdapter(games));
         return view;
     }
 
-    private class GameListAdapter extends RecyclerView.Adapter<BaseViewHolder>{
+    private class GameListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         List<Game> mGames;
 
-        public GameListAdapter(List<Game> games){
+        public GameListAdapter(List<Game> games) {
             super();
             mGames = games;
         }
@@ -47,7 +48,9 @@ public class GameManagerFragment extends Fragment {
         @Override
         public BaseViewHolder onCreateViewHolder(ViewGroup parent,
                                                  int viewType) {
-            return null;
+            return new BaseViewHolder(LayoutInflater.from(parent.getContext())
+                                                    .inflate(R.layout.item_game_manager_game,
+                                                             parent, false));
         }
 
         @Override
@@ -61,9 +64,21 @@ public class GameManagerFragment extends Fragment {
             return 0;
         }
     }
-    private static class BaseViewHolder extends RecyclerView.ViewHolder{
+
+    private class BaseViewHolder extends RecyclerView.ViewHolder implements GameListItemView {
         public BaseViewHolder(View itemView) {
             super(itemView);
+        }
+
+        @Override
+        public void setGame(Game game) {
+            games.set(getLayoutPosition(), game);
+            gameListView.getAdapter().notifyItemChanged(getLayoutPosition());
+        }
+
+        @Override
+        public void showDetail() {
+
         }
     }
 }

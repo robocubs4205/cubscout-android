@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin;
+package com.robocubs4205.cubscout.admin.scorecarddesigner;
 
 import android.app.Fragment;
 import android.os.Bundle;

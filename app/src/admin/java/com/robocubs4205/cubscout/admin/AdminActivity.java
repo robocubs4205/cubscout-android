@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.R;
+import com.robocubs4205.cubscout.admin.gamemanager.GameManagerFragment;
 import com.robocubs4205.cubscout.net.DaggerNetComponent;
 import com.robocubs4205.cubscout.net.Error;
 import com.robocubs4205.cubscout.net.NetModule;
