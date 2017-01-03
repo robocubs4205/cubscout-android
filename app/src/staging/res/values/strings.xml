@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_games_url">https://cubscout.robocubs4205.local/get_games</string>
+</resources>

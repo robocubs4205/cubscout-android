@@ -8,8 +8,6 @@ import com.android.volley.toolbox.RequestFuture;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.robocubs4205.cubscout.R;
-import com.robocubs4205.cubscout.net.CubscoutAPI;
-import com.robocubs4205.cubscout.net.GsonRequest;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,7 +29,9 @@ public class StagingCubscoutAPI implements CubscoutAPI {
     private final Gson mGson;
 
     @BindString(R.string.get_current_events_url)
-    String getCurrentEventsURl;
+    String getCurrentEventsURL;
+    @BindString(R.string.get_games_url)
+    String getGamesURL;
 
     @Inject
     public StagingCubscoutAPI(OkHttpClient client, RequestQueue requestQueue, Context context, Gson gson) {
@@ -46,13 +46,28 @@ public class StagingCubscoutAPI implements CubscoutAPI {
     public Observable<GetEventsResponse> getCurrentEvents() {
         RequestFuture<JsonObject> future = RequestFuture.newFuture();
         GsonRequest request = new GsonRequest(Request.Method.GET,
-                                              getCurrentEventsURl,
+                                              getCurrentEventsURL,
                                               null, future, future);
         mRequestQueue.add(request);
         return Observable.fromFuture(future).map(new Function<JsonObject, GetEventsResponse>() {
             @Override
             public GetEventsResponse apply(JsonObject jsonObject) throws Exception {
                 return mGson.fromJson(jsonObject,GetEventsResponse.class);
+            }
+        });
+    }
+
+    @Override
+    public Observable<GetGamesResponse> getAllGames() {
+        RequestFuture<JsonObject> future = RequestFuture.newFuture();
+        GsonRequest request = new GsonRequest(Request.Method.GET,
+                                              getGamesURL,
+                                              null, future, future);
+        mRequestQueue.add(request);
+        return Observable.fromFuture(future).map(new Function<JsonObject, GetGamesResponse>() {
+            @Override
+            public GetGamesResponse apply(JsonObject jsonObject) throws Exception {
+                return mGson.fromJson(jsonObject, GetGamesResponse.class);
             }
         });
     }

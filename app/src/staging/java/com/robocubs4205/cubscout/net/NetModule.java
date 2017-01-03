@@ -122,7 +122,7 @@ public class NetModule {
     }
 
     @Provides
-    CubscoutAPI provideCubscoutApi(StagingCubscoutApi stagingCubscoutApi){
+    CubscoutAPI provideCubscoutApi(StagingCubscoutAPI stagingCubscoutApi){
         return stagingCubscoutApi;
     }
 }
