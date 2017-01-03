@@ -9,5 +9,9 @@ import java.util.List;
  */
 
 interface GameListView {
-    void setGameList(List<Game> games);
+    void notifyListChanged();
+    void notifyListItemChanged(int position);
+    void showError(String error);
+
+    void showDetail(int position);
 }

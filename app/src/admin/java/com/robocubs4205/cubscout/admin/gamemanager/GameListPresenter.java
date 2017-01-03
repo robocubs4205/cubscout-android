@@ -8,6 +8,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by trevor on 1/2/17.
  */
@@ -15,17 +21,41 @@ import javax.inject.Inject;
 class GameListPresenter {
 
     private final CubscoutAPI mApi;
-    private final List<Game> mGames = new ArrayList<>();
+    private final List<Game> mGames;
     private final GameListView mView;
 
+    Disposable refreshDisposable;
+
     @Inject
-    public GameListPresenter(CubscoutAPI api, GameListView view){
+    public GameListPresenter(CubscoutAPI api, GameListView view, List<Game> games) {
         mApi = api;
         mView = view;
-
+        mGames = games;
+        refreshList();
     }
 
-    void refreshList(){
+    void refreshList() {
+        if (refreshDisposable != null && !refreshDisposable.isDisposed())
+            refreshDisposable.dispose();
+        refreshDisposable = mApi.getAllGames().retry(5).subscribeOn(Schedulers.io()).observeOn(
+                AndroidSchedulers.mainThread()).subscribe(
+                new Consumer<CubscoutAPI.GetGamesResponse>() {
+                    @Override
+                    public void accept(CubscoutAPI.GetGamesResponse getGamesResponse)
+                            throws Exception {
+                        mGames.clear();
+                        mGames.addAll(getGamesResponse.games);
+                        mView.notifyListChanged();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        mView.showError("unable to retrieve games from server");
+                    }
+                });
+    }
 
+    void requestDetail(int position){
+        mView.showDetail(position);
     }
 }

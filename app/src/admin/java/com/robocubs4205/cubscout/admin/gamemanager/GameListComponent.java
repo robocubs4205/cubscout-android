@@ -10,7 +10,7 @@ import dagger.Component;
  */
 
 @ActivityScope
-@Component(dependencies = NetComponent.class, modules = GameListItemModule.class)
-public interface GameListItemComponent {
-    public GameListItemPresenter presenter();
+@Component(dependencies = NetComponent.class, modules = GameListModule.class)
+interface GameListComponent {
+    GameListPresenter presenter();
 }
