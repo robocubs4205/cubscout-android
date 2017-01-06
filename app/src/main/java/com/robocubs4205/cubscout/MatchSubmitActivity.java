@@ -105,194 +105,6 @@ public class MatchSubmitActivity extends Activity {
         stateFragment.setScorecardData(scorecardData);
     }
 
-    private class AsyncGetGames extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            Log.d("MatchSubmitActivity", "getting games");
-            try {
-                URL url = new URL(getResources().getString(R.string.get_current_events_url));
-                HttpURLConnection connection = RobocubsNetworkUtils
-                        .SendGetRequest(url, getApplicationContext());
-                int httpResult = connection.getResponseCode();
-                if (httpResult == HttpURLConnection.HTTP_OK) {
-                    JSONObject result = new JSONObject(IOUtils.toString(connection.getInputStream()));
-                    JSONArray errors = result.getJSONArray("errors");
-                    JSONArray games = result.getJSONArray("games");
-                    if (errors.length() == 0) {
-                        Log.d("MatchSubmitActivity", "games found: " + games.length());
-                        ParseJSONGames(games);
-                        return true;
-                    } else {
-                        for (int i = 0; i < errors.length(); i++) {
-                            Log.e("MatchSubmitActivity", "error while submitting: " + errors.get(i).toString());
-                        }
-                        return false;
-                    }
-                }
-                else return false;
-            } catch (IOException | JSONException | CertificateException | NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-                Log.e("MatchSubmitActivity", "exception while retrieving games", e);
-                return false;
-            }
-        }
-
-        private void ParseJSONGames(JSONArray games) throws JSONException {
-            for (int i = 0; i < games.length(); i++) {
-                JSONObject gameJSON = games.getJSONObject(i);
-                Scorecard scorecard = new Scorecard();
-                scorecard.id = gameJSON.getInt("id");
-                scorecard.year = gameJSON.getInt("game_year");
-                scorecard.type = gameJSON.getString("game_type");
-                scorecard.name = gameJSON.getString("game_name");
-                scorecard.sections = new ArrayList<>();
-                JSONArray sections = gameJSON.getJSONArray("sections");
-                scorecard.sections = ParseJSONScorecardSections(sections);
-                scorecardData.add(new ScorecardData(scorecard, new ArrayList<ScorecardSectionAdapter.Data>()));
-            }
-        }
-
-        private List<ScorecardSection> ParseJSONScorecardSections(JSONArray sections) throws JSONException {
-            List<ScorecardSection> result = new ArrayList<>();
-            for (int j = 0; j < sections.length(); j++) {
-                JSONObject sectionJSON = sections.getJSONObject(j);
-                String sectionType = sectionJSON.getString("section_type");
-                switch (sectionType) {
-                    case "field":
-                        result.add(ParseJSONFieldSection(sectionJSON));
-                        break;
-                    case "title": {
-                        ScorecardTitleSection section = new ScorecardTitleSection();
-                        section.id = sectionJSON.getInt("id");
-                        section.index = sectionJSON.getInt("index");
-                        section.title = sectionJSON.getString("title");
-                        result.add(section);
-                        break;
-                    }
-                    case "paragraph": {
-                        ScorecardParagraphSection section = new ScorecardParagraphSection();
-                        section.id = sectionJSON.getInt("id");
-                        section.index = sectionJSON.getInt("index");
-                        section.paragraph = sectionJSON.getString("paragraph");
-                        result.add(section);
-                        break;
-                    }
-                }
-            }
-            return result;
-        }
-
-        private ScorecardFieldSection ParseJSONFieldSection(JSONObject sectionJSON) throws JSONException {
-            Boolean isNullable = sectionJSON.getBoolean("is_nullable");
-            if (isNullable) {
-                ScorecardNullableFieldSection section = new ScorecardNullableFieldSection();
-                section.id = sectionJSON.getInt("id");
-                section.index = sectionJSON.getInt("index");
-                section.name = sectionJSON.getString("field_name");
-                String fieldType = sectionJSON.getString("type");
-                switch (fieldType) {
-                    case "Count":
-                        section.type = COUNT;
-                        break;
-                    case "Rating":
-                        section.type = RATING;
-                        break;
-                    default:
-                        throw new IllegalStateException("Scorecard field section has illegal value \"" + fieldType + "\" for \"type\"");
-                }
-                section.isNullable = isNullable;
-                String nullWhen = sectionJSON.getString("null_when");
-                switch (nullWhen) {
-                    case "Checked":
-                        section.nullWhen = CHECKED;
-                        break;
-                    case "Unchecked":
-                        section.nullWhen = UNCHECKED;
-                        break;
-                    default:
-                        throw new IllegalStateException("Scorecard field section has illegal value \"" + nullWhen + "\" for \"null_when\"");
-                }
-                section.checkBoxMessage = sectionJSON.getString("checkbox_message");
-                return section;
-            } else {
-                ScorecardFieldSection section = new ScorecardFieldSection();
-                section.id = sectionJSON.getInt("id");
-                section.index = sectionJSON.getInt("index");
-                section.name = sectionJSON.getString("field_name");
-                String fieldType = sectionJSON.getString("type");
-                switch (fieldType) {
-                    case "Count":
-                        section.type = COUNT;
-                        break;
-                    case "Rating":
-                        section.type = RATING;
-                        break;
-                    default:
-                        throw new IllegalStateException("Scorecard field section has illegal value \"" + fieldType + "\" for \"type\"");
-                }
-                section.isNullable = isNullable;
-                return section;
-            }
-        }
-    }
-
-    private class GameTypeSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            try {
-                if (scorecardData.isEmpty() && task != null) {
-                    task.get();
-                } else if (scorecardData.isEmpty() && task == null) {
-                    task = new AsyncGetGames();
-                    task.execute();
-                    task.get();
-                }
-                String gameType = getResources().getStringArray(R.array.game_types)[position];
-                List<ScorecardData> games = new ArrayList<>();
-                for (ScorecardData innerScorecardData : scorecardData) {
-                    if (innerScorecardData.mScorecard.type.equals(gameType)) {
-                        games.add(innerScorecardData);
-                    }
-                }
-                if ((games.isEmpty() && !isShowingNoGameMessage) || (!games.isEmpty() && isShowingNoGameMessage)) {
-                    ((ViewSwitcher) findViewById(R.id.select_game_spinner_switcher)).showNext();
-                    isShowingNoGameMessage = !isShowingNoGameMessage;
-                } else {
-                    GameTypeSpinnerArrayAdapter selectGameSpinnerAdapter = new GameTypeSpinnerArrayAdapter(MatchSubmitActivity.this, games);
-                    selectGameSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    Spinner gameSpinner = (Spinner) findViewById(R.id.select_game_spinner);
-                    gameSpinner.setAdapter(selectGameSpinnerAdapter);
-                    gameSpinner.setOnItemSelectedListener(new GameSpinnerItemSelectedListener());
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                Log.e("MatchSubmitActivity", "exception while retrieving games", e);
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    }
-
-    private class GameSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            ScorecardData innerScorecardData = (ScorecardData) parent.getItemAtPosition(position);
-            if (innerScorecardData.mAdapterData.size() == 0) {
-                innerScorecardData.mAdapterData.addAll(ScorecardSectionAdapter.Data.makeListFromScorecard(innerScorecardData.mScorecard));
-            }
-            scorecardSectionAdapter.setData(innerScorecardData.mAdapterData);
-            scorecardSectionAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            scorecardSectionAdapter.setData(new ArrayList<ScorecardSectionAdapter.Data>());
-            scorecardSectionAdapter.notifyDataSetChanged();
-        }
-    }
-
     private static class GameTypeSpinnerArrayAdapter extends ArrayAdapter<ScorecardData> {
         public GameTypeSpinnerArrayAdapter(Context context, List<ScorecardData> items) {
             super(context, 0, items);
@@ -320,8 +132,8 @@ public class MatchSubmitActivity extends Activity {
     }
 
     private static class ScorecardSectionAdapter extends RecyclerView.Adapter<ScorecardSectionAdapter.ScoreCardSectionViewHolder> {
-        private List<Data> mData;
         private final Context mContext;
+        private List<Data> mData;
 
 
         public ScorecardSectionAdapter(Context context, List<Data> scorecardSections) {
@@ -370,6 +182,12 @@ public class MatchSubmitActivity extends Activity {
             @SuppressWarnings("unused")
             protected final ScorecardSectionAdapter mScorecardSectionAdapter;
             protected ScorecardSectionDataHolder mDataHolder;
+
+            protected ScoreCardSectionViewHolder(View itemView,
+                                                 ScorecardSectionAdapter scorecardSectionAdapter) {
+                super(itemView);
+                mScorecardSectionAdapter = scorecardSectionAdapter;
+            }
 
             private static int getSectionViewType(ScorecardSection section) {
                 if (section instanceof ScorecardFieldSection) {
@@ -427,11 +245,6 @@ public class MatchSubmitActivity extends Activity {
                 }
             }
 
-            protected ScoreCardSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter) {
-                super(itemView);
-                mScorecardSectionAdapter = scorecardSectionAdapter;
-            }
-
             public abstract void initFromScorecardSection(ScorecardSection section);
 
             public void bindToDataHolder(@NonNull ScorecardSectionDataHolder dataHolder) {
@@ -484,6 +297,21 @@ public class MatchSubmitActivity extends Activity {
             private final CheckBox checkbox;
             private NullWhen nullWhen;
 
+            public ScorecardNullableFieldSectionViewHolder(View itemView,
+                                                           ScorecardSectionAdapter scorecardSectionAdapter,
+                                                           FieldViewSection viewSection) {
+                super(itemView, scorecardSectionAdapter, viewSection);
+                fieldContainer = itemView.findViewById(R.id.container);
+                checkbox = (CheckBox) itemView.findViewById(R.id.null_checkbox);
+                checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        setFieldContainerVisibility(isChecked);
+                        ((MyScorecardSectionDataHolder) mDataHolder).mChecked = isChecked;
+                    }
+                });
+            }
+
             private void setFieldContainerVisibility(boolean isChecked) {
                 if (nullWhen == CHECKED && isChecked) {
                     fieldContainer.setVisibility(View.GONE);
@@ -496,19 +324,6 @@ public class MatchSubmitActivity extends Activity {
                 {
                     fieldContainer.setVisibility(View.GONE);
                 }
-            }
-
-            public ScorecardNullableFieldSectionViewHolder(View itemView, ScorecardSectionAdapter scorecardSectionAdapter, FieldViewSection viewSection) {
-                super(itemView, scorecardSectionAdapter, viewSection);
-                fieldContainer = itemView.findViewById(R.id.container);
-                checkbox = (CheckBox) itemView.findViewById(R.id.null_checkbox);
-                checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        setFieldContainerVisibility(isChecked);
-                        ((MyScorecardSectionDataHolder) mDataHolder).mChecked = isChecked;
-                    }
-                });
             }
 
             @Override
@@ -583,15 +398,15 @@ public class MatchSubmitActivity extends Activity {
             protected ScorecardFieldSectionViewHolder mViewHolder;
             protected ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder mDataHolder;
 
+            public FieldViewSection(ScorecardSectionAdapter scorecardSectionAdapter) {
+                mScorecardSectionAdapter = scorecardSectionAdapter;
+            }
+
             public void bindToDataHolder(ScorecardFieldSectionViewHolder.MyScorecardSectionDataHolder dataHolder) {
                 mDataHolder = dataHolder;
             }
 
             public abstract void InitFromScorecardSection(ScorecardFieldSection section);
-
-            public FieldViewSection(ScorecardSectionAdapter scorecardSectionAdapter) {
-                mScorecardSectionAdapter = scorecardSectionAdapter;
-            }
 
             public void setViewHolder(ScorecardFieldSectionViewHolder viewHolder) {
                 mViewHolder = viewHolder;
@@ -681,16 +496,8 @@ public class MatchSubmitActivity extends Activity {
 
         }
         public static class Data {
-            public ScorecardSectionDataHolder scorecardSectionDataHolder;
             public final ScorecardSection scorecardSection;
-
-            public static List<Data> makeListFromScorecard(Scorecard scorecard) {
-                List<Data> output = new ArrayList<>();
-                for (ScorecardSection section : scorecard.sections) {
-                    output.add(new Data(section));
-                }
-                return output;
-            }
+            public ScorecardSectionDataHolder scorecardSectionDataHolder;
 
             public Data(ScorecardSection section) {
                 this(section, null);
@@ -700,6 +507,14 @@ public class MatchSubmitActivity extends Activity {
             public Data(ScorecardSection section, ScorecardSectionDataHolder dataHolder) {
                 scorecardSection = section;
                 scorecardSectionDataHolder = dataHolder;
+            }
+
+            public static List<Data> makeListFromScorecard(Scorecard scorecard) {
+                List<Data> output = new ArrayList<>();
+                for (ScorecardSection section : scorecard.sections) {
+                    output.add(new Data(section));
+                }
+                return output;
             }
         }
     }
@@ -723,12 +538,223 @@ public class MatchSubmitActivity extends Activity {
             setRetainInstance(true);
         }
 
+        public List<ScorecardData> getScorecardData() {
+            return mScorecardData;
+        }
+
         public void setScorecardData(List<ScorecardData> data) {
             mScorecardData = data;
         }
+    }
 
-        public List<ScorecardData> getScorecardData() {
-            return mScorecardData;
+    private class AsyncGetGames extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            Log.d("MatchSubmitActivity", "getting games");
+            try {
+                URL url = new URL(getResources().getString(R.string.get_current_events_url));
+                HttpURLConnection connection = RobocubsNetworkUtils
+                        .SendGetRequest(url, getApplicationContext());
+                int httpResult = connection.getResponseCode();
+                if (httpResult == HttpURLConnection.HTTP_OK) {
+                    JSONObject result = new JSONObject(
+                            IOUtils.toString(connection.getInputStream()));
+                    JSONArray errors = result.getJSONArray("errors");
+                    JSONArray games = result.getJSONArray("games");
+                    if (errors.length() == 0) {
+                        Log.d("MatchSubmitActivity", "games found: " + games.length());
+                        ParseJSONGames(games);
+                        return true;
+                    }
+                    else {
+                        for (int i = 0; i < errors.length(); i++) {
+                            Log.e("MatchSubmitActivity",
+                                  "error while submitting: " + errors.get(i).toString());
+                        }
+                        return false;
+                    }
+                }
+                else return false;
+            }
+            catch (IOException | JSONException | CertificateException | NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+                Log.e("MatchSubmitActivity", "exception while retrieving games", e);
+                return false;
+            }
+        }
+
+        private void ParseJSONGames(JSONArray games) throws JSONException {
+            for (int i = 0; i < games.length(); i++) {
+                JSONObject gameJSON = games.getJSONObject(i);
+                Scorecard scorecard = new Scorecard();
+                scorecard.id = gameJSON.getInt("id");
+                scorecard.year = gameJSON.getInt("game_year");
+                scorecard.type = gameJSON.getString("game_type");
+                scorecard.name = gameJSON.getString("game_name");
+                scorecard.sections = new ArrayList<>();
+                JSONArray sections = gameJSON.getJSONArray("sections");
+                scorecard.sections = ParseJSONScorecardSections(sections);
+                scorecardData.add(new ScorecardData(scorecard,
+                                                    new ArrayList<ScorecardSectionAdapter.Data>()));
+            }
+        }
+
+        private List<ScorecardSection> ParseJSONScorecardSections(JSONArray sections)
+                throws JSONException {
+            List<ScorecardSection> result = new ArrayList<>();
+            for (int j = 0; j < sections.length(); j++) {
+                JSONObject sectionJSON = sections.getJSONObject(j);
+                String sectionType = sectionJSON.getString("section_type");
+                switch (sectionType) {
+                    case "field":
+                        result.add(ParseJSONFieldSection(sectionJSON));
+                        break;
+                    case "title": {
+                        ScorecardTitleSection section = new ScorecardTitleSection();
+                        section.id = sectionJSON.getInt("id");
+                        section.index = sectionJSON.getInt("index");
+                        section.title = sectionJSON.getString("title");
+                        result.add(section);
+                        break;
+                    }
+                    case "paragraph": {
+                        ScorecardParagraphSection section = new ScorecardParagraphSection();
+                        section.id = sectionJSON.getInt("id");
+                        section.index = sectionJSON.getInt("index");
+                        section.paragraph = sectionJSON.getString("paragraph");
+                        result.add(section);
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        private ScorecardFieldSection ParseJSONFieldSection(JSONObject sectionJSON)
+                throws JSONException {
+            Boolean isNullable = sectionJSON.getBoolean("is_nullable");
+            if (isNullable) {
+                ScorecardNullableFieldSection section = new ScorecardNullableFieldSection();
+                section.id = sectionJSON.getInt("id");
+                section.index = sectionJSON.getInt("index");
+                section.name = sectionJSON.getString("field_name");
+                String fieldType = sectionJSON.getString("type");
+                switch (fieldType) {
+                    case "Count":
+                        section.type = COUNT;
+                        break;
+                    case "Rating":
+                        section.type = RATING;
+                        break;
+                    default:
+                        throw new IllegalStateException(
+                                "Scorecard field section has illegal value \"" + fieldType +
+                                        "\" for \"type\"");
+                }
+                section.isNullable = true;
+                String nullWhen = sectionJSON.getString("null_when");
+                switch (nullWhen) {
+                    case "Checked":
+                        section.nullWhen = CHECKED;
+                        break;
+                    case "Unchecked":
+                        section.nullWhen = UNCHECKED;
+                        break;
+                    default:
+                        throw new IllegalStateException(
+                                "Scorecard field section has illegal value \"" + nullWhen +
+                                        "\" for \"null_when\"");
+                }
+                section.checkBoxMessage = sectionJSON.getString("checkbox_message");
+                return section;
+            }
+            else {
+                ScorecardFieldSection section = new ScorecardFieldSection();
+                section.id = sectionJSON.getInt("id");
+                section.index = sectionJSON.getInt("index");
+                section.name = sectionJSON.getString("field_name");
+                String fieldType = sectionJSON.getString("type");
+                switch (fieldType) {
+                    case "Count":
+                        section.type = COUNT;
+                        break;
+                    case "Rating":
+                        section.type = RATING;
+                        break;
+                    default:
+                        throw new IllegalStateException(
+                                "Scorecard field section has illegal value \"" + fieldType +
+                                        "\" for \"type\"");
+                }
+                section.isNullable = isNullable;
+                return section;
+            }
+        }
+    }
+
+    private class GameTypeSpinnerItemSelectedListener
+            implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            try {
+                if (scorecardData.isEmpty() && task != null) {
+                    task.get();
+                }
+                else if (scorecardData.isEmpty() && task == null) {
+                    task = new AsyncGetGames();
+                    task.execute();
+                    task.get();
+                }
+                String gameType = getResources().getStringArray(R.array.game_types)[position];
+                List<ScorecardData> games = new ArrayList<>();
+                for (ScorecardData innerScorecardData : scorecardData) {
+                    if (innerScorecardData.mScorecard.type.equals(gameType)) {
+                        games.add(innerScorecardData);
+                    }
+                }
+                if ((games.isEmpty() && !isShowingNoGameMessage) ||
+                        (!games.isEmpty() && isShowingNoGameMessage)) {
+                    ((ViewSwitcher) findViewById(R.id.select_game_spinner_switcher)).showNext();
+                    isShowingNoGameMessage = !isShowingNoGameMessage;
+                }
+                else {
+                    GameTypeSpinnerArrayAdapter selectGameSpinnerAdapter = new GameTypeSpinnerArrayAdapter(
+                            MatchSubmitActivity.this, games);
+                    selectGameSpinnerAdapter.setDropDownViewResource(
+                            android.R.layout.simple_spinner_dropdown_item);
+                    Spinner gameSpinner = (Spinner) findViewById(R.id.select_game_spinner);
+                    gameSpinner.setAdapter(selectGameSpinnerAdapter);
+                    gameSpinner.setOnItemSelectedListener(new GameSpinnerItemSelectedListener());
+                }
+            }
+            catch (InterruptedException | ExecutionException e) {
+                Log.e("MatchSubmitActivity", "exception while retrieving games", e);
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    }
+
+    private class GameSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            ScorecardData innerScorecardData = (ScorecardData) parent.getItemAtPosition(position);
+            if (innerScorecardData.mAdapterData.size() == 0) {
+                innerScorecardData.mAdapterData.addAll(ScorecardSectionAdapter.Data
+                                                               .makeListFromScorecard(
+                                                                       innerScorecardData.mScorecard));
+            }
+            scorecardSectionAdapter.setData(innerScorecardData.mAdapterData);
+            scorecardSectionAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            scorecardSectionAdapter.setData(new ArrayList<ScorecardSectionAdapter.Data>());
+            scorecardSectionAdapter.notifyDataSetChanged();
         }
     }
 }

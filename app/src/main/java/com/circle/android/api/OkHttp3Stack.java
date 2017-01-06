@@ -61,57 +61,13 @@ import okhttp3.ResponseBody;
  */
 
 @Singleton
-public class OkHttp3Stack implements HttpStack {
+class OkHttp3Stack implements HttpStack {
 
     private final OkHttpClient mClient;
 
     @Inject
     public OkHttp3Stack(OkHttpClient client) {
         mClient = client;
-    }
-
-    @Override
-    public HttpResponse performRequest(com.android.volley.Request<?> request, Map<String, String> additionalHeaders)
-            throws IOException, AuthFailureError {
-
-        OkHttpClient.Builder clientBuilder = mClient.newBuilder();
-        int timeoutMs = request.getTimeoutMs();
-
-        clientBuilder.connectTimeout(timeoutMs, TimeUnit.MILLISECONDS);
-        clientBuilder.readTimeout(timeoutMs, TimeUnit.MILLISECONDS);
-        clientBuilder.writeTimeout(timeoutMs, TimeUnit.MILLISECONDS);
-
-        okhttp3.Request.Builder okHttpRequestBuilder = new okhttp3.Request.Builder();
-        okHttpRequestBuilder.url(request.getUrl());
-
-        Map<String, String> headers = request.getHeaders();
-        for(final String name : headers.keySet()) {
-            okHttpRequestBuilder.addHeader(name, headers.get(name));
-        }
-        for(final String name : additionalHeaders.keySet()) {
-            okHttpRequestBuilder.addHeader(name, additionalHeaders.get(name));
-        }
-
-        setConnectionParametersForRequest(okHttpRequestBuilder, request);
-
-        OkHttpClient client = clientBuilder.build();
-        okhttp3.Request okHttpRequest = okHttpRequestBuilder.build();
-        Call okHttpCall = client.newCall(okHttpRequest);
-        Response okHttpResponse = okHttpCall.execute();
-
-        StatusLine responseStatus = new BasicStatusLine(parseProtocol(okHttpResponse.protocol()), okHttpResponse.code(), okHttpResponse.message());
-        BasicHttpResponse response = new BasicHttpResponse(responseStatus);
-        response.setEntity(entityFromOkHttpResponse(okHttpResponse));
-
-        Headers responseHeaders = okHttpResponse.headers();
-        for(int i = 0, len = responseHeaders.size(); i < len; i++) {
-            final String name = responseHeaders.name(i), value = responseHeaders.value(i);
-            if (name != null) {
-                response.addHeader(new BasicHeader(name, value));
-            }
-        }
-
-        return response;
     }
 
     private static HttpEntity entityFromOkHttpResponse(Response r) throws IOException {
@@ -190,5 +146,52 @@ public class OkHttp3Stack implements HttpStack {
         }
 
         return RequestBody.create(MediaType.parse(r.getBodyContentType()), body);
+    }
+
+    @Override
+    public HttpResponse performRequest(com.android.volley.Request<?> request,
+                                       Map<String, String> additionalHeaders)
+            throws IOException, AuthFailureError {
+
+        OkHttpClient.Builder clientBuilder = mClient.newBuilder();
+        int timeoutMs = request.getTimeoutMs();
+
+        clientBuilder.connectTimeout(timeoutMs, TimeUnit.MILLISECONDS);
+        clientBuilder.readTimeout(timeoutMs, TimeUnit.MILLISECONDS);
+        clientBuilder.writeTimeout(timeoutMs, TimeUnit.MILLISECONDS);
+
+        okhttp3.Request.Builder okHttpRequestBuilder = new okhttp3.Request.Builder();
+        okHttpRequestBuilder.url(request.getUrl());
+
+        Map<String, String> headers = request.getHeaders();
+        for (final String name : headers.keySet()) {
+            okHttpRequestBuilder.addHeader(name, headers.get(name));
+        }
+        for (final String name : additionalHeaders.keySet()) {
+            okHttpRequestBuilder.addHeader(name, additionalHeaders.get(name));
+        }
+
+        setConnectionParametersForRequest(okHttpRequestBuilder, request);
+
+        OkHttpClient client = clientBuilder.build();
+        okhttp3.Request okHttpRequest = okHttpRequestBuilder.build();
+        Call okHttpCall = client.newCall(okHttpRequest);
+        Response okHttpResponse = okHttpCall.execute();
+
+        StatusLine responseStatus = new BasicStatusLine(parseProtocol(okHttpResponse.protocol()),
+                                                        okHttpResponse.code(),
+                                                        okHttpResponse.message());
+        BasicHttpResponse response = new BasicHttpResponse(responseStatus);
+        response.setEntity(entityFromOkHttpResponse(okHttpResponse));
+
+        Headers responseHeaders = okHttpResponse.headers();
+        for (int i = 0, len = responseHeaders.size(); i < len; i++) {
+            final String name = responseHeaders.name(i), value = responseHeaders.value(i);
+            if (name != null) {
+                response.addHeader(new BasicHeader(name, value));
+            }
+        }
+
+        return response;
     }
 }

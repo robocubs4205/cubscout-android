@@ -9,19 +9,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.R;
 import com.robocubs4205.cubscout.admin.gamemanager.GameManagerFragment;
 import com.robocubs4205.cubscout.net.DaggerNetComponent;
-import com.robocubs4205.cubscout.net.Error;
 import com.robocubs4205.cubscout.net.NetModule;
 import com.robocubs4205.cubscout.net.CubscoutAPI;
-
-import org.reactivestreams.Subscriber;
 
 import javax.inject.Inject;
 
@@ -34,24 +29,23 @@ import butterknife.OnClick;import io.reactivex.disposables.CompositeDisposable;
  */
 
 public class AdminActivity extends AppCompatActivity {
-    final int EVENT_TAB_POSITION = 0;
-    final int GAME_TAB_POSITION = 1;
-    final int ROBOT_TAB_POSITION = 2;
-    final int NUM_TABS = 3;
-
+    private final int EVENT_TAB_POSITION = 0;
+    private final int GAME_TAB_POSITION = 1;
+    private final int ROBOT_TAB_POSITION = 2;
+    private final int NUM_TABS = 3;
+    private final CompositeDisposable disposables = new CompositeDisposable();
     @Inject
     CubscoutAPI cubscoutAPI;
-
-    CompositeDisposable disposables = new CompositeDisposable();
-
-    GameManagerFragment gameManagerFragment;
-
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.viewpager)
     ViewPager viewPager;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.tablayout)
     TabLayout tabLayout;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    private GameManagerFragment gameManagerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +57,7 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(com.robocubs4205.cubscout.R.layout.activity_admin);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override

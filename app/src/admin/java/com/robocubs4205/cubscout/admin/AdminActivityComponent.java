@@ -3,10 +3,7 @@ package com.robocubs4205.cubscout.admin;
 import com.robocubs4205.cubscout.ActivityScope;
 import com.robocubs4205.cubscout.net.NetComponent;
 
-import javax.inject.Singleton;
-
 import dagger.Component;
-import dagger.Subcomponent;
 
 /**
  * Created by trevor on 12/31/16.

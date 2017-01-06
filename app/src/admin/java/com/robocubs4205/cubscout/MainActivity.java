@@ -18,14 +18,15 @@ import com.robocubs4205.cubscout.admin.AdminActivity;
  */
 
 public class MainActivity extends AppCompatActivity {
-    MainFragment mainFragment;
-    final String mainFragmentTag = "mainFragment";
+    private final String mainFragmentTag = "mainFragment";
+    private MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mainFragment = (MainFragment) getFragmentManager().findFragmentByTag(mainFragmentTag);
         if (mainFragment == null) {

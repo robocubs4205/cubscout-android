@@ -3,6 +3,7 @@ package com.robocubs4205.cubscout;
 /**
  * Created by trevor on 12/30/16.
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal"})
 public class Game {
     public int id;
     public String name;

@@ -35,7 +35,7 @@ public class GameManagerFragment extends Fragment implements GameListView {
     private final List<Game> games = new ArrayList<>();
     private RecyclerView gameListView;
     private GameListAdapter adapter;
-    private MyLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private GameListPresenter presenter;
 
     @Override
@@ -54,7 +54,7 @@ public class GameManagerFragment extends Fragment implements GameListView {
         gameListView = (RecyclerView) view.findViewById(R.id.game_list);
         adapter = new GameListAdapter(games);
         gameListView.setAdapter(adapter);
-        layoutManager = new MyLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getContext());
         gameListView.setLayoutManager(layoutManager);
         gameListView.addItemDecoration(
                 new DividerItemDecoration(getContext(), layoutManager.getOrientation()));
@@ -128,7 +128,7 @@ public class GameManagerFragment extends Fragment implements GameListView {
 
     private class GameListAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-        List<Game> mGames;
+        final List<Game> mGames;
 
         public GameListAdapter(List<Game> games) {
             super();
@@ -155,21 +155,4 @@ public class GameManagerFragment extends Fragment implements GameListView {
         }
     }
 
-    private class MyLayoutManager extends LinearLayoutManager {
-
-        private boolean isScrollEnabled = true;
-
-        public MyLayoutManager(Context context) {
-            super(context);
-        }
-
-        public void setScrollEnabled(boolean flag) {
-            this.isScrollEnabled = flag;
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-            return isScrollEnabled && super.canScrollVertically();
-        }
-    }
 }

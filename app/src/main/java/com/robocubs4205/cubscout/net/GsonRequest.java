@@ -23,35 +23,17 @@ import javax.inject.Inject;
 public class GsonRequest extends Request<JsonObject>{
 
     /** Default charset for JSON request. */
-    protected static final String PROTOCOL_CHARSET = "utf-8";
+    private static final String PROTOCOL_CHARSET = "utf-8";
 
     /** Content type for request. */
     private static final String PROTOCOL_CONTENT_TYPE =
             String.format("application/json; charset=%s", PROTOCOL_CHARSET);
 
+    @SuppressWarnings("WeakerAccess")
     @Inject
     public Gson mGson;
-
-    public static class InjectionHelper{
-        private final Gson mGson;
-
-        @Inject
-        public InjectionHelper(Gson gson){
-            mGson = gson;
-        }
-
-        void inject(GsonRequest gsonRequest){
-            gsonRequest.mGson = mGson;
-        }
-    }
-
-    private Type tClass = ((ParameterizedType) getClass().getGenericSuperclass())
-            .getActualTypeArguments()[0];
-
-
-    Response.Listener<JsonObject> mListener;
-    String mRequestBody;
-
+    private Response.Listener<JsonObject> mListener;
+    private String mRequestBody;
     public GsonRequest(int method, String url, String requestBody, Response.Listener<JsonObject> listener,
                        Response.ErrorListener errorListener) {
         super(method, url, errorListener);
@@ -108,6 +90,19 @@ public class GsonRequest extends Request<JsonObject>{
             VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
                           mRequestBody, PROTOCOL_CHARSET);
             return null;
+        }
+    }
+
+    public static class InjectionHelper {
+        private final Gson mGson;
+
+        @Inject
+        public InjectionHelper(Gson gson) {
+            mGson = gson;
+        }
+
+        void inject(GsonRequest gsonRequest) {
+            gsonRequest.mGson = mGson;
         }
     }
 

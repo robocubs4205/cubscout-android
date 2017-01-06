@@ -22,7 +22,7 @@ class GameListPresenter {
     private final List<Game> mGames;
     private final GameListView mView;
 
-    Disposable refreshDisposable;
+    private Disposable refreshDisposable;
 
     @Inject
     public GameListPresenter(CubscoutAPI api, GameListView view, List<Game> games) {
@@ -32,24 +32,24 @@ class GameListPresenter {
         refreshList();
     }
 
-    void refreshList() {
-        if (refreshDisposable != null && !refreshDisposable.isDisposed())
-            refreshDisposable.dispose();
-        refreshDisposable = mApi.getAllGames().subscribeOn(Schedulers.io()).observeOn(
-                AndroidSchedulers.mainThread()).subscribe(
-                new Consumer<CubscoutAPI.GetGamesResponse>() {
-                    @Override
-                    public void accept(CubscoutAPI.GetGamesResponse getGamesResponse)
-                            throws Exception {
-                        mGames.clear();
-                        mGames.addAll(getGamesResponse.games);
-                        mView.notifyListChanged();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        mView.showError("unable to retrieve games from server");
-                    }
-                });
+    public void refreshList() {
+        if (refreshDisposable != null && !refreshDisposable.isDisposed()) {
+            refreshDisposable = mApi.getAllGames().subscribeOn(Schedulers.io()).observeOn(
+                    AndroidSchedulers.mainThread()).subscribe(
+                    new Consumer<CubscoutAPI.GetGamesResponse>() {
+                        @Override
+                        public void accept(CubscoutAPI.GetGamesResponse getGamesResponse)
+                                throws Exception {
+                            mGames.clear();
+                            mGames.addAll(getGamesResponse.games);
+                            mView.notifyListChanged();
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            mView.showError("unable to retrieve games from server");
+                        }
+                    });
+        }
     }
 }

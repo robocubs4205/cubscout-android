@@ -11,8 +11,9 @@ import io.reactivex.Observable;
  * Created by trevor on 1/1/17.
  */
 public interface CubscoutAPI {
-    public Observable<GetEventsResponse> getCurrentEvents();
-    public Observable<GetGamesResponse> getAllGames();
+    Observable<GetEventsResponse> getCurrentEvents();
+
+    Observable<GetGamesResponse> getAllGames();
 
     class GetEventsResponse {
         public List<Error> errors;
