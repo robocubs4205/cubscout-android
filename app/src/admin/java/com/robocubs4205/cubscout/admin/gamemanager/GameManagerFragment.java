@@ -4,14 +4,15 @@ package com.robocubs4205.cubscout.admin.gamemanager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.R;
@@ -20,6 +21,7 @@ import com.robocubs4205.cubscout.net.NetModule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +56,8 @@ public class GameManagerFragment extends Fragment implements GameListView {
         gameListView.setAdapter(adapter);
         layoutManager = new MyLayoutManager(getContext());
         gameListView.setLayoutManager(layoutManager);
+        gameListView.addItemDecoration(
+                new DividerItemDecoration(getContext(), layoutManager.getOrientation()));
         return view;
     }
 
@@ -73,39 +77,52 @@ public class GameManagerFragment extends Fragment implements GameListView {
         Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void showDetail(int position) {
-        adapter.showDetail(position);
-    }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
-        ViewSwitcher switcher;
         @BindView(R.id.game_name_text)
         TextView gameNameView;
-        @BindView(R.id.game_type_text)
+        @BindView(R.id.game_detail_text)
         TextView gameTypeView;
+        @BindView(R.id.edit_button)
+        Button editButton;
+        @BindView(R.id.expand_divider)
+        View expandDivider;
 
         GameListView mView;
+
+        private boolean isShowingDetail = false;
 
         public ViewHolder(View itemView, GameListView view) {
             super(itemView);
             mView = view;
             ButterKnife.bind(this, itemView);
-            switcher = (ViewSwitcher) itemView.getRootView();
         }
 
         public void bindGame(Game game) {
             gameNameView.setText(game.name);
-            gameTypeView.setText(game.type);
+            gameTypeView.setText(
+                    String.format(Locale.getDefault(), "%s (%s)", game.type, game.year));
         }
 
         public void showDetail() {
-            switcher.showNext();
+            editButton.setVisibility(View.VISIBLE);
+            expandDivider.setVisibility(View.VISIBLE);
         }
 
-        @OnClick(View.NO_ID)
-        public void onClicked() {
-            mView.showDetail(getAdapterPosition());
+        @OnClick(R.id.edit_button)
+        public void editButtonClicked() {
+
+        }
+
+        @OnClick
+        public void expandButtonClicked() {
+            if (isShowingDetail) hideDetail();
+            else showDetail();
+            isShowingDetail = !isShowingDetail;
+        }
+
+        private void hideDetail() {
+            editButton.setVisibility(View.GONE);
+            expandDivider.setVisibility(View.GONE);
         }
     }
 
@@ -123,7 +140,7 @@ public class GameManagerFragment extends Fragment implements GameListView {
                                              int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext())
                                                 .inflate(R.layout.item_game_manager_game,
-                                                         parent, false),GameManagerFragment.this);
+                                                         parent, false), GameManagerFragment.this);
         }
 
         @Override
@@ -135,12 +152,6 @@ public class GameManagerFragment extends Fragment implements GameListView {
         @Override
         public int getItemCount() {
             return mGames.size();
-        }
-
-        public void showDetail(int position) {
-            gameListView.scrollToPosition(position);
-            layoutManager.setScrollEnabled(false);
-            ((ViewHolder) gameListView.findViewHolderForAdapterPosition(position)).showDetail();
         }
     }
 

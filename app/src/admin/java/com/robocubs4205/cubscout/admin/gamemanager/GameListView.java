@@ -12,6 +12,4 @@ interface GameListView {
     void notifyListChanged();
     void notifyListItemChanged(int position);
     void showError(String error);
-
-    void showDetail(int position);
 }

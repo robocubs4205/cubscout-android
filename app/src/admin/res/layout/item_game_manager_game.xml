@@ -1,16 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="8dp"
+              android:layout_marginEnd="24dp"
+              android:layout_marginStart="24dp"
+              android:orientation="vertical">
 
-    <include
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/item_game_manager_game_simple"/>
+        android:layout_height="72dp">
 
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/item_game_manager_game_edit"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
-</ViewSwitcher>
+            <TextView
+                android:id="@+id/game_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Game Name"
+                android:textColor="#de000000"
+                android:textSize="15sp"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:id="@+id/game_detail_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:text="Game details"
+                android:textColor="#8a000000"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText"/>
+
+
+                <ImageView
+                    android:id="@+id/expand_button"
+                    style="@style/AppTheme.ExpansionIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"/>
+        </LinearLayout>
+
+
+    </FrameLayout>
+    <View style="@style/AppTheme.Divider"
+        android:visibility="gone"
+        android:id="@+id/expand_divider"/>
+
+    <Button
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="8dp"
+        android:text="@string/edit_button_text"
+        android:textAlignment="center"
+        android:visibility="gone">
+    </Button>
+</LinearLayout>

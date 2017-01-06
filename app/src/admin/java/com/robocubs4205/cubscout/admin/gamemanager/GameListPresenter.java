@@ -3,12 +3,10 @@ package com.robocubs4205.cubscout.admin.gamemanager;
 import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.net.CubscoutAPI;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -37,7 +35,7 @@ class GameListPresenter {
     void refreshList() {
         if (refreshDisposable != null && !refreshDisposable.isDisposed())
             refreshDisposable.dispose();
-        refreshDisposable = mApi.getAllGames().retry(5).subscribeOn(Schedulers.io()).observeOn(
+        refreshDisposable = mApi.getAllGames().subscribeOn(Schedulers.io()).observeOn(
                 AndroidSchedulers.mainThread()).subscribe(
                 new Consumer<CubscoutAPI.GetGamesResponse>() {
                     @Override
@@ -53,9 +51,5 @@ class GameListPresenter {
                         mView.showError("unable to retrieve games from server");
                     }
                 });
-    }
-
-    void requestDetail(int position){
-        mView.showDetail(position);
     }
 }
