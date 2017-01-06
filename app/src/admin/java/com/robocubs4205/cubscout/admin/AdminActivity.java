@@ -21,12 +21,13 @@ import com.robocubs4205.cubscout.net.Error;
 import com.robocubs4205.cubscout.net.NetModule;
 import com.robocubs4205.cubscout.net.CubscoutAPI;
 
+import org.reactivestreams.Subscriber;
+
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by trevor on 12/30/16.
@@ -43,6 +44,15 @@ public class AdminActivity extends AppCompatActivity {
 
     CompositeDisposable disposables = new CompositeDisposable();
 
+    GameManagerFragment gameManagerFragment;
+
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
+    @BindView(R.id.tablayout)
+    TabLayout tabLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         DaggerAdminActivityComponent.builder().netComponent(
@@ -51,19 +61,18 @@ public class AdminActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(com.robocubs4205.cubscout.R.layout.activity_admin);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
                     case GAME_TAB_POSITION:
-                        return new GameManagerFragment();
+                        if(gameManagerFragment==null) gameManagerFragment = new GameManagerFragment();
+                        return gameManagerFragment;
                     default:
-                        return new GameManagerFragment();
+                        return new Fragment();
                 }
             }
 
@@ -88,29 +97,7 @@ public class AdminActivity extends AppCompatActivity {
         });
         tabLayout.setupWithViewPager(viewPager);
 
-        disposables.add(cubscoutAPI.getCurrentEvents().subscribeOn(Schedulers.io())
-                                   .observeOn(AndroidSchedulers.mainThread()).subscribe(
-                        new Consumer<CubscoutAPI.GetEventsResponse>() {
-                            @Override
-                            public void accept(CubscoutAPI.GetEventsResponse getEventsResponse)
-                                    throws Exception {
-                                for (Error error : getEventsResponse.errors) {
-                                    Log.e("AdminActivity",
-                                          "Error when getting current events: " + error.toString());
-                                }
-                                Log.d("AdminActivity",
-                                      "Events found: " + getEventsResponse.events.size());
-                                for (Event event : getEventsResponse.events) {
-                                    Log.d("AdminActivity", "Event found: " + event.toString());
-                                }
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                Log.e("AdminActivity", "Exception when getting current events",
-                                          throwable);
-                            }
-                        }));
+
     }
 
     @Override
@@ -127,5 +114,13 @@ public class AdminActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         disposables.clear();
+    }
+
+    @OnClick(R.id.fab)
+    public void onClick(){
+        switch (viewPager.getCurrentItem()){
+            case GAME_TAB_POSITION:
+
+        }
     }
 }
