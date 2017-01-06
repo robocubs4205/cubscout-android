@@ -31,12 +31,11 @@ public class StubCubscoutApi implements CubscoutAPI{
         GetGamesResponse stubResponse = new GetGamesResponse();
         stubResponse.errors = new ArrayList<>();
         stubResponse.games = new ArrayList<>();
-        Game game = new Game();
-        game.id = 1;
-        game.name = "StrongHold";
-        game.type = "FRC";
-        game.year = 2016;
-        stubResponse.games.add(game);
+        stubResponse.games.add(new Game(1, "StrongHold", "FRC", 2016));
+        stubResponse.games.add(new Game(2, "Recycle Rush", "FRC", 2015));
+        stubResponse.games.add(new Game(3, "Velocity Vortex", "FTC", 2016));
         return Observable.just(stubResponse);
+        //RuntimeException result = new RuntimeException();
+        //return Observable.error(result);
     }
 }
