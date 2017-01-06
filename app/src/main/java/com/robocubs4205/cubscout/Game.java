@@ -8,4 +8,10 @@ public class Game {
     public String name;
     public String type;
     public int year;
+    public Game(int id, String name, String type, int year){
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.year = year;
+    }
 }
