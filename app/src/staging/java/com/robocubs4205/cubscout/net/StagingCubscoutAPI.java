@@ -2,6 +2,7 @@ package com.robocubs4205.cubscout.net;
 
 import android.content.Context;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.RequestFuture;
@@ -48,6 +49,8 @@ public class StagingCubscoutAPI implements CubscoutAPI {
         GsonRequest request = new GsonRequest(Request.Method.GET,
                                               getCurrentEventsURL,
                                               null, future, future);
+        request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                                                      3,1.5f));
         mRequestQueue.add(request);
         return Observable.fromFuture(future).map(new Function<JsonObject, GetEventsResponse>() {
             @Override
