@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin.gamemanager;
+package com.robocubs4205.cubscout.gamemanager;
 
 /**
  * Created by trevor on 1/2/17.

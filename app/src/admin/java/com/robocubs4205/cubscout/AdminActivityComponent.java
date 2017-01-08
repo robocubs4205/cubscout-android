@@ -1,6 +1,5 @@
-package com.robocubs4205.cubscout.admin;
+package com.robocubs4205.cubscout;
 
-import com.robocubs4205.cubscout.ActivityScope;
 import com.robocubs4205.cubscout.net.NetComponent;
 
 import dagger.Component;

@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin.gamemanager;
+package com.robocubs4205.cubscout.gamemanager;
 
 import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.net.CubscoutAPI;
@@ -22,11 +22,12 @@ import io.reactivex.subjects.BehaviorSubject;
  */
 public class GameListModelImpl implements GameListModel {
 
-    private BehaviorSubject<Game> gameAddedSubject = BehaviorSubject.create();
-    private BehaviorSubject<Integer> gameRemovedSubject = BehaviorSubject.create();
-    private BehaviorSubject<Pair<Game, Integer>> gameChangedSubject = BehaviorSubject.create();
+    private final BehaviorSubject<Game> gameAddedSubject = BehaviorSubject.create();
+    private final BehaviorSubject<Integer> gameRemovedSubject = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Game, Integer>> gameChangedSubject = BehaviorSubject
+            .create();
 
-    private CubscoutAPI mApi;
+    private final CubscoutAPI mApi;
 
     @Inject
     public GameListModelImpl(CubscoutAPI api) {

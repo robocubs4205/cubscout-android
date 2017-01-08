@@ -3,5 +3,4 @@
     <string name="app_name">CubScout(Debug)</string>
     <string name="cubscout_server_fqdn">cubscout.robocubs4205.local</string>
     <string name="get_current_events_url">https://cubscout.robocubs4205.local/get_current_events</string>
-    <string name="match_submit_url">https://cubscout.robocubs4205.local/match_submit</string>
 </resources>

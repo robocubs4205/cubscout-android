@@ -25,7 +25,6 @@
     <string name="sort_by_second_label_text">Then by</string>
     <string name="sort_by_last_label_text">Finally by</string>
     <string name="report_list_sort_button_text">Go</string>
-    <string name="launch_create_new_game_activity_text">Enter a game design</string>
     <string name="checkbox_message_field_label_text">Message by null checkbox</string>
     <string name="select_game_spinner_label_text">Select Game</string>
     <string name="select_game_type_label_text">Game type</string>
@@ -36,11 +35,9 @@
     <string name="robot_tab_label_text">Robots</string>
     <string name="launch_admin_activity_button_text">Admin tools</string>
     <string name="scorecard_design_submit_url">https://cubscout.robocubs4205.local</string>
-    <string name="game_name_label_text">Game Name</string>
-    <string name="game_type_label_text">Game Type</string>
     <string name="no_games_text">No games have been created yet.</string>
     <string name="edit_button_text">EDIT</string>
-    <string name="game_name_field_label">Name</string>
+    <string name="null_when_label_text">Null When</string>
 
     <string-array name="defense_ratings">
         <item>1</item>

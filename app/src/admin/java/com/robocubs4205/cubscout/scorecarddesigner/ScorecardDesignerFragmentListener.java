@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin.scorecarddesigner;
+package com.robocubs4205.cubscout.scorecarddesigner;
 
 interface ScorecardDesignerFragmentListener {
     void GameDesignerFragmentRemoveButtonClicked(ScorecardDesignerFragment fragment);

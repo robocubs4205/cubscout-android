@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin;
+package com.robocubs4205.cubscout;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,17 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.robocubs4205.cubscout.R;
-import com.robocubs4205.cubscout.admin.gamemanager.GameManagerFragment;
+import com.robocubs4205.cubscout.gamemanager.GameManagerFragment;
+import com.robocubs4205.cubscout.net.CubscoutAPI;
 import com.robocubs4205.cubscout.net.DaggerNetComponent;
 import com.robocubs4205.cubscout.net.NetModule;
-import com.robocubs4205.cubscout.net.CubscoutAPI;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;import io.reactivex.disposables.CompositeDisposable;
+import butterknife.OnClick;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by trevor on 12/30/16.

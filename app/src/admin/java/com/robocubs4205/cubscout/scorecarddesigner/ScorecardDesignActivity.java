@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin.scorecarddesigner;
+package com.robocubs4205.cubscout.scorecarddesigner;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -40,9 +40,8 @@ import javax.net.ssl.HttpsURLConnection;
 public class ScorecardDesignActivity extends Activity implements ScorecardDesignerFragmentListener {
 
     private final List<ScorecardDesignerFragment> scoredKeys = new ArrayList<>();
-    private LinearLayout entries;
-
     private final ArrayList<Integer> gameYears = new ArrayList<>();
+    private LinearLayout entries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

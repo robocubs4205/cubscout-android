@@ -11,8 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import javax.inject.Inject;
 
