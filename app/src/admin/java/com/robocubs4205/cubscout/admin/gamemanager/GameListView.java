@@ -7,5 +7,9 @@ package com.robocubs4205.cubscout.admin.gamemanager;
 interface GameListView {
     void notifyListChanged();
     void notifyListItemChanged(int position);
+
+    void notifyListItemInserted(int position);
+
+    void notifyListItemRemoved(int position);
     void showError(String error);
 }

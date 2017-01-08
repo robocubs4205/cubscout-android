@@ -69,7 +69,16 @@ public class GameManagerFragment extends Fragment implements GameListView {
     @Override
     public void notifyListItemChanged(int position) {
         adapter.notifyItemChanged(position);
+    }
 
+    @Override
+    public void notifyListItemInserted(int position) {
+        adapter.notifyItemInserted(position);
+    }
+
+    @Override
+    public void notifyListItemRemoved(int position) {
+        adapter.notifyItemRemoved(position);
     }
 
     @Override
