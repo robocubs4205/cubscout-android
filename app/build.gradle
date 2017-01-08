@@ -45,6 +45,7 @@ android {
         }
     }
 
+    //noinspection GroovyMissingReturnStatement
     variantFilter { variant ->
         def names = variant.flavors*.name
         // To check for a certain build type, use variant.buildType.name == "<buildType>"
@@ -60,6 +61,7 @@ android {
             manifest.srcFile 'src/main/AndroidManifest.xml'
         }
     }
+    //noinspection GroovyMissingReturnStatement
     packagingOptions{
         pickFirst 'META-INF/LICENSE'
         pickFirst 'META-INF/DEPENDENCIES'

@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin.gamemanager;
+package com.robocubs4205.cubscout.gamemanager;
 
 import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.net.CubscoutAPI;

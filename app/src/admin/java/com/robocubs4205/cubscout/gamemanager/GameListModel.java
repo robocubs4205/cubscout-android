@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout.admin.gamemanager;
+package com.robocubs4205.cubscout.gamemanager;
 
 import com.robocubs4205.cubscout.Game;
 
@@ -12,7 +12,7 @@ import io.reactivex.Observable;
  * Created by trevor on 1/6/17.
  */
 
-public interface GameListModel {
+interface GameListModel {
     void addGame(Game game);
 
     void removeGame(int position);

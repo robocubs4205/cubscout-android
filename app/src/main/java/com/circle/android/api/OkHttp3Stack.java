@@ -130,8 +130,6 @@ class OkHttp3Stack implements HttpStack {
                 return new ProtocolVersion("HTTP", 1, 0);
             case HTTP_1_1:
                 return new ProtocolVersion("HTTP", 1, 1);
-            case SPDY_3:
-                return new ProtocolVersion("SPDY", 3, 1);
             case HTTP_2:
                 return new ProtocolVersion("HTTP", 2, 0);
         }
