@@ -37,6 +37,7 @@
     <string name="scorecard_design_submit_url">https://cubscout.robocubs4205.local</string>
     <string name="no_games_text">No games have been created yet.</string>
     <string name="edit_button_text">EDIT</string>
+    <string name="game_name_field_label">Name</string>
     <string name="null_when_label_text">Null When</string>
 
     <string-array name="defense_ratings">
