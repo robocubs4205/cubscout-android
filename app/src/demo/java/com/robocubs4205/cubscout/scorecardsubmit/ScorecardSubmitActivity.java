@@ -51,6 +51,10 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     EditText teamNumberView;
     @BindView(R.id.match_number_field)
     EditText matchNumberView;
+    @BindView(R.id.team_number_field_wrapper)
+    TextInputLayout teamNumberViewWrapper;
+    @BindView(R.id.match_number_field_wrapper)
+    TextInputLayout matchNumberViewWrapper;
     private ScorecardSubmitPresenter presenter;
     private Scorecard scorecard;
     private Map<Integer, FieldScore> fieldScores;
@@ -119,16 +123,12 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
     @Override
     public void notifyMatchNumberMissing() {
-        Snackbar.make(findViewById(android.R.id.content), "Please enter the match number",
-                      Snackbar.LENGTH_LONG)
-                .show();
+        matchNumberViewWrapper.setError("Required");
     }
 
     @Override
     public void notifyTeamNumberMissing() {
-        Snackbar.make(findViewById(android.R.id.content), "Please enter the robot's number",
-                      Snackbar.LENGTH_LONG)
-                .show();
+        teamNumberViewWrapper.setError("Required");
     }
 
     @OnTextChanged(value = R.id.team_number_field,
