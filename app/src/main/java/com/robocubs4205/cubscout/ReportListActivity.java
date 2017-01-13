@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+@Deprecated
 public class ReportListActivity extends Activity {
 
     private final List<ListIndividualReportFragment> reports = new ArrayList<>();

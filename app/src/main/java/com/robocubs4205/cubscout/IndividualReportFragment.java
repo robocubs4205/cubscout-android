@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressLint("all")
+@Deprecated
 public class IndividualReportFragment extends Fragment {
 
     public IndividualReportFragment() {

@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
     <CheckBox
-        android:text="CheckBox"
+        android:id="@+id/null_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/null_checkbox"
-        android:button="@null"
-        android:drawableRight="@android:drawable/btn_radio"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        tools:ignore="HardcodedText,RtlHardcoded"
+        android:button="@null"
+        android:drawableRight="@android:drawable/btn_radio"
+        android:text="CheckBox"
+        android:textColor="?android:attr/textColorSecondary"
         android:textSize="14sp"
-        android:textColor="?android:attr/textColorSecondary"/>
+        tools:ignore="HardcodedText,RtlHardcoded"/>
 
-    <include layout="@layout/item_scorecard_count_field_section"
+    <include
+        android:id="@+id/container"
+        layout="@layout/item_scorecard_count_field_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/null_checkbox"
-        android:id="@+id/container"
         android:layout_marginLeft="-10dp"
         android:layout_marginRight="-10dp"/>
 </RelativeLayout>

@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @SuppressLint("all")
+@Deprecated
 public class ListIndividualReportFragment extends Fragment {
 
     public ListIndividualReportFragment() {

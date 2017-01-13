@@ -20,21 +20,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
 
-    }
-    public void LaunchMatchSubmitActivity(View view)
-    {
-        Intent intent = new Intent(this,ScorecardSubmitActivity.class);
+    public void LaunchMatchSubmitActivity(View view) {
+        Intent intent = new Intent(this, ScorecardSubmitActivity.class);
         startActivity(intent);
     }
-    public void LaunchIndividualReportActivity(View view)
-    {
-        Intent intent = new Intent(this,IndividualReportActivity.class);
+
+    public void LaunchIndividualReportActivity(View view) {
+        Intent intent = new Intent(this, IndividualReportActivity.class);
         startActivity(intent);
     }
-    public void LaunchReportListActivity(View view)
-    {
-        Intent intent = new Intent(this,ReportListActivity.class);
+
+    public void LaunchReportListActivity(View view) {
+        Intent intent = new Intent(this, ReportListActivity.class);
         startActivity(intent);
     }
 }

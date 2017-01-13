@@ -1,5 +1,7 @@
 package com.robocubs4205.cubscout.net;
 
+import com.google.gson.Gson;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -12,4 +14,6 @@ import dagger.Component;
 @Component(modules = GsonModule.class)
 public interface GsonComponent {
     GsonRequest.InjectionHelper gsonRequestInjectionHelper();
+
+    Gson gson();
 }

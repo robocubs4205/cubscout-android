@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+@Deprecated
 public class DefenseRatingFragment extends Fragment {
 
     public DefenseRatingFragment() {

@@ -99,9 +99,9 @@ public class AdminActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchItem.setTitle("search games");
+        searchItem.setTitle("search gameEntities");
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setQueryHint("search games");
+        searchView.setQueryHint("search gameEntities");
         return super.onCreateOptionsMenu(menu);
     }
 

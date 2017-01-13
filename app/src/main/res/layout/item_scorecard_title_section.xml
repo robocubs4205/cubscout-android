@@ -3,17 +3,15 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:paddingLeft="10dp"
-             android:paddingRight="10dp"
-             android:paddingTop="20dp"
-             android:paddingBottom="10dp">
+             android:paddingBottom="10dp"
+             android:paddingTop="20dp">
 
     <TextView
-        android:text="TextView"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/title"
-        android:textSize="24sp"
+        android:text="TextView"
         android:textColor="?android:attr/textColorPrimary"
+        android:textSize="24sp"
         tools:ignore="HardcodedText"/>
 </FrameLayout>

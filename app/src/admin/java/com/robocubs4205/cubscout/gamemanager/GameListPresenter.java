@@ -47,7 +47,7 @@ class GameListPresenter {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            mView.showError("unable to retrieve games from server");
+                            mView.showError("unable to retrieve gameEntities from server");
                         }
                     });
         }

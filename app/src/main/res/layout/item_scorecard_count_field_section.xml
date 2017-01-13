@@ -1,43 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
 
-    <TextView
-        android:text="TextView"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/value_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:hint="Field">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:inputType="number"
+            tools:ignore="HardcodedText,RtlHardcoded"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/value_label"
-        android:layout_alignBaseline="@+id/value"
-        tools:ignore="HardcodedText,RtlHardcoded"
-        android:layout_toLeftOf="@+id/value"
-        android:layout_alignParentLeft="true"
-        android:labelFor="@+id/value" />
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@id/value"
-        android:layout_toLeftOf="@+id/up_button"
-        android:layout_alignBottom="@+id/up_button"
-        tools:ignore="HardcodedText,RtlHardcoded" />
+        <ImageButton
+            android:id="@+id/up_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_keyboard_arrow_up_black_24dp"/>
 
-    <Button
-        android:layout_width="30dp"
-        android:layout_height="40dp"
-        android:id="@+id/up_button"
-        android:background="@android:drawable/arrow_up_float"
-        android:layout_alignParentEnd="true" />
+        <ImageButton
+            android:id="@+id/down_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"/>
+    </LinearLayout>
 
-    <Button
-        android:layout_width="30dp"
-        android:layout_height="40dp"
-        android:id="@+id/down_button"
-        android:background="@android:drawable/arrow_down_float"
-        android:layout_below="@+id/up_button"
-        android:layout_alignParentEnd="true" />
-</RelativeLayout>
+</LinearLayout>

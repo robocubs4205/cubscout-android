@@ -1,5 +1,6 @@
 package com.robocubs4205.cubscout;
 
+@Deprecated
 public class RobotData {
     public int teamNumber;
     public float avgHighGoal;
