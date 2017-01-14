@@ -3,12 +3,12 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent2</item>
+        <item name="colorPrimary">@color/indigo_500</item>
+        <item name="colorPrimaryDark">@color/indigo_700</item>
+        <item name="colorAccent">@color/red_a400</item>
         <item name="android:buttonStyle">@style/AppTheme.Button.Flat</item>
         <item name="toolbarStyle">@style/AppTheme.ActionBar</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:windowBackground">@color/grey_100</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -32,7 +32,7 @@
     <style name="AppTheme.Button.Flat">
         <item name="android:minHeight">36dp</item>
         <item name="android:minWidth">88dp</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/indigo_700</item>
     </style>
 
     <style name="AppTheme.Title">
