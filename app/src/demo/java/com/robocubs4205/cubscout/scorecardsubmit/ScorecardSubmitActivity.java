@@ -1,7 +1,6 @@
 package com.robocubs4205.cubscout.scorecardsubmit;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -123,17 +122,17 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
     @Override
     public void notifyMatchNumberMissing() {
-        matchNumberViewWrapper.setError("Required");
+        matchNumberView.setError("Required");
     }
 
     @Override
     public void notifyTeamNumberMissing() {
-        teamNumberViewWrapper.setError("Required");
+        teamNumberView.setError("Required");
     }
 
     @OnTextChanged(value = R.id.team_number_field,
                    callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    void onTeamNumberChanged(CharSequence text) {
+    void onTeamNumberChanged(Editable text) {
         try {
             presenter.setTeamNumber(NumberFormat.getInstance(Locale.getDefault())
                                                 .parse(text.toString()).intValue());
@@ -141,17 +140,28 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         catch (ParseException e) {
             presenter.setTeamNumber(null);
         }
+        if (text.length() != 0) {
+            teamNumberViewWrapper.setErrorEnabled(false);
+            teamNumberView.setError(null);
+        }
+        else {
+            notifyTeamNumberMissing();
+        }
     }
 
     @OnTextChanged(value = R.id.match_number_field,
                    callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    void onMatchNumberChanged(CharSequence text) {
+    void onMatchNumberChanged(Editable text) {
         try {
             presenter.setMatchNumber(NumberFormat.getInstance(Locale.getDefault())
                                                  .parse(text.toString()).intValue());
         }
         catch (ParseException e) {
             presenter.setMatchNumber(null);
+        }
+        if (text.length() != 0) {
+            matchNumberViewWrapper.setErrorEnabled(false);
+            matchNumberView.setError(null);
         }
     }
 
