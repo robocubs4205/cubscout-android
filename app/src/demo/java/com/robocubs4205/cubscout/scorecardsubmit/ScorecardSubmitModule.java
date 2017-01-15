@@ -14,7 +14,7 @@ final class ScorecardSubmitModule {
     private final ScorecardSubmitView view;
     private final Context context;
 
-    public ScorecardSubmitModule(ScorecardSubmitView view, Context context) {
+    public ScorecardSubmitModule(final ScorecardSubmitView view, final Context context) {
 
         this.view = view;
         this.context = context;
