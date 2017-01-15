@@ -66,17 +66,18 @@ final class ScorecardSubmitPresenter {
         Scorecard scorecard = provider.getDemoScorecard();
         if (fieldScores.isEmpty() || currentScorecard != scorecard) {
             int adapterIndex = 0;
-            for (Scorecard.ScorecardSection section : scorecard.sections) {
+            for (int i = 0; i < scorecard.sections.size(); ++i) {
+                Scorecard.ScorecardSection section = scorecard.sections.get(i);
                 if (section instanceof Scorecard.ScorecardNullableFieldSection) {
                     Scorecard.ScorecardNullableFieldSection concreteSection =
                             (Scorecard.ScorecardNullableFieldSection) section;
                     //noinspection ConstantConditions
-                    fieldScores.put(adapterIndex, new FieldScore(section.index,
+                    fieldScores.put(adapterIndex, new FieldScore(i,
                                                                  (concreteSection.nullWhen ==
                                                                          CHECKED) ? 0 : null));
                 }
                 else if (section instanceof Scorecard.ScorecardFieldSection) {
-                    fieldScores.put(adapterIndex, new FieldScore(section.index, 0));
+                    fieldScores.put(adapterIndex, new FieldScore(i, 0));
                 }
                 adapterIndex++;
             }

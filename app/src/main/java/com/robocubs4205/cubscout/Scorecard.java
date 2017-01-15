@@ -27,12 +27,11 @@ public class Scorecard {
         public String name;
         public boolean isNullable;
 
-        public ScorecardFieldSection(String name, Type type, int index) {
-            this(name, type, false, index);
+        public ScorecardFieldSection(String name, Type type) {
+            this(name, type, false);
         }
 
-        protected ScorecardFieldSection(String name, Type type, boolean isNullable, int index) {
-            this.index = index;
+        protected ScorecardFieldSection(String name, Type type, boolean isNullable) {
             this.name = name;
             this.type = type;
             this.isNullable = isNullable;
@@ -54,7 +53,7 @@ public class Scorecard {
         public ScorecardNullableFieldSection(String name,
                                              Type type, int index, NullWhen nullWhen,
                                              String checkBoxMessage) {
-            super(name, type, true, index);
+            super(name, type, true);
             this.nullWhen = nullWhen;
             this.checkBoxMessage = checkBoxMessage;
         }
@@ -77,7 +76,6 @@ public class Scorecard {
     public abstract static class ScorecardSection {
         @SuppressWarnings("unused")
         public long id;
-        public int index;
         private long ScorecardId;
 
         public long getId() {
@@ -86,14 +84,6 @@ public class Scorecard {
 
         public void setId(long id) {
             this.id = id;
-        }
-
-        public int getIndex() {
-            return this.index;
-        }
-
-        public void setIndex(int index) {
-            this.index = index;
         }
 
         public long getScorecardId() {
