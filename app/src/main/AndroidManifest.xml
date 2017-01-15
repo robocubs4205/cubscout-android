@@ -22,12 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ReportListActivity"
-            android:label="@string/report_list_activity_label"
-            android:parentActivityName=".MainActivity">
-        </activity>
-        <activity android:name=".scorecardsubmit.ScorecardSubmitActivity"/>
     </application>
 
 </manifest>
