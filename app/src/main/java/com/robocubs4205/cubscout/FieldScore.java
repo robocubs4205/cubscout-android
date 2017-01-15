@@ -5,11 +5,12 @@ package com.robocubs4205.cubscout;
  */
 
 public class FieldScore {
+    public final Scorecard scorecard;
     public int scorecardIndex;
     public int value;
 
-    public FieldScore(int scorecardIndex, int value) {
-
+    public FieldScore(Scorecard scorecard, int scorecardIndex, int value) {
+        this.scorecard = scorecard;
         this.scorecardIndex = scorecardIndex;
         this.value = value;
     }

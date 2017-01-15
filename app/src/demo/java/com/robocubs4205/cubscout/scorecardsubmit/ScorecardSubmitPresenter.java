@@ -40,7 +40,7 @@ final class ScorecardSubmitPresenter {
 
     @Inject
     public ScorecardSubmitPresenter(final ScorecardSubmitView view, final Context context,
-                                    CubscoutAPI api, Gson gson) {
+                                    final CubscoutAPI api, final Gson gson) {
         this.view = view;
         this.context = context.getApplicationContext();
         this.api = api;
@@ -51,7 +51,7 @@ final class ScorecardSubmitPresenter {
         }
     }
 
-    public static void clearCache(Context context) {
+    public static void clearCache(final Context context) {
         context.deleteFile(FILENAME);
     }
 
@@ -71,11 +71,11 @@ final class ScorecardSubmitPresenter {
                     Scorecard.ScorecardNullableFieldSection concreteSection =
                             (Scorecard.ScorecardNullableFieldSection) section;
                     //noinspection ConstantConditions
-                    fieldScores.put(i, new FieldScore(i, (concreteSection.nullWhen ==
+                    fieldScores.put(i, new FieldScore(scorecard, i, (concreteSection.nullWhen ==
                             CHECKED) ? 0 : null));
                 }
                 else if (section instanceof Scorecard.ScorecardFieldSection) {
-                    fieldScores.put(i, new FieldScore(i, 0));
+                    fieldScores.put(i, new FieldScore(scorecard, i, 0));
                 }
             }
         }
@@ -138,7 +138,7 @@ final class ScorecardSubmitPresenter {
         }
     }
 
-    void setTeamNumber(Integer teamNumber) {
+    void setTeamNumber(final Integer teamNumber) {
         this.teamNumber = teamNumber;
         try {
             serialize();
@@ -148,7 +148,7 @@ final class ScorecardSubmitPresenter {
         }
     }
 
-    void setMatchNumber(Integer matchNumber) {
+    void setMatchNumber(final Integer matchNumber) {
         this.matchNumber = matchNumber;
         try {
             serialize();
@@ -159,10 +159,10 @@ final class ScorecardSubmitPresenter {
     }
 
     private static class PersistedClass {
-        private final Integer matchNumber;
-        public Map<Integer, FieldScore> fieldScores;
-        public Scorecard scorecard;
-        public Integer teamNumber;
+        public final Integer matchNumber;
+        public final Map<Integer, FieldScore> fieldScores;
+        public final Scorecard scorecard;
+        public final Integer teamNumber;
 
         public PersistedClass(Map<Integer, FieldScore> fieldScores, Scorecard scorecard,
                               Integer teamNumber, Integer MatchNumber) {

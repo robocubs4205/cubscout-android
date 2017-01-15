@@ -294,7 +294,8 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                         return; //afterTextChanged called again if text is changed
                     }
                     presenter.setFieldValue(
-                            new FieldScore(getAdapterPosition(), NumberFormat.getInstance(
+                            new FieldScore(scorecard, getAdapterPosition(),
+                                           NumberFormat.getInstance(
                                     Locale.getDefault()).parse(text.toString()).intValue()));
                     valueWrapper.setErrorEnabled(false);
                 }
@@ -310,7 +311,8 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                     int oldValue = NumberFormat
                             .getInstance(Locale.getDefault()).parse(valueView.getText().toString())
                             .intValue();
-                    presenter.setFieldValue(new FieldScore(getAdapterPosition(), oldValue + 1));
+                    presenter.setFieldValue(
+                            new FieldScore(scorecard, getAdapterPosition(), oldValue + 1));
                     valueView.setText(String.format(Locale.getDefault(), "%d", oldValue + 1));
                 }
                 catch (ParseException e) {
@@ -326,7 +328,8 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                             .getInstance(Locale.getDefault()).parse(valueView.getText().toString())
                             .intValue();
                     if (oldValue > 0) {
-                        presenter.setFieldValue(new FieldScore(getAdapterPosition(), oldValue - 1));
+                        presenter.setFieldValue(
+                                new FieldScore(scorecard, getAdapterPosition(), oldValue - 1));
                         valueView.setText(String.format(Locale.getDefault(), "%d", oldValue - 1));
                     }
                 }
@@ -366,7 +369,8 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                     public void onRatingChanged(RatingBar ratingBar, float rating,
                                                 boolean fromUser) {
                         presenter.setFieldValue(
-                                new FieldScore(getAdapterPosition(), Math.round(rating)));
+                                new FieldScore(scorecard, getAdapterPosition(),
+                                               Math.round(rating)));
                     }
                 });
             }
