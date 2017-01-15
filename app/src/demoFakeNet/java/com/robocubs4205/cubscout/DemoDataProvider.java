@@ -5,6 +5,7 @@ import com.robocubs4205.cubscout.net.StubCubscoutApi;
 import java.util.ArrayList;
 
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.COUNT;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.RATING;
 
@@ -20,7 +21,7 @@ public class DemoDataProvider extends StubCubscoutApi {
         scorecard.sections.add(new ScorecardFieldSection("Gears taken to airship", COUNT));
         scorecard.sections.add(new ScorecardFieldSection("Low boiler effectiveness", RATING));
         scorecard.sections.add(new ScorecardFieldSection("High boiler effectiveness", RATING));
-        scorecard.sections.add(new ScorecardFieldSection("", RATING));
+        scorecard.sections.add(new ScorecardNullableFieldSection("Hopper", RATING));
         scorecard.sections.add(new ScorecardFieldSection("Defense", RATING));
         return scorecard;
     }

@@ -10,9 +10,9 @@
     tools:context="com.robocubs4205.cubscout.ReportListActivity">
 
     <TableLayout
+        android:id="@+id/sort_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/sort_table"
         android:stretchColumns="0,1">
 
         <TableRow
@@ -26,9 +26,9 @@
                 />
 
             <Spinner
+                android:id="@+id/first_sort_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/first_sort_spinner" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
         <TableRow
@@ -42,9 +42,9 @@
                 />
 
             <Spinner
+                android:id="@+id/second_sort_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/second_sort_spinner" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
         <TableRow
@@ -58,31 +58,31 @@
                 />
 
             <Spinner
+                android:id="@+id/third_sort_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/third_sort_spinner" />
+                android:layout_height="wrap_content"/>
         </TableRow>
     </TableLayout>
 
     <Button
+        android:id="@+id/report_list_sort_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/report_list_sort_button_text"
-        android:id="@+id/report_list_sort_button"
         android:layout_below="@+id/sort_table"
         android:layout_centerHorizontal="true"
-        android:onClick="onSortButtonClick" />
+        android:onClick="onSortButtonClick"
+        android:text="@string/report_list_sort_button_text"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/report_list_sort_button" >
 
-        <LinearLayout
-            android:orientation="vertical"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/report_list_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/report_list_container" />
+            android:orientation="vertical"/>
     </ScrollView>
 
 </RelativeLayout>

@@ -33,40 +33,14 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/team_number_field_wrapper"
+            <android.support.v7.widget.AppCompatSpinner
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/robot_number_label"
-                android:paddingBottom="8dp">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/team_number_field"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/match_number_field_wrapper"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
-                android:paddingTop="16dp">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/match_number_field"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/match_number_label"
-                    android:inputType="number"/>
-            </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content"/>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/scorecard"
+                android:id="@+id/team_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/item_scorecard_count_field_section"/>
+                android:layout_height="wrap_content"/>
 
             <Button
                 android:id="@+id/submit"

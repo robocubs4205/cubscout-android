@@ -51,7 +51,7 @@ public class Scorecard {
         public String checkBoxMessage;
 
         public ScorecardNullableFieldSection(String name,
-                                             Type type, int index, NullWhen nullWhen,
+                                             Type type, NullWhen nullWhen,
                                              String checkBoxMessage) {
             super(name, type, true);
             this.nullWhen = nullWhen;

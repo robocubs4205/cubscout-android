@@ -28,12 +28,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void LaunchIndividualReportActivity(View view) {
-        Intent intent = new Intent(this, IndividualReportActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, IndividualReportActivity.class);
+        //startActivity(intent);
     }
 
     public void LaunchReportListActivity(View view) {
-        Intent intent = new Intent(this, ReportListActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, ReportListActivity.class);
+        //startActivity(intent);
     }
 }
