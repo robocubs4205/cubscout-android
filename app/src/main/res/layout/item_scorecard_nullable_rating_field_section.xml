@@ -20,7 +20,5 @@
         layout="@layout/item_scorecard_rating_field_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/null_checkbox"
-        android:layout_marginLeft="-10dp"
-        android:layout_marginRight="-10dp"/>
+        android:layout_below="@+id/null_checkbox"/>
 </RelativeLayout>

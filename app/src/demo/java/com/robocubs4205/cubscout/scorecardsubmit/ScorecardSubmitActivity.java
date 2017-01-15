@@ -1,6 +1,7 @@
 package com.robocubs4205.cubscout.scorecardsubmit;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,12 +31,16 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import butterknife.Optional;
 
-/**
- * Created by trevor on 1/8/17.
- */
+import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.CHECKED;
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.UNCHECKED;
 
 public final class ScorecardSubmitActivity extends AppCompatActivity
         implements ScorecardSubmitView {
@@ -267,8 +272,6 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         }
 
         class CountFieldSectionViewHolder extends ViewHolder {
-
-            private final View itemView;
             @BindView(R.id.value_wrapper)
             TextInputLayout valueWrapper;
             @BindView(R.id.value)
@@ -276,7 +279,6 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
             public CountFieldSectionViewHolder(View itemView) {
                 super(itemView);
-                this.itemView = itemView;
                 ButterKnife.bind(this, itemView);
             }
 
@@ -345,16 +347,19 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         }
 
         class RatingFieldSectionViewHolder extends ViewHolder {
-
-            private final View itemView;
+            final boolean isNullable;
             @BindView(R.id.rating_label)
             TextView ratingLabelView;
             @BindView(R.id.rating)
             RatingBar ratingBar;
+            @Nullable
+            @BindView(R.id.container)
+            View containerView;
+            NullWhen nullWhen;
 
-            public RatingFieldSectionViewHolder(View itemView) {
+            public RatingFieldSectionViewHolder(View itemView, boolean isNullable) {
                 super(itemView);
-                this.itemView = itemView;
+                this.isNullable = isNullable;
                 ButterKnife.bind(this, itemView);
                 ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                     @Override
@@ -368,9 +373,51 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
             @Override
             protected void bind(int position) {
+                ScorecardFieldSection section =
+                        (ScorecardFieldSection) scorecard.sections.get(position);
                 ratingLabelView.setText(
-                        ((Scorecard.ScorecardFieldSection) scorecard.sections.get(position)).name);
+                        section.name);
                 ratingBar.setRating(fieldScores.get(position).value);
+                if (isNullable) {
+                    ScorecardNullableFieldSection concreteSection =
+                            (ScorecardNullableFieldSection) section;
+                    if (containerView == null) {
+                        throw new IllegalStateException(
+                                "field section view holder created with isNullable set to true, " +
+                                        "but a view with id 'container' was not found in the " +
+                                        "provided view hierarchy");
+                    }
+                    if (concreteSection.nullWhen == UNCHECKED) {
+                        containerView.setVisibility(View.GONE);
+                    }
+                    else {
+                        containerView.setVisibility(View.VISIBLE);
+                    }
+                    nullWhen = concreteSection.nullWhen;
+                }
+            }
+
+            @Optional
+            @OnCheckedChanged(R.id.null_checkbox)
+            void onCheckChanged(boolean checked) {
+                if (containerView == null) {
+                    throw new IllegalStateException(
+                            "field section view holder created with isNullable set to true, " +
+                                    "but a view with id 'container' was not found in the " +
+                                    "provided view hierarchy");
+                }
+                if (nullWhen == CHECKED && checked) {
+                    containerView.setVisibility(View.GONE);
+                }
+                else if (nullWhen == CHECKED) { //!checked
+                    containerView.setVisibility(View.VISIBLE);
+                }
+                else if (nullWhen == UNCHECKED && checked) {
+                    containerView.setVisibility(View.VISIBLE);
+                }
+                else if (nullWhen == UNCHECKED) { //!checked
+                    containerView.setVisibility(View.GONE);
+                }
             }
         }
 
@@ -396,7 +443,13 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                         return new ScorecardViewAdapter.RatingFieldSectionViewHolder(
                                 LayoutInflater.from(parent.getContext())
                                               .inflate(R.layout.item_scorecard_rating_field_section,
-                                                       parent, false));
+                                                       parent, false), false);
+                    case R.layout.item_scorecard_nullable_rating_field_section:
+                        return new ScorecardViewAdapter.RatingFieldSectionViewHolder(
+                                LayoutInflater.from(parent.getContext())
+                                              .inflate(
+                                                      R.layout.item_scorecard_nullable_rating_field_section,
+                                                      parent, false), true);
                     default:
                         throw new NotImplementedException("");
                 }
