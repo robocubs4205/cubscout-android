@@ -2,23 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                tools:layout_marginLeft="@dimen/activity_horizontal_margin"
+                tools:layout_marginRight="@dimen/activity_horizontal_margin">
 
-    <CheckBox
-        android:id="@+id/null_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:button="@null"
-        android:drawableRight="@android:drawable/btn_radio"
-        android:text="CheckBox"
-        tools:ignore="HardcodedText,RtlHardcoded" />
+    <include layout="@layout/item_nullable_field_section"/>
 
     <include
         android:id="@+id/container"
         layout="@layout/item_scorecard_rating_field_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/null_checkbox"/>
+        android:layout_below="@id/null_checkbox_wrapper"/>
 </RelativeLayout>

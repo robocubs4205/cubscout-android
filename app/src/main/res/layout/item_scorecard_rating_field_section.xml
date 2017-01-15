@@ -4,7 +4,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              tools:layout_marginLeft="@dimen/activity_horizontal_margin"
+              tools:layout_marginRight="@dimen/activity_horizontal_margin">
 
     <TextView
         android:id="@+id/rating_label"
@@ -12,8 +14,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:labelFor="@+id/rating"
-        android:text="TextView"
-        tools:ignore="HardcodedText,RtlHardcoded"/>
+        tools:ignore="RtlHardcoded"
+        tools:text="@string/lorem_ipsum_header"/>
 
     <android.support.v7.widget.AppCompatRatingBar
         android:id="@+id/rating"

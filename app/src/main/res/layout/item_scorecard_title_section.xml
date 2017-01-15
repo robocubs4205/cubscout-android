@@ -4,14 +4,15 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:paddingBottom="10dp"
-             android:paddingTop="20dp">
+             android:paddingTop="20dp"
+             tools:layout_marginLeft="@dimen/activity_horizontal_margin"
+             tools:layout_marginRight="@dimen/activity_horizontal_margin">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp"
-        tools:ignore="HardcodedText"/>
+        tools:text="@string/lorem_ipsum_header"/>
 </FrameLayout>

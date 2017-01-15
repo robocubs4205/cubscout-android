@@ -4,7 +4,10 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="horizontal">
+              android:baselineAligned="false"
+              android:orientation="horizontal"
+              tools:layout_marginLeft="@dimen/activity_horizontal_margin"
+              tools:layout_marginRight="@dimen/activity_horizontal_margin">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/value_wrapper"
@@ -21,7 +24,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="16dp"
             android:inputType="number"
-            tools:ignore="HardcodedText,RtlHardcoded"/>
+            tools:ignore="RtlHardcoded"/>
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
@@ -32,16 +35,16 @@
 
         <ImageButton
             android:id="@+id/up_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/increment_button_size"
+            android:layout_height="@dimen/increment_button_size"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_keyboard_arrow_up_black_24dp"/>
 
         <ImageButton
             android:id="@+id/down_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/increment_button_size"
+            android:layout_height="@dimen/increment_button_size"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"/>
