@@ -1,8 +1,10 @@
 package com.robocubs4205.cubscout.scorecardsubmit;
 
+import android.animation.Animator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,15 +14,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.robocubs4205.cubscout.Application;
+import com.robocubs4205.cubscout.ApplicationComponent;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.R;
 import com.robocubs4205.cubscout.Scorecard;
-import com.robocubs4205.cubscout.net.DaggerGsonComponent;
-import com.robocubs4205.cubscout.net.NetModule;
 
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -45,12 +48,13 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
 public final class ScorecardSubmitActivity extends AppCompatActivity
         implements ScorecardSubmitView {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.scorecard)
     RecyclerView scorecardView;
     ScorecardViewAdapter adapter;
     LinearLayoutManager layoutManager;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.team_number_field)
     EditText teamNumberView;
     @BindView(R.id.match_number_field)
@@ -59,6 +63,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     TextInputLayout teamNumberViewWrapper;
     @BindView(R.id.match_number_field_wrapper)
     TextInputLayout matchNumberViewWrapper;
+
     private ScorecardSubmitPresenter presenter;
     private Scorecard scorecard;
     private Map<Integer, FieldScore> fieldScores;
@@ -67,10 +72,12 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        ApplicationComponent applicationComponent = ((Application) getApplication())
+                .getApplicationComponent();
         presenter = DaggerScorecardSubmitComponent.builder().scorecardSubmitModule(
-                new ScorecardSubmitModule(this, this)).gsonComponent(DaggerGsonComponent.create())
-                                                  .netModule(new NetModule(getApplicationContext()))
-                                                  .build().presenter();
+                new ScorecardSubmitModule(this)).applicationComponent(applicationComponent).build()
+                                                  .presenter();
 
         setContentView(R.layout.activity_scorecard_submit);
         ButterKnife.bind(this);
@@ -296,7 +303,8 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                     presenter.setFieldValue(
                             new FieldScore(scorecard, getAdapterPosition(),
                                            NumberFormat.getInstance(
-                                    Locale.getDefault()).parse(text.toString()).intValue()));
+                                                   Locale.getDefault()).parse(text.toString())
+                                                       .intValue(), false));
                     valueWrapper.setErrorEnabled(false);
                 }
                 catch (ParseException e) {
@@ -312,7 +320,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                             .getInstance(Locale.getDefault()).parse(valueView.getText().toString())
                             .intValue();
                     presenter.setFieldValue(
-                            new FieldScore(scorecard, getAdapterPosition(), oldValue + 1));
+                            new FieldScore(scorecard, getAdapterPosition(), oldValue + 1, false));
                     valueView.setText(String.format(Locale.getDefault(), "%d", oldValue + 1));
                 }
                 catch (ParseException e) {
@@ -329,7 +337,8 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                             .intValue();
                     if (oldValue > 0) {
                         presenter.setFieldValue(
-                                new FieldScore(scorecard, getAdapterPosition(), oldValue - 1));
+                                new FieldScore(scorecard, getAdapterPosition(), oldValue - 1,
+                                               false));
                         valueView.setText(String.format(Locale.getDefault(), "%d", oldValue - 1));
                     }
                 }
@@ -358,9 +367,15 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
             @Nullable
             @BindView(R.id.container)
             View containerView;
+            @Nullable
+            @BindView(R.id.null_checkbox)
+            CheckBox nullCheckbox;
+            @Nullable
+            @BindView(R.id.null_checkbox_label)
+            TextView nullCheckboxLabel;
             NullWhen nullWhen;
 
-            public RatingFieldSectionViewHolder(View itemView, boolean isNullable) {
+            public RatingFieldSectionViewHolder(View itemView, final boolean isNullable) {
                 super(itemView);
                 this.isNullable = isNullable;
                 ButterKnife.bind(this, itemView);
@@ -368,9 +383,18 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                     @Override
                     public void onRatingChanged(RatingBar ratingBar, float rating,
                                                 boolean fromUser) {
-                        presenter.setFieldValue(
-                                new FieldScore(scorecard, getAdapterPosition(),
-                                               Math.round(rating)));
+                        if (isNullable) {
+                            assert nullCheckbox != null;
+                            presenter.setFieldValue(
+                                    new FieldScore(scorecard, getAdapterPosition(),
+                                                   Math.round(rating), nullCheckbox.isChecked() !=
+                                                           (nullWhen == UNCHECKED)));
+                        }
+                        else {
+                            presenter.setFieldValue(
+                                    new FieldScore(scorecard, getAdapterPosition(),
+                                                   Math.round(rating), false));
+                        }
                     }
                 });
             }
@@ -381,7 +405,8 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                         (ScorecardFieldSection) scorecard.sections.get(position);
                 ratingLabelView.setText(
                         section.name);
-                ratingBar.setRating(fieldScores.get(position).value);
+                FieldScore fieldScore = fieldScores.get(position);
+                ratingBar.setRating(fieldScore.value);
                 if (isNullable) {
                     ScorecardNullableFieldSection concreteSection =
                             (ScorecardNullableFieldSection) section;
@@ -391,13 +416,19 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                                         "but a view with id 'container' was not found in the " +
                                         "provided view hierarchy");
                     }
-                    if (concreteSection.nullWhen == UNCHECKED) {
+                    if (fieldScore.isNull) {
                         containerView.setVisibility(View.GONE);
                     }
                     else {
                         containerView.setVisibility(View.VISIBLE);
                     }
                     nullWhen = concreteSection.nullWhen;
+                    if (nullWhen == UNCHECKED != fieldScore.isNull) {
+                        assert nullCheckbox != null;
+                        nullCheckbox.setChecked(true);
+                    }
+                    assert nullCheckboxLabel != null;
+                    nullCheckboxLabel.setText(concreteSection.checkBoxMessage);
                 }
             }
 
@@ -410,17 +441,67 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                                     "but a view with id 'container' was not found in the " +
                                     "provided view hierarchy");
                 }
-                if (nullWhen == CHECKED && checked) {
-                    containerView.setVisibility(View.GONE);
-                }
-                else if (nullWhen == CHECKED) { //!checked
+                if ((nullWhen == CHECKED && checked) || (nullWhen == UNCHECKED && !checked)) {
                     containerView.setVisibility(View.VISIBLE);
+                    containerView.setAlpha(1.0f);
+                    containerView.setTranslationY(0);
+                    containerView.animate().alpha(0.0f).translationY(-containerView.getHeight())
+                                 .setDuration(300).setInterpolator(new FastOutSlowInInterpolator())
+                                 .setListener(new Animator.AnimatorListener() {
+                                     @Override
+                                     public void onAnimationStart(Animator animation) {
+
+                                     }
+
+                                     @Override
+                                     public void onAnimationEnd(Animator animation) {
+                                         containerView.setVisibility(View.GONE);
+                                     }
+
+                                     @Override
+                                     public void onAnimationCancel(Animator animation) {
+
+                                     }
+
+                                     @Override
+                                     public void onAnimationRepeat(Animator animation) {
+
+                                     }
+                                 }).start();
+                    presenter.setFieldValue(new FieldScore(scorecard, getAdapterPosition(),
+                                                           Math.round(ratingBar.getRating()),
+                                                           true));
                 }
-                else if (nullWhen == UNCHECKED && checked) {
+                else {
                     containerView.setVisibility(View.VISIBLE);
-                }
-                else if (nullWhen == UNCHECKED) { //!checked
-                    containerView.setVisibility(View.GONE);
+                    containerView.setAlpha(0.0f);
+                    containerView.setTranslationY(-containerView.getHeight());
+                    containerView.animate().alpha(1.0f).translationY(0.0f)
+                                 .setInterpolator(new FastOutSlowInInterpolator())
+                                 .setListener(new Animator.AnimatorListener() {
+                                     @Override
+                                     public void onAnimationStart(Animator animation) {
+
+                                     }
+
+                                     @Override
+                                     public void onAnimationEnd(Animator animation) {
+                                         containerView.setVisibility(View.VISIBLE);
+                                     }
+
+                                     @Override
+                                     public void onAnimationCancel(Animator animation) {
+
+                                     }
+
+                                     @Override
+                                     public void onAnimationRepeat(Animator animation) {
+
+                                     }
+                                 }).start();
+                    presenter.setFieldValue(new FieldScore(scorecard, getAdapterPosition(),
+                                                           Math.round(ratingBar.getRating()),
+                                                           false));
                 }
             }
         }

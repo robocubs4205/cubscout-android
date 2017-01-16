@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application>
+    <application android:name="com.robocubs4205.cubscout.Application">
         <activity android:name="com.robocubs4205.cubscout.scorelist.ScoreListActivity"/>
         <activity android:name=".scorecardsubmit.ScorecardSubmitActivity"/>
     </application>

@@ -6,10 +6,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.robocubs4205.cubscout.Application;
 import com.robocubs4205.cubscout.DemoDataProvider;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Scorecard;
-import com.robocubs4205.cubscout.net.CubscoutAPI;
 
 import org.apache.commons.io.IOUtils;
 
@@ -29,20 +29,19 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
 final class ScorecardSubmitPresenter {
     private static final String FILENAME = "ScorecardSubmitPresenter";
     private final ScorecardSubmitView view;
-    private final Context context;
-    private final CubscoutAPI api;
+    private final Application application;
+    private final DemoDataProvider api;
     private final Gson gson;
-    private final DemoDataProvider provider = new DemoDataProvider();
     private final Map<Integer, FieldScore> fieldScores = new ArrayMap<>();
     private Integer teamNumber = null;
     private Integer matchNumber = null;
     private Scorecard currentScorecard;
 
     @Inject
-    public ScorecardSubmitPresenter(final ScorecardSubmitView view, final Context context,
-                                    final CubscoutAPI api, final Gson gson) {
+    public ScorecardSubmitPresenter(final ScorecardSubmitView view, final Application application,
+                                    final DemoDataProvider api, final Gson gson) {
         this.view = view;
-        this.context = context.getApplicationContext();
+        this.application = application;
         this.api = api;
         this.gson = gson;
 
@@ -63,19 +62,18 @@ final class ScorecardSubmitPresenter {
     }
 
     private void init() {
-        Scorecard scorecard = provider.getDemoScorecard();
+        Scorecard scorecard = api.getDemoScorecard();
         if (fieldScores.isEmpty() || currentScorecard != scorecard) {
             for (int i = 0; i < scorecard.sections.size(); ++i) {
                 Scorecard.ScorecardSection section = scorecard.sections.get(i);
                 if (section instanceof Scorecard.ScorecardNullableFieldSection) {
                     Scorecard.ScorecardNullableFieldSection concreteSection =
                             (Scorecard.ScorecardNullableFieldSection) section;
-                    //noinspection ConstantConditions
-                    fieldScores.put(i, new FieldScore(scorecard, i, (concreteSection.nullWhen ==
-                            CHECKED) ? 0 : null));
+                    fieldScores.put(i, new FieldScore(scorecard, i, 0,
+                                                      concreteSection.nullWhen == CHECKED));
                 }
                 else if (section instanceof Scorecard.ScorecardFieldSection) {
-                    fieldScores.put(i, new FieldScore(scorecard, i, 0));
+                    fieldScores.put(i, new FieldScore(scorecard, i, 0, false));
                 }
             }
         }
@@ -84,7 +82,7 @@ final class ScorecardSubmitPresenter {
 
     private boolean deserialize() {
         try {
-            FileInputStream fileInputStream = context.openFileInput(FILENAME);
+            FileInputStream fileInputStream = application.openFileInput(FILENAME);
             PersistedClass persistedClass = gson.fromJson(IOUtils.toString(fileInputStream),
                                                           PersistedClass.class);
             fieldScores.clear();
@@ -101,14 +99,14 @@ final class ScorecardSubmitPresenter {
         catch (JsonParseException e) {
             Log.e("ScorecardSubmit", "Stored data file for ScorecardSubmit is corrupted. erasing",
                   e);
-            clearCache(context);
+            clearCache(application);
             return false;
         }
     }
 
     private void serialize() throws IOException {
-        FileOutputStream fileOutputStream = context.openFileOutput(FILENAME,
-                                                                   Context.MODE_PRIVATE);
+        FileOutputStream fileOutputStream = application.openFileOutput(FILENAME,
+                                                                       Context.MODE_PRIVATE);
         PersistedClass persistedClass = new PersistedClass(fieldScores, currentScorecard,
                                                            teamNumber, matchNumber);
         IOUtils.write(gson.toJson(persistedClass), fileOutputStream);
@@ -133,7 +131,7 @@ final class ScorecardSubmitPresenter {
         }
         if (matchNumber != null && teamNumber != null) {
             api.submitMatch(teamNumber, matchNumber, currentScorecard, fieldScores.values());
-            clearCache(context);
+            clearCache(application);
             view.end();
         }
     }

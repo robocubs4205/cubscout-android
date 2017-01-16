@@ -3,6 +3,7 @@ package com.robocubs4205.cubscout.net;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.robocubs4205.cubscout.ApplicationScope;
 import com.robocubs4205.cubscout.Scorecard;
 
 import javax.inject.Singleton;
@@ -15,10 +16,10 @@ import dagger.Provides;
  */
 
 @Module
-class GsonModule {
+public class GsonModule {
     @Provides
-    @Singleton
-    Gson provideGson() {
+    @ApplicationScope
+    public Gson provideGson() {
         return new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                                 .registerTypeAdapter(Scorecard.ScorecardSection.class,
                                                      new Scorecard.ScorecardSectionDeserializer())

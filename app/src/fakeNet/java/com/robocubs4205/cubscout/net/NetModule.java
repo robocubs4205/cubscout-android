@@ -2,6 +2,8 @@ package com.robocubs4205.cubscout.net;
 
 import android.content.Context;
 
+import com.robocubs4205.cubscout.ApplicationScope;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -16,6 +18,7 @@ public class NetModule {
     }
 
     @Provides
+    @ApplicationScope
     public CubscoutAPI provideCubscoutApi(){
         return new StubCubscoutApi();
     }

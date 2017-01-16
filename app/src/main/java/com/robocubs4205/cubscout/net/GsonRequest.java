@@ -27,7 +27,6 @@ public class GsonRequest extends Request<JsonObject>{
     private static final String PROTOCOL_CONTENT_TYPE =
             String.format("application/json; charset=%s", PROTOCOL_CHARSET);
 
-    @SuppressWarnings("WeakerAccess")
     @Inject
     public Gson mGson;
     private Response.Listener<JsonObject> mListener;
@@ -38,7 +37,7 @@ public class GsonRequest extends Request<JsonObject>{
         mListener = listener;
         mRequestBody = requestBody;
 
-        DaggerGsonComponent.create().gsonRequestInjectionHelper().inject(this);
+
     }
 
     @Override

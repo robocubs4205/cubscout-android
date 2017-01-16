@@ -12,21 +12,14 @@ import dagger.Provides;
 @Module
 final class ScorecardSubmitModule {
     private final ScorecardSubmitView view;
-    private final Context context;
 
-    public ScorecardSubmitModule(final ScorecardSubmitView view, final Context context) {
+    public ScorecardSubmitModule(final ScorecardSubmitView view) {
 
         this.view = view;
-        this.context = context;
     }
 
     @Provides
     ScorecardSubmitView getView() {
         return view;
-    }
-
-    @Provides
-    Context getContext() {
-        return context;
     }
 }
