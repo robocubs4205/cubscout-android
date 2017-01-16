@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.robocubs4205.cubscout.scorecardsubmit.ScorecardSubmitActivity;
+import com.robocubs4205.cubscout.scorelist.ScoreListActivity;
 
 import butterknife.OnClick;
 
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void LaunchReportListActivity(View view) {
-        //Intent intent = new Intent(this, ReportListActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, ScoreListActivity.class);
+        startActivity(intent);
     }
 }

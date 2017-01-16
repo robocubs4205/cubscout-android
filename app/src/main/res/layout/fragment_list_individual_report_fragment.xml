@@ -1,29 +1,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context="com.robocubs4205.cubscout.IndividualReportFragment">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:application="com.robocubs4205.cubscout.IndividualReportFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/team_number_header_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/team_number_header_row">
+        android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/team_name_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/team_name_header" />
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     </LinearLayout>
 
     <TableLayout
+        android:id="@+id/main_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/main_table"
         android:layout_below="@+id/team_number_header_row">
 
         <TableRow
@@ -34,13 +34,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/avg_high_goal_made_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/avg_high_goal_made_label_text"/>
 
             <TextView
+                android:id="@+id/average_high_goal_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/average_high_goal_text" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
         <TableRow
@@ -51,13 +51,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/high_goal_accuracy_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/high_goal_accuracy_label_text"/>
 
             <TextView
+                android:id="@+id/high_goal_accuracy_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/high_goal_accuracy_text" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
         <TableRow
@@ -68,13 +68,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/avg_low_goal_made_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/avg_low_goal_made_label_text"/>
 
             <TextView
+                android:id="@+id/average_low_goal_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/average_low_goal_text" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
         <TableRow
@@ -85,13 +85,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/low_goal_accuracy_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/low_goal_accuracy_label_text"/>
 
             <TextView
+                android:id="@+id/low_goal_accuracy_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/low_goal_accuracy_text" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
         <TableRow
@@ -102,13 +102,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/defense_rating_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/defense_rating_label_text"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/defense_rating_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:width="200dp" />
         </TableRow>
 
@@ -120,13 +120,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/average_total_crossing_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/average_total_crossing_label_text"/>
 
             <TextView
+                android:id="@+id/average_total_cross_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/average_total_cross_text" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
     </TableLayout>
@@ -150,13 +150,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/first_obstacle_preference_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/first_obstacle_preference_label_text"/>
 
             <TextView
+                android:id="@+id/first_obstacle_preference_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/first_obstacle_preference_text" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
         <TableRow
@@ -167,13 +167,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/second_obstacle_preference_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/second_obstacle_preference_label_text"/>
 
             <TextView
+                android:id="@+id/second_obstacle_preference_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/second_obstacle_preference_text" />
+                android:layout_height="wrap_content"/>
         </TableRow>
 
         <TableRow
@@ -184,13 +184,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/third_obstacle_preference_label_text"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:text="@string/third_obstacle_preference_label_text"/>
 
             <TextView
+                android:id="@+id/third_obstacle_preference_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/third_obstacle_preference_text" />
+                android:layout_height="wrap_content"/>
         </TableRow>
     </TableLayout>
 

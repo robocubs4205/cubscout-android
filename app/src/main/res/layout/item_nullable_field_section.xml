@@ -4,19 +4,22 @@
        tools:showIn="@layout/item_scorecard_nullable_count_field_section">
 
     <TextView
+        android:id="@+id/null_checkbox_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/null_checkbox_wrapper"
+        android:layout_alignBottom="@+id/null_checkbox_wrapper"
+        android:layout_alignTop="@id/null_checkbox_wrapper"
+        android:gravity="center_vertical"
         tools:text="CheckBox"/>
 
     <FrameLayout
-        android:id="@+id/null_checkbox_wrapper"
+        android:id="@id/null_checkbox_wrapper"
         android:layout_width="@dimen/increment_button_size"
         android:layout_height="@dimen/increment_button_size"
         android:layout_alignParentRight="true">
 
         <CheckBox
-            android:id="@id/null_checkbox"
+            android:id="@+id/null_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
