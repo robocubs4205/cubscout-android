@@ -3,7 +3,7 @@
     <string name="match_submit_activity_label">Match report Form</string>
     <string name="individual_report_activity_label">Search for specific teams</string>
     <string name="report_list_activity_label">Search teams by performance</string>
-    <string name="launch_match_submit_activity_text">Submit a report on a team\'s performance</string>
+    <string name="launch_match_submit_activity_text">Scout a match</string>
     <string name="launch_view_match_report_text">View top performers</string>
     <string name="launch_view_individual_report_activity_text">View report on an individual team</string>
     <string name="match_submit_button_text">Submit</string>
@@ -142,4 +142,6 @@
     <string name="robot_number_label">Robot Number</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="lorem_ipsum_header">lorem ipsum dolor sit amet</string>
+    <string name="did_not_perform">Did not perform this activity</string>
+    <string name="sort_by">Sort by</string>
 </resources>

@@ -2,9 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="16dp"
              android:orientation="vertical"
-             tools:layout_margin="@dimen/activity_horizontal_margin">
+             tools:layout_margin="@dimen/activity_horizontal_margin"
+             tools:layout_marginTop="0dp">
 
     <TextView
         android:id="@+id/team_number"

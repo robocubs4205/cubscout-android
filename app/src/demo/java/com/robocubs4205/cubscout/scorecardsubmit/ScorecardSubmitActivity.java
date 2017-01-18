@@ -36,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import butterknife.Optional;
 
@@ -156,9 +157,6 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
             teamNumberViewWrapper.setErrorEnabled(false);
             teamNumberView.setError(null);
         }
-        else {
-            notifyTeamNumberMissing();
-        }
     }
 
     @OnTextChanged(value = R.id.match_number_field,
@@ -175,6 +173,16 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
             matchNumberViewWrapper.setErrorEnabled(false);
             matchNumberView.setError(null);
         }
+    }
+
+    @OnFocusChange(R.id.team_number_field)
+    void onTeamNumberFocusChange(boolean hasFocus) {
+        if (!hasFocus) notifyTeamNumberMissing();
+    }
+
+    @OnFocusChange(R.id.match_number_field)
+    void onMatchNumberFocusChange(boolean hasFocus) {
+        if (!hasFocus) notifyMatchNumberMissing();
     }
 
     @OnClick(R.id.submit)
@@ -443,6 +451,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                 }
                 if ((nullWhen == CHECKED && checked) || (nullWhen == UNCHECKED && !checked)) {
                     containerView.setVisibility(View.VISIBLE);
+                    containerView.requestLayout();
                     containerView.setAlpha(1.0f);
                     containerView.setTranslationY(0);
                     containerView.animate().alpha(0.0f).translationY(-containerView.getHeight())
@@ -473,20 +482,19 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                                                            true));
                 }
                 else {
-                    containerView.setVisibility(View.VISIBLE);
                     containerView.setAlpha(0.0f);
-                    containerView.setTranslationY(-containerView.getHeight());
                     containerView.animate().alpha(1.0f).translationY(0.0f)
                                  .setInterpolator(new FastOutSlowInInterpolator())
                                  .setListener(new Animator.AnimatorListener() {
                                      @Override
                                      public void onAnimationStart(Animator animation) {
-
+                                         containerView.setVisibility(View.VISIBLE);
+                                         containerView.requestLayout();
+                                         containerView.setTranslationY(-containerView.getHeight());
                                      }
 
                                      @Override
                                      public void onAnimationEnd(Animator animation) {
-                                         containerView.setVisibility(View.VISIBLE);
                                      }
 
                                      @Override

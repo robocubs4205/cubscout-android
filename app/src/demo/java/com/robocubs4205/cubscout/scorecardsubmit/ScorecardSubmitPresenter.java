@@ -20,7 +20,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.CHECKED;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.UNCHECKED;
 
 /**
  * Created by trevor on 1/8/17.
@@ -50,8 +54,8 @@ final class ScorecardSubmitPresenter {
         }
     }
 
-    public static void clearCache(final Context context) {
-        context.deleteFile(FILENAME);
+    private void clearCache() {
+        application.deleteFile(FILENAME);
     }
 
     public void initView() {
@@ -70,7 +74,7 @@ final class ScorecardSubmitPresenter {
                     Scorecard.ScorecardNullableFieldSection concreteSection =
                             (Scorecard.ScorecardNullableFieldSection) section;
                     fieldScores.put(i, new FieldScore(scorecard, i, 0,
-                                                      concreteSection.nullWhen == CHECKED));
+                                                      concreteSection.nullWhen == UNCHECKED));
                 }
                 else if (section instanceof Scorecard.ScorecardFieldSection) {
                     fieldScores.put(i, new FieldScore(scorecard, i, 0, false));
@@ -99,7 +103,7 @@ final class ScorecardSubmitPresenter {
         catch (JsonParseException e) {
             Log.e("ScorecardSubmit", "Stored data file for ScorecardSubmit is corrupted. erasing",
                   e);
-            clearCache(application);
+            clearCache();
             return false;
         }
     }
@@ -130,9 +134,16 @@ final class ScorecardSubmitPresenter {
             view.notifyMatchNumberMissing();
         }
         if (matchNumber != null && teamNumber != null) {
-            api.submitMatch(teamNumber, matchNumber, currentScorecard, fieldScores.values());
-            clearCache(application);
-            view.end();
+            api.submitMatch(teamNumber, matchNumber, currentScorecard, fieldScores.values())
+               .subscribeOn(Schedulers.io())
+               .observeOn(AndroidSchedulers.mainThread())
+               .subscribe(new Action() {
+                   @Override
+                   public void run() throws Exception {
+                       clearCache();
+                       view.end();
+                   }
+               });
         }
     }
 

@@ -2,20 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:orientation="horizontal"
               tools:layout_margin="@dimen/activity_horizontal_margin">
 
     <TextView
         android:id="@+id/field_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         tools:text="Gears taken to airship"/>
 
     <FrameLayout
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_marginStart="16dp">
 
         <RatingBar
             android:id="@+id/field_value"
@@ -24,5 +25,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:numStars="5"/>
+
+        <TextView
+            android:id="@+id/did_not_compete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/did_not_perform"
+            android:visibility="gone"/>
     </FrameLayout>
 </LinearLayout>

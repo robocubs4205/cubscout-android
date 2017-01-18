@@ -4,14 +4,17 @@ import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.Scorecard;
+import com.robocubs4205.cubscout.scorelist.Result;
 
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.functions.Action;
 
 /**
  * Created by trevor on 1/1/17.
@@ -48,8 +51,21 @@ public class StubCubscoutApi implements CubscoutAPI{
     }
 
     @Override
-    public Completable submitMatch(Integer teamNumber, Integer matchNumber,
-                                   Scorecard currentScorecard, Collection<FieldScore> values) {
-        return Completable.complete();
+    public Completable submitMatch(final Integer teamNumber, final Integer matchNumber,
+                                   final Scorecard currentScorecard,
+                                   final Collection<FieldScore> values) {
+        return Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                throw new NotImplementedException("");
+            }
+        });
     }
+
+    @Override
+    public Observable<List<Result>> getResults(Scorecard scorecard, String[] orderBy) {
+        throw new NotImplementedException("");
+    }
+
+
 }

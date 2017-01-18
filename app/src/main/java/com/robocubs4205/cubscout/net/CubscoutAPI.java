@@ -4,6 +4,7 @@ import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.Scorecard;
+import com.robocubs4205.cubscout.scorelist.Result;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,8 +22,10 @@ public interface CubscoutAPI {
 
     Observable<GetEventsResponse> getAllEvents();
 
-    Completable submitMatch(Integer teamNumber, Integer matchNumber, Scorecard currentScorecard,
+    Completable submitMatch(Integer teamNumber, Integer matchNumber, Scorecard scorecard,
                             Collection<FieldScore> values);
+
+    Observable<List<Result>> getResults(Scorecard scorecard, String[] orderBy);
 
     class GetEventsResponse {
         public List<Error> errors;
