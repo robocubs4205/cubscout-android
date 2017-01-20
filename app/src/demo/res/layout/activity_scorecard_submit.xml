@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <Space
+            <android.support.v4.widget.Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_vertical_margin"/>
             <android.support.design.widget.TextInputLayout
@@ -80,7 +80,7 @@
                 android:layout_gravity="center_horizontal"
                 android:text="@string/match_submit_button_text"/>
 
-            <Space
+            <android.support.v4.widget.Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_vertical_margin"/>
         </LinearLayout>

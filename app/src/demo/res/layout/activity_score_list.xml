@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <Space
+            <android.support.v4.widget.Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_vertical_margin"/>
 
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"/>
 
-            <Space
+            <android.support.v4.widget.Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_vertical_margin"/>
         </LinearLayout>

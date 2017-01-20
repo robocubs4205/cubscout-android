@@ -20,15 +20,18 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
-    <style name="AppTheme.Button" parent="Widget.AppCompat.Button.Colored">
-        <item name="android:paddingEnd">15dp</item>
-        <item name="android:paddingStart">15dp</item>
+    <style name="AppTheme.Button.Base" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
         <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item>
         <item name="android:minHeight">36dp</item>
         <item name="android:minWidth">88dp</item>
+    </style>
+
+    <style name="AppTheme.Button" parent="AppTheme.Button.Base">
+
     </style>
 
     <style name="AppTheme.Button.Flat">
@@ -47,19 +50,16 @@
     </style>
 
     <style name="AppTheme.Title">
-        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">20sp</item>
     </style>
 
     <style name="AppTheme.SubHeading">
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">16sp</item>
     </style>
 
     <style name="AppTheme.Body">
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item>
     </style>
@@ -73,6 +73,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">?attr/colorPrimary</item>
+        <item name="contentInsetStart">@dimen/activity_horizontal_margin</item>
         <item name="android:theme">?attr/actionBarTheme</item>
         <item name="android:minHeight">?attr/actionBarSize</item>
     </style>

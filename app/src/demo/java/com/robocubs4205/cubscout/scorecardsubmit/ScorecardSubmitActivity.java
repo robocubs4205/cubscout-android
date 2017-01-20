@@ -1,6 +1,8 @@
 package com.robocubs4205.cubscout.scorecardsubmit;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -450,63 +452,72 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                                     "provided view hierarchy");
                 }
                 if ((nullWhen == CHECKED && checked) || (nullWhen == UNCHECKED && !checked)) {
-                    containerView.setVisibility(View.VISIBLE);
-                    containerView.requestLayout();
-                    containerView.setAlpha(1.0f);
-                    containerView.setTranslationY(0);
-                    containerView.animate().alpha(0.0f).translationY(-containerView.getHeight())
-                                 .setDuration(300).setInterpolator(new FastOutSlowInInterpolator())
-                                 .setListener(new Animator.AnimatorListener() {
-                                     @Override
-                                     public void onAnimationStart(Animator animation) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                        containerView.setVisibility(View.VISIBLE);
+                        containerView.requestLayout();
+                        containerView.setAlpha(1.0f);
+                        containerView.setTranslationY(0);
+                        containerView.animate().alpha(0.0f).translationY(-containerView.getHeight())
+                                     .setDuration(300).setInterpolator(
+                                new FastOutSlowInInterpolator())
+                                     .setListener(new Animator.AnimatorListener() {
+                                         @Override
+                                         public void onAnimationStart(Animator animation) {
 
-                                     }
+                                         }
 
-                                     @Override
-                                     public void onAnimationEnd(Animator animation) {
-                                         containerView.setVisibility(View.GONE);
-                                     }
+                                         @Override
+                                         public void onAnimationEnd(Animator animation) {
+                                             containerView.setVisibility(View.GONE);
+                                         }
 
-                                     @Override
-                                     public void onAnimationCancel(Animator animation) {
+                                         @Override
+                                         public void onAnimationCancel(Animator animation) {
 
-                                     }
+                                         }
 
-                                     @Override
-                                     public void onAnimationRepeat(Animator animation) {
+                                         @Override
+                                         public void onAnimationRepeat(Animator animation) {
 
-                                     }
-                                 }).start();
+                                         }
+                                     }).start();
+                    }
+                    else containerView.setVisibility(View.GONE);
                     presenter.setFieldValue(new FieldScore(scorecard, getAdapterPosition(),
                                                            Math.round(ratingBar.getRating()),
                                                            true));
                 }
                 else {
-                    containerView.setAlpha(0.0f);
-                    containerView.animate().alpha(1.0f).translationY(0.0f)
-                                 .setInterpolator(new FastOutSlowInInterpolator())
-                                 .setListener(new Animator.AnimatorListener() {
-                                     @Override
-                                     public void onAnimationStart(Animator animation) {
-                                         containerView.setVisibility(View.VISIBLE);
-                                         containerView.requestLayout();
-                                         containerView.setTranslationY(-containerView.getHeight());
-                                     }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                        containerView.setAlpha(0.0f);
+                        containerView.animate().alpha(1.0f).translationY(0.0f)
+                                     .setInterpolator(new FastOutSlowInInterpolator())
+                                     .setListener(new Animator.AnimatorListener() {
+                                         @SuppressLint("NewApi")
+                                         @Override
+                                         public void onAnimationStart(Animator animation) {
+                                             containerView.setVisibility(View.VISIBLE);
+                                             containerView.requestLayout();
+                                             containerView.setTranslationY(
+                                                     -containerView.getHeight());
+                                         }
 
-                                     @Override
-                                     public void onAnimationEnd(Animator animation) {
-                                     }
+                                         @Override
+                                         public void onAnimationEnd(Animator animation) {
+                                         }
 
-                                     @Override
-                                     public void onAnimationCancel(Animator animation) {
+                                         @Override
+                                         public void onAnimationCancel(Animator animation) {
 
-                                     }
+                                         }
 
-                                     @Override
-                                     public void onAnimationRepeat(Animator animation) {
+                                         @Override
+                                         public void onAnimationRepeat(Animator animation) {
 
-                                     }
-                                 }).start();
+                                         }
+                                     }).start();
+                    }
+                    else containerView.setVisibility(View.VISIBLE);
                     presenter.setFieldValue(new FieldScore(scorecard, getAdapterPosition(),
                                                            Math.round(ratingBar.getRating()),
                                                            false));
