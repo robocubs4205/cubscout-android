@@ -6,8 +6,6 @@ import com.google.gson.GsonBuilder;
 import com.robocubs4205.cubscout.ApplicationScope;
 import com.robocubs4205.cubscout.Scorecard;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 

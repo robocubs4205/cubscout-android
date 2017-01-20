@@ -7,7 +7,7 @@ android {
     buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "com.robocubs4205.cubscout"
-        minSdkVersion 17
+        minSdkVersion 10
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -52,7 +52,8 @@ android {
     variantFilter { variant ->
         def names = variant.flavors*.name
         // To check for a certain build type, use variant.buildType.name == "<buildType>"
-        if ((names.contains("staging") || names.contains("fakeNet")) && variant.buildType.name == "release") {
+        if ((names.contains("staging") || names.contains("fakeNet"))
+                && variant.buildType.name == "release") {
             // Gradle ignores any variants that satisfy the conditions above.
             setIgnore(true)
         }

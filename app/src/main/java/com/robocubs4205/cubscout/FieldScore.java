@@ -1,7 +1,5 @@
 package com.robocubs4205.cubscout;
 
-import android.support.annotation.Nullable;
-
 /**
  * Created by trevor on 1/10/17.
  */

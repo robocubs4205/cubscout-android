@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.robocubs4205.cubscout.R;
-import com.robocubs4205.cubscout.net.RobocubsNetworkUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;

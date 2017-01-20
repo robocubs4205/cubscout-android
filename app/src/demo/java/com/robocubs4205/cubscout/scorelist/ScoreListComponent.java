@@ -2,7 +2,6 @@ package com.robocubs4205.cubscout.scorelist;
 
 import com.robocubs4205.cubscout.ActivityScope;
 import com.robocubs4205.cubscout.ApplicationComponent;
-import com.robocubs4205.cubscout.net.NetModule;
 
 import dagger.Component;
 

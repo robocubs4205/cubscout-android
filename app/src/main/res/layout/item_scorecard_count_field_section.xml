@@ -39,7 +39,8 @@
             android:layout_height="@dimen/increment_button_size"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_keyboard_arrow_up_black_24dp"/>
+            app:srcCompat="@drawable/ic_keyboard_arrow_up_black_24dp"
+            tools:ignore="ContentDescription"/>
 
         <ImageButton
             android:id="@+id/down_button"
@@ -47,7 +48,8 @@
             android:layout_height="@dimen/increment_button_size"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"/>
+            app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
+            tools:ignore="ContentDescription"/>
     </LinearLayout>
 
 </LinearLayout>

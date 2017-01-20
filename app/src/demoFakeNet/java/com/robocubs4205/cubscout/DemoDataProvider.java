@@ -35,7 +35,7 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
  */
 @ApplicationScope
 public class DemoDataProvider extends StubCubscoutApi {
-    DemoDataDbHelper dbHelper;
+    private final DemoDataDbHelper dbHelper;
 
     @Inject
     public DemoDataProvider(Application application) {
@@ -167,7 +167,8 @@ public class DemoDataProvider extends StubCubscoutApi {
                                 if (section2.name.equals(string)) {
                                     if (!fieldScore.isNull && fieldScore2.isNull) return 1;
                                     else if (fieldScore.isNull && !fieldScore2.isNull) return -1;
-                                    else if (fieldScore.isNull && fieldScore.isNull) break;
+                                        //fieldScore2 is also null if this is true
+                                    else if (fieldScore.isNull) break;
                                     else if (fieldScore.value > fieldScore2.value) return 1;
                                     else if (fieldScore.value < fieldScore2.value) return -1;
                                     else break;

@@ -24,7 +24,7 @@ final class ScoreListPresenter {
     private final DemoDataProvider api;
     private final Gson gson;
 
-    Disposable getResultsDisposable;
+    private Disposable getResultsDisposable;
 
     @Inject
     public ScoreListPresenter(final ScoreListView view, final Application context,

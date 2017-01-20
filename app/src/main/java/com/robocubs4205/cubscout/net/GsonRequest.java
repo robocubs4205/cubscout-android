@@ -18,7 +18,7 @@ import javax.inject.Inject;
  * Created by trevor on 12/31/16.
  */
 
-public class GsonRequest extends Request<JsonObject>{
+class GsonRequest extends Request<JsonObject> {
 
     /** Default charset for JSON request. */
     private static final String PROTOCOL_CHARSET = "utf-8";
@@ -26,11 +26,10 @@ public class GsonRequest extends Request<JsonObject>{
     /** Content type for request. */
     private static final String PROTOCOL_CONTENT_TYPE =
             String.format("application/json; charset=%s", PROTOCOL_CHARSET);
-
+    private final Response.Listener<JsonObject> mListener;
+    private final String mRequestBody;
     @Inject
     public Gson mGson;
-    private Response.Listener<JsonObject> mListener;
-    private String mRequestBody;
     public GsonRequest(int method, String url, String requestBody, Response.Listener<JsonObject> listener,
                        Response.ErrorListener errorListener) {
         super(method, url, errorListener);

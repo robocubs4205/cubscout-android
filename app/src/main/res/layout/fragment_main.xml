@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:orientation="vertical"
-        tools:application="com.robocubs4205.cubscout.MainFragment">
+        tools:application="com.robocubs4205.cubscout.MainFragment"
+        tools:ignore="UselessParent">
 
 
         <android.support.v7.widget.CardView

@@ -2,6 +2,6 @@
 
     <application android:name="com.robocubs4205.cubscout.Application">
         <activity android:name="com.robocubs4205.cubscout.scorelist.ScoreListActivity"/>
-        <activity android:name=".scorecardsubmit.ScorecardSubmitActivity"/>
+        <activity android:name="com.robocubs4205.cubscout.scorecardsubmit.ScorecardSubmitActivity"/>
     </application>
 </manifest>
