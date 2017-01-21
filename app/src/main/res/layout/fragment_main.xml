@@ -26,10 +26,10 @@
             android:layout_marginTop="8dp">
 
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/launch_match_submit_button"
                 style="@style/AppTheme.Button.Raised"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="LaunchMatchSubmitActivity"
                 android:text="@string/launch_match_submit_activity_text"/>
         </android.support.v7.widget.CardView>
 
@@ -41,10 +41,10 @@
             android:layout_marginTop="8dp">
 
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/launch_report_list_button"
                 style="@style/AppTheme.Button.Raised"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="LaunchReportListActivity"
                 android:text="@string/launch_view_match_report_text"/>
         </android.support.v7.widget.CardView>
     </LinearLayout>
