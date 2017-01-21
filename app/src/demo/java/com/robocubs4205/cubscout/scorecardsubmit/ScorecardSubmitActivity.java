@@ -178,13 +178,13 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     }
 
     @OnFocusChange(R.id.team_number_field)
-    void onTeamNumberFocusChange(boolean hasFocus) {
-        if (!hasFocus) notifyTeamNumberMissing();
+    void onTeamNumberFocusChange(EditText text, boolean hasFocus) {
+        if (!hasFocus && text.length() == 0) notifyTeamNumberMissing();
     }
 
     @OnFocusChange(R.id.match_number_field)
-    void onMatchNumberFocusChange(boolean hasFocus) {
-        if (!hasFocus) notifyMatchNumberMissing();
+    void onMatchNumberFocusChange(EditText text, boolean hasFocus) {
+        if (!hasFocus && text.length() == 0) notifyMatchNumberMissing();
     }
 
     @OnClick(R.id.submit)
