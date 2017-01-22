@@ -10,6 +10,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -19,9 +21,16 @@ public class Scorecard {
     public long id;
     public List<ScorecardSection> sections;
 
-    /**
-     * Created by trevor on 1/10/17.
-     */
+    @Override
+    public boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other, false);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this, false);
+    }
+
     public static class ScorecardFieldSection extends ScorecardSection {
         public Type type;
         public String name;
@@ -37,14 +46,21 @@ public class Scorecard {
             this.isNullable = isNullable;
         }
 
+        @Override
+        public boolean equals(Object other) {
+            return EqualsBuilder.reflectionEquals(this, other, false);
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
+
         public enum Type {
             COUNT, RATING
         }
     }
 
-    /**
-     * Created by trevor on 1/10/17.
-     */
     public static class ScorecardNullableFieldSection extends ScorecardFieldSection {
 
         public NullWhen nullWhen;
@@ -58,21 +74,35 @@ public class Scorecard {
             this.checkBoxMessage = checkBoxMessage;
         }
 
+        @Override
+        public boolean equals(Object other) {
+            return EqualsBuilder.reflectionEquals(this, other, false);
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
+
         public enum NullWhen {
             CHECKED, UNCHECKED
         }
     }
 
-    /**
-     * Created by trevor on 1/10/17.
-     */
     public static class ScorecardParagraphSection extends ScorecardSection {
         public String paragraph;
+
+        @Override
+        public boolean equals(Object other) {
+            return EqualsBuilder.reflectionEquals(this, other, false);
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
     }
 
-    /**
-     * Created by trevor on 1/10/17.
-     */
     public abstract static class ScorecardSection {
         @SuppressWarnings("unused")
         public long id;
@@ -93,18 +123,32 @@ public class Scorecard {
         public void setScorecardId(long ScorecardId) {
             this.ScorecardId = ScorecardId;
         }
+
+        @Override
+        public boolean equals(Object other) {
+            return EqualsBuilder.reflectionEquals(this, other, false);
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
     }
 
-    /**
-     * Created by trevor on 1/10/17.
-     */
     public static class ScorecardTitleSection extends ScorecardSection {
         public String title;
+
+        @Override
+        public boolean equals(Object other) {
+            return EqualsBuilder.reflectionEquals(this, other, false);
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
     }
 
-    /**
-     * Created by trevor on 1/11/17.
-     */
     public static class ScorecardSectionDeserializer implements JsonDeserializer<ScorecardSection>,
                                                                 JsonSerializer<ScorecardSection> {
 

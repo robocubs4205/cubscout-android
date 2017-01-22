@@ -1,7 +1,12 @@
 package com.robocubs4205.cubscout.scorecardsubmit;
 
+import android.support.annotation.AnyThread;
+import android.support.annotation.Nullable;
+
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Scorecard;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -10,17 +15,25 @@ import java.util.Map;
  */
 
 interface ScorecardSubmitView {
-    void setScorecard(Scorecard scorecard);
 
-    void loadSavedScores(Map<Integer, FieldScore> scores);
+    @AnyThread
+    void setScorecard(@NotNull Scorecard scorecard);
 
-    void setTeamNumber(Integer teamNumber);
+    @AnyThread
+    void loadSavedScores(@NotNull Map<Integer, FieldScore> scores);
 
-    void setMatchNumber(Integer matchNumber);
+    @AnyThread
+    void setTeamNumber(@Nullable Integer teamNumber);
 
+    @AnyThread
+    void setMatchNumber(@Nullable Integer matchNumber);
+
+    @AnyThread
     void end();
 
+    @AnyThread
     void notifyMatchNumberMissing();
 
+    @AnyThread
     void notifyTeamNumberMissing();
 }

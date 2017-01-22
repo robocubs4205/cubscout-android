@@ -5,6 +5,8 @@ import com.robocubs4205.cubscout.Application;
 import com.robocubs4205.cubscout.DemoDataProvider;
 import com.robocubs4205.cubscout.Scorecard;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,10 +37,7 @@ final class ScoreListPresenter {
         this.context = context;
         this.api = api;
         this.gson = gson;
-    }
-
-    public void initView() {
-        Scorecard demoScorecard = api.getDemoScorecard();
+        Scorecard demoScorecard = DemoDataProvider.getDemoScorecard();
         getResultsDisposable = api.getResults(demoScorecard, new String[]{"overall"})
                                   .subscribeOn(Schedulers.io()).observeOn(
                         AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Result>>() {
@@ -51,8 +50,12 @@ final class ScoreListPresenter {
     }
 
     public void getResults(String[] orderBy) {
+        ArrayList<String> orderByList = new ArrayList<>(Arrays.asList(orderBy));
+        orderByList.add("overall");
+        orderBy = orderByList.toArray(orderBy);
         if (getResultsDisposable != null) getResultsDisposable.dispose();
-        getResultsDisposable = api.getResults(api.getDemoScorecard(), orderBy).subscribeOn(
+        getResultsDisposable = api.getResults(DemoDataProvider.getDemoScorecard(), orderBy)
+                                  .subscribeOn(
                 Schedulers.io()).observeOn(
                 AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Result>>() {
             @Override

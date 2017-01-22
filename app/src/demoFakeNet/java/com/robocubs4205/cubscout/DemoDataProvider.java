@@ -35,6 +35,7 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
  */
 @ApplicationScope
 public class DemoDataProvider extends StubCubscoutApi {
+    private static Scorecard demoScorecard;
     private final DemoDataDbHelper dbHelper;
 
     @Inject
@@ -42,22 +43,28 @@ public class DemoDataProvider extends StubCubscoutApi {
         super();
         dbHelper = new DemoDataDbHelper(application);
     }
-    public Scorecard getDemoScorecard() {
-        Scorecard scorecard = new Scorecard();
-        scorecard.id = 1;
-        scorecard.sections = new ArrayList<>();
-        scorecard.sections.add(new ScorecardFieldSection("Gears taken to airship", COUNT));
-        scorecard.sections.add(new ScorecardNullableFieldSection("Low boiler effectiveness",
-                                                                 RATING, UNCHECKED,
-                                                                 "Used low boiler"));
-        scorecard.sections.add(new ScorecardNullableFieldSection("High boiler effectiveness",
-                                                                 RATING, UNCHECKED,
-                                                                 "Used High boiler"));
-        scorecard.sections.add(new ScorecardNullableFieldSection("Hopper effectiveness", RATING,
-                                                                 UNCHECKED, "Used the hopper"));
-        scorecard.sections.add(new ScorecardNullableFieldSection("Defense", RATING, UNCHECKED,
-                                                                 "Did defense"));
-        return scorecard;
+
+    public static Scorecard getDemoScorecard() {
+        if (demoScorecard == null) {
+            demoScorecard = new Scorecard();
+            demoScorecard.id = 1;
+            demoScorecard.sections = new ArrayList<>();
+            demoScorecard.sections.add(new ScorecardFieldSection("Gears taken to airship", COUNT));
+            demoScorecard.sections.add(new ScorecardNullableFieldSection("Low boiler effectiveness",
+                                                                         RATING, UNCHECKED,
+                                                                         "Used low boiler"));
+            demoScorecard.sections.add(
+                    new ScorecardNullableFieldSection("High boiler effectiveness",
+                                                      RATING, UNCHECKED,
+                                                      "Used High boiler"));
+            demoScorecard.sections.add(
+                    new ScorecardNullableFieldSection("Hopper effectiveness", RATING,
+                                                      UNCHECKED, "Used the hopper"));
+            demoScorecard.sections.add(
+                    new ScorecardNullableFieldSection("Defense", RATING, UNCHECKED,
+                                                      "Did defense"));
+        }
+        return demoScorecard;
     }
 
     @Override

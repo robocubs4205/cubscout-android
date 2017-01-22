@@ -4,9 +4,13 @@ import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -66,21 +70,21 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     TextInputLayout teamNumberViewWrapper;
     @BindView(R.id.match_number_field_wrapper)
     TextInputLayout matchNumberViewWrapper;
+    @BindView(R.id.scrollView)
+    NestedScrollView scrollView;
 
     private ScorecardSubmitPresenter presenter;
+    @Nullable
     private Scorecard scorecard;
+    @Nullable
     private Map<Integer, FieldScore> fieldScores;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        ApplicationComponent applicationComponent = ((Application) getApplication())
-                .getApplicationComponent();
-        presenter = DaggerScorecardSubmitComponent.builder().scorecardSubmitModule(
-                new ScorecardSubmitModule(this)).applicationComponent(applicationComponent).build()
-                                                  .presenter();
+        handler = new Handler();
 
         setContentView(R.layout.activity_scorecard_submit);
         ButterKnife.bind(this);
@@ -92,7 +96,18 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         layoutManager = new LinearLayoutManager(this);
         scorecardView.setAdapter(adapter);
         scorecardView.setLayoutManager(layoutManager);
-        presenter.initView();
+
+        ApplicationComponent applicationComponent = ((Application) getApplication())
+                .getApplicationComponent();
+        presenter = DaggerScorecardSubmitComponent.builder().scorecardSubmitModule(
+                new ScorecardSubmitModule(this)).applicationComponent(applicationComponent).build()
+                                                  .presenter();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -105,29 +120,49 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     }
 
     @Override
-    public void setScorecard(Scorecard scorecard) {
+    public void setScorecard(@NonNull Scorecard scorecard) {
         this.scorecard = scorecard;
-
     }
 
     @Override
-    public void loadSavedScores(Map<Integer, FieldScore> scores) {
+    public void loadSavedScores(@NonNull Map<Integer, FieldScore> scores) {
         fieldScores = scores;
-        for (Integer index : scores.keySet()) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                notifySavedScoresChanged();
+            }
+        });
+    }
+
+
+    private void notifySavedScoresChanged() {
+        assert fieldScores != null;
+        for (Integer index : fieldScores.keySet()) {
             adapter.notifyItemChanged(index);
         }
     }
 
     @Override
-    public void setTeamNumber(Integer teamNumber) {
-        if (teamNumber != null) teamNumberView.setText(
-                String.format(Locale.getDefault(), "%d", teamNumber));
+    public void setTeamNumber(final Integer teamNumber) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (teamNumber != null) teamNumberView.setText(
+                        String.format(Locale.getDefault(), "%d", teamNumber));
+            }
+        });
     }
 
     @Override
-    public void setMatchNumber(Integer matchNumber) {
-        if (matchNumber != null) matchNumberView.setText(
-                String.format(Locale.getDefault(), "%d", matchNumber));
+    public void setMatchNumber(final Integer matchNumber) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (matchNumber != null) matchNumberView.setText(String.format(
+                        Locale.getDefault(), "%d", matchNumber));
+            }
+        });
     }
 
     @Override
@@ -137,12 +172,26 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
     @Override
     public void notifyMatchNumberMissing() {
-        matchNumberView.setError("Required");
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                matchNumberView.setError("Required");
+                scrollView.scrollTo(0, 0);
+                matchNumberView.requestFocus();
+            }
+        });
     }
 
     @Override
     public void notifyTeamNumberMissing() {
-        teamNumberView.setError("Required");
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                teamNumberView.setError("Required");
+                scrollView.scrollTo(0, 0);
+                teamNumberView.requestFocus();
+            }
+        });
     }
 
     @OnTextChanged(value = R.id.team_number_field,
@@ -192,6 +241,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         presenter.submit();
     }
 
+    @UiThread
     class ScorecardViewAdapter
             extends RecyclerView.Adapter<ScorecardViewAdapter.ViewHolder> {
 
@@ -209,11 +259,15 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
         @Override
         public int getItemCount() {
-            return scorecard.sections.size();
+            if (scorecard != null) {
+                return scorecard.sections.size();
+            }
+            else return 0;
         }
 
         @Override
         public int getItemViewType(int position) {
+            assert scorecard != null;
             Scorecard.ScorecardSection section = scorecard.sections.get(position);
             if (section instanceof Scorecard.ScorecardTitleSection) {
                 return R.layout.item_scorecard_title_section;
@@ -264,6 +318,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
             @Override
             protected void bind(int position) {
+                assert scorecard != null;
                 Scorecard.ScorecardTitleSection section =
                         (Scorecard.ScorecardTitleSection) scorecard.sections.get(position);
                 titleView.setText(section.title);
@@ -282,6 +337,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
             @Override
             protected void bind(int position) {
+                assert scorecard != null;
                 Scorecard.ScorecardParagraphSection section =
                         (Scorecard.ScorecardParagraphSection) scorecard.sections.get(position);
                 paragraphView.setText(section.paragraph);
@@ -329,8 +385,6 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                     int oldValue = NumberFormat
                             .getInstance(Locale.getDefault()).parse(valueView.getText().toString())
                             .intValue();
-                    presenter.setFieldValue(
-                            new FieldScore(scorecard, getAdapterPosition(), oldValue + 1, false));
                     valueView.setText(String.format(Locale.getDefault(), "%d", oldValue + 1));
                 }
                 catch (ParseException e) {
@@ -346,9 +400,6 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                             .getInstance(Locale.getDefault()).parse(valueView.getText().toString())
                             .intValue();
                     if (oldValue > 0) {
-                        presenter.setFieldValue(
-                                new FieldScore(scorecard, getAdapterPosition(), oldValue - 1,
-                                               false));
                         valueView.setText(String.format(Locale.getDefault(), "%d", oldValue - 1));
                     }
                 }
@@ -360,9 +411,11 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
             @Override
             protected void bind(int position) {
+                assert scorecard != null;
                 Scorecard.ScorecardFieldSection section =
                         (Scorecard.ScorecardFieldSection) scorecard.sections.get(position);
                 valueWrapper.setHint(section.name);
+                assert fieldScores != null;
                 valueView.setText(
                         String.format(Locale.getDefault(), "%d", fieldScores.get(position).value));
             }
@@ -411,10 +464,12 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
             @Override
             protected void bind(int position) {
+                assert scorecard != null;
                 ScorecardFieldSection section =
                         (ScorecardFieldSection) scorecard.sections.get(position);
                 ratingLabelView.setText(
                         section.name);
+                assert fieldScores != null;
                 FieldScore fieldScore = fieldScores.get(position);
                 ratingBar.setRating(fieldScore.value);
                 if (isNullable) {

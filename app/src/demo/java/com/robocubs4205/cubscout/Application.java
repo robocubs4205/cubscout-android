@@ -7,7 +7,7 @@ import com.robocubs4205.cubscout.net.NetModule;
  * Created by trevor on 1/15/17.
  */
 
-public final class Application extends android.app.Application {
+public class Application extends android.app.Application {
     private ApplicationComponent applicationComponent;
 
     @Override

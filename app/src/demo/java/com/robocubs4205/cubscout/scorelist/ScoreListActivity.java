@@ -2,6 +2,7 @@ package com.robocubs4205.cubscout.scorelist;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +36,7 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardSection;
 
 public class ScoreListActivity extends AppCompatActivity implements ScoreListView {
 
+    @Nullable
     ScoreListPresenter presenter;
 
     @BindView(R.id.toolbar)
@@ -53,10 +55,6 @@ public class ScoreListActivity extends AppCompatActivity implements ScoreListVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score_list);
-        presenter = DaggerScoreListComponent.builder().applicationComponent(
-                ((Application) getApplication()).getApplicationComponent())
-                                            .scoreListModule(new ScoreListModule(this)).build()
-                                            .presenter();
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -68,7 +66,10 @@ public class ScoreListActivity extends AppCompatActivity implements ScoreListVie
         teamListView.setLayoutManager(layoutManager);
         teamListView.setAdapter(adapter);
 
-        presenter.initView();
+        presenter = DaggerScoreListComponent.builder().applicationComponent(
+                ((Application) getApplication()).getApplicationComponent())
+                                            .scoreListModule(new ScoreListModule(this)).build()
+                                            .presenter();
     }
 
     @Override
@@ -106,6 +107,7 @@ public class ScoreListActivity extends AppCompatActivity implements ScoreListVie
     @OnItemSelected(R.id.sort_spinner)
     void sortSpinnerItemSelectedListener() {
         String[] sortBy = new String[]{(String) sortSpinner.getSelectedItem()};
+        assert presenter != null;
         presenter.getResults(sortBy);
     }
 

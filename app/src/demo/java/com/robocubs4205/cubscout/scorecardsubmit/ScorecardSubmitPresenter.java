@@ -1,27 +1,22 @@
 package com.robocubs4205.cubscout.scorecardsubmit;
 
-import android.content.Context;
+import android.support.annotation.AnyThread;
+import android.support.annotation.MainThread;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.robocubs4205.cubscout.Application;
 import com.robocubs4205.cubscout.DemoDataProvider;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Scorecard;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.UNCHECKED;
@@ -31,43 +26,35 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
  */
 
 final class ScorecardSubmitPresenter {
-    private static final String FILENAME = "ScorecardSubmitPresenter";
     private final ScorecardSubmitView view;
-    private final Application application;
     private final DemoDataProvider api;
-    private final Gson gson;
+    private final ScorecardSubmitStatePersistor persistor;
     private final Map<Integer, FieldScore> fieldScores = new ArrayMap<>();
     private Integer teamNumber = null;
     private Integer matchNumber = null;
     private Scorecard currentScorecard;
 
+    private boolean initialized = false;
+
+    @AnyThread
     @Inject
-    public ScorecardSubmitPresenter(final ScorecardSubmitView view, final Application application,
-                                    final DemoDataProvider api, final Gson gson) {
+    public ScorecardSubmitPresenter(final ScorecardSubmitView view, final DemoDataProvider api,
+                                    ScorecardSubmitStatePersistor persistor) {
         this.view = view;
-        this.application = application;
         this.api = api;
-        this.gson = gson;
-
-        if (!deserialize()) {
-            init();
-        }
+        this.persistor = persistor;
+        deserialize();
     }
 
+    @AnyThread
     private void clearCache() {
-        application.deleteFile(FILENAME);
+        persistor.clearCache();
     }
 
-    public void initView() {
-        view.loadSavedScores(fieldScores);
-        view.setScorecard(currentScorecard);
-        view.setTeamNumber(teamNumber);
-        view.setMatchNumber(matchNumber);
-    }
-
-    private void init() {
-        Scorecard scorecard = api.getDemoScorecard();
-        if (fieldScores.isEmpty() || currentScorecard != scorecard) {
+    @AnyThread
+    private void initActual() {
+        Scorecard scorecard = DemoDataProvider.getDemoScorecard();
+        if (fieldScores.isEmpty() || !currentScorecard.equals(scorecard)) {
             for (int i = 0; i < scorecard.sections.size(); ++i) {
                 Scorecard.ScorecardSection section = scorecard.sections.get(i);
                 if (section instanceof Scorecard.ScorecardNullableFieldSection) {
@@ -82,104 +69,102 @@ final class ScorecardSubmitPresenter {
             }
         }
         currentScorecard = scorecard;
+        view.setScorecard(scorecard);
+        view.setMatchNumber(matchNumber);
+        view.setTeamNumber(teamNumber);
+        view.loadSavedScores(fieldScores);
+        initialized = true;
     }
 
-    private boolean deserialize() {
-        try {
-            FileInputStream fileInputStream = application.openFileInput(FILENAME);
-            PersistedClass persistedClass = gson.fromJson(IOUtils.toString(fileInputStream),
-                                                          PersistedClass.class);
-            fieldScores.clear();
-            fieldScores.putAll(persistedClass.fieldScores);
-            currentScorecard = persistedClass.scorecard;
-            teamNumber = persistedClass.teamNumber;
-            matchNumber = persistedClass.matchNumber;
-            return true;
-        }
-        catch (IOException e) {
-            Log.e("ScorecardSubmit", "failed to deserialize view data from disk", e);
-            return false;
-        }
-        catch (JsonParseException e) {
-            Log.e("ScorecardSubmit", "Stored data file for ScorecardSubmit is corrupted. erasing",
-                  e);
-            clearCache();
-            return false;
-        }
+    @AnyThread
+    private void deserialize() {
+        persistor.deserialize().subscribeOn(Schedulers.io()).subscribe(
+                new Consumer<ScorecardSubmitStatePersistor.PersistedClass>() {
+                    @Override
+                    public void accept(ScorecardSubmitStatePersistor.PersistedClass persistedClass)
+                            throws Exception {
+                        fieldScores.clear();
+                        fieldScores.putAll(persistedClass.fieldScores);
+                        currentScorecard = persistedClass.scorecard;
+                        teamNumber = persistedClass.teamNumber;
+                        matchNumber = persistedClass.matchNumber;
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (throwable instanceof JsonParseException) {
+                            clearCache();
+                        }
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        initActual();
+                    }
+                });
     }
 
-    private void serialize() throws IOException {
-        FileOutputStream fileOutputStream = application.openFileOutput(FILENAME,
-                                                                       Context.MODE_PRIVATE);
-        PersistedClass persistedClass = new PersistedClass(fieldScores, currentScorecard,
-                                                           teamNumber, matchNumber);
-        IOUtils.write(gson.toJson(persistedClass), fileOutputStream);
+    @AnyThread
+    private void serialize() {
+        persistor.serialize(fieldScores, currentScorecard, teamNumber, matchNumber).subscribe(
+                new Action() {
+                    @Override
+                    public void run() throws Exception {
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e("ScorecardSubmit", "fail to serialize view state to disk", throwable);
+                    }
+                });
     }
 
+    @AnyThread
     public void setFieldValue(FieldScore value) {
-        fieldScores.put(value.scorecardIndex, value);
-        try {
+        if (initialized) {
+            fieldScores.put(value.scorecardIndex, value);
             serialize();
-        }
-        catch (IOException e) {
-            Log.e("ScorecardSubmit", "fail to serialize view state to disk", e);
         }
     }
 
+    @MainThread
     public void submit() {
-        if (teamNumber == null) {
-            view.notifyTeamNumberMissing();
-        }
-        if (matchNumber == null) {
-            view.notifyMatchNumberMissing();
-        }
-        if (matchNumber != null && teamNumber != null) {
-            api.submitMatch(teamNumber, matchNumber, currentScorecard, fieldScores.values())
-               .subscribeOn(Schedulers.io())
-               .observeOn(AndroidSchedulers.mainThread())
-               .subscribe(new Action() {
-                   @Override
-                   public void run() throws Exception {
-                       clearCache();
-                       view.end();
-                   }
-               });
+        if (initialized) {
+            if (teamNumber == null) {
+                view.notifyTeamNumberMissing();
+            }
+            if (matchNumber == null) {
+                view.notifyMatchNumberMissing();
+            }
+            if (matchNumber != null && teamNumber != null) {
+                api.submitMatch(teamNumber, matchNumber, currentScorecard, fieldScores.values())
+                   .subscribeOn(Schedulers.io())
+                   .observeOn(AndroidSchedulers.mainThread())
+                   .subscribe(new Action() {
+                       @Override
+                       public void run() throws Exception {
+                           clearCache();
+                           view.end();
+                       }
+                   });
+            }
         }
     }
 
+    @MainThread
     void setTeamNumber(final Integer teamNumber) {
-        this.teamNumber = teamNumber;
-        try {
-            serialize();
-        }
-        catch (IOException e) {
-            Log.e("ScorecardSubmit", "fail to serialize view state to disk", e);
-        }
-    }
-
-    void setMatchNumber(final Integer matchNumber) {
-        this.matchNumber = matchNumber;
-        try {
-            serialize();
-        }
-        catch (IOException e) {
-            Log.e("ScorecardSubmit", "fail to serialize view state to disk", e);
-        }
-    }
-
-    private static class PersistedClass {
-        public final Integer matchNumber;
-        public final Map<Integer, FieldScore> fieldScores;
-        public final Scorecard scorecard;
-        public final Integer teamNumber;
-
-        public PersistedClass(Map<Integer, FieldScore> fieldScores, Scorecard scorecard,
-                              Integer teamNumber, Integer MatchNumber) {
-
-            this.fieldScores = fieldScores;
-            this.scorecard = scorecard;
+        if (initialized) {
             this.teamNumber = teamNumber;
-            matchNumber = MatchNumber;
+            serialize();
+        }
+    }
+
+    @MainThread
+    void setMatchNumber(final Integer matchNumber) {
+        if (initialized) {
+            this.matchNumber = matchNumber;
+            serialize();
         }
     }
 
