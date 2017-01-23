@@ -14,7 +14,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -25,21 +24,21 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
  * Created by trevor on 1/8/17.
  */
 
-final class ScorecardSubmitPresenter {
-    private final ScorecardSubmitView view;
+final class Presenter {
+    private final MVPView view;
     private final DemoDataProvider api;
-    private final ScorecardSubmitStatePersistor persistor;
+    private final StatePersistor persistor;
     private final Map<Integer, FieldScore> fieldScores = new ArrayMap<>();
     private Integer teamNumber = null;
     private Integer matchNumber = null;
     private Scorecard currentScorecard;
 
-    private boolean initialized = false;
+    private boolean isInitialized = false;
 
     @AnyThread
     @Inject
-    public ScorecardSubmitPresenter(final ScorecardSubmitView view, final DemoDataProvider api,
-                                    ScorecardSubmitStatePersistor persistor) {
+    public Presenter(final MVPView view, final DemoDataProvider api,
+                     StatePersistor persistor) {
         this.view = view;
         this.api = api;
         this.persistor = persistor;
@@ -52,7 +51,7 @@ final class ScorecardSubmitPresenter {
     }
 
     @AnyThread
-    private void initActual() {
+    private void init() {
         Scorecard scorecard = DemoDataProvider.getDemoScorecard();
         if (fieldScores.isEmpty() || !currentScorecard.equals(scorecard)) {
             for (int i = 0; i < scorecard.sections.size(); ++i) {
@@ -73,15 +72,15 @@ final class ScorecardSubmitPresenter {
         view.setMatchNumber(matchNumber);
         view.setTeamNumber(teamNumber);
         view.loadSavedScores(fieldScores);
-        initialized = true;
+        isInitialized = true;
     }
 
     @AnyThread
     private void deserialize() {
         persistor.deserialize().subscribeOn(Schedulers.io()).subscribe(
-                new Consumer<ScorecardSubmitStatePersistor.PersistedClass>() {
+                new Consumer<StatePersistor.PersistedClass>() {
                     @Override
-                    public void accept(ScorecardSubmitStatePersistor.PersistedClass persistedClass)
+                    public void accept(StatePersistor.PersistedClass persistedClass)
                             throws Exception {
                         fieldScores.clear();
                         fieldScores.putAll(persistedClass.fieldScores);
@@ -95,11 +94,12 @@ final class ScorecardSubmitPresenter {
                         if (throwable instanceof JsonParseException) {
                             clearCache();
                         }
+                        init();
                     }
                 }, new Action() {
                     @Override
                     public void run() throws Exception {
-                        initActual();
+                        init();
                     }
                 });
     }
@@ -121,8 +121,13 @@ final class ScorecardSubmitPresenter {
     }
 
     @AnyThread
+    public boolean isInitialized() {
+        return isInitialized;
+    }
+
+    @MainThread
     public void setFieldValue(FieldScore value) {
-        if (initialized) {
+        if (isInitialized) {
             fieldScores.put(value.scorecardIndex, value);
             serialize();
         }
@@ -130,31 +135,28 @@ final class ScorecardSubmitPresenter {
 
     @MainThread
     public void submit() {
-        if (initialized) {
-            if (teamNumber == null) {
-                view.notifyTeamNumberMissing();
-            }
-            if (matchNumber == null) {
-                view.notifyMatchNumberMissing();
-            }
-            if (matchNumber != null && teamNumber != null) {
-                api.submitMatch(teamNumber, matchNumber, currentScorecard, fieldScores.values())
-                   .subscribeOn(Schedulers.io())
-                   .observeOn(AndroidSchedulers.mainThread())
-                   .subscribe(new Action() {
-                       @Override
-                       public void run() throws Exception {
-                           clearCache();
-                           view.end();
-                       }
-                   });
-            }
+        if (teamNumber == null) {
+            view.notifyTeamNumberMissing();
+        }
+        if (matchNumber == null) {
+            view.notifyMatchNumberMissing();
+        }
+        if (matchNumber != null && teamNumber != null) {
+            api.submitMatch(teamNumber, matchNumber, currentScorecard, fieldScores.values())
+               .subscribeOn(Schedulers.io())
+               .subscribe(new Action() {
+                   @Override
+                   public void run() throws Exception {
+                       clearCache();
+                       view.end();
+                   }
+               });
         }
     }
 
     @MainThread
     void setTeamNumber(final Integer teamNumber) {
-        if (initialized) {
+        if (isInitialized) {
             this.teamNumber = teamNumber;
             serialize();
         }
@@ -162,7 +164,7 @@ final class ScorecardSubmitPresenter {
 
     @MainThread
     void setMatchNumber(final Integer matchNumber) {
-        if (initialized) {
+        if (isInitialized) {
             this.matchNumber = matchNumber;
             serialize();
         }

@@ -29,13 +29,13 @@ import io.reactivex.functions.Action;
  * Created by trevor on 1/21/17.
  */
 
-class ScorecardSubmitStatePersistor {
-    static final String FILENAME = "ScorecardSubmitPresenter";
+class StatePersistor {
+    static final String FILENAME = "Presenter";
     private final Application application;
     private final Gson gson;
 
     @Inject
-    public ScorecardSubmitStatePersistor(Application application, Gson gson) {
+    public StatePersistor(Application application, Gson gson) {
 
         this.application = application;
         this.gson = gson;
@@ -48,9 +48,9 @@ class ScorecardSubmitStatePersistor {
             @Override
             public void run() throws Exception {
                 FileOutputStream fileOutputStream = application.openFileOutput(
-                        ScorecardSubmitStatePersistor.FILENAME,
+                        StatePersistor.FILENAME,
                         Context.MODE_PRIVATE);
-                ScorecardSubmitStatePersistor.PersistedClass persistedClass = new ScorecardSubmitStatePersistor.PersistedClass(
+                StatePersistor.PersistedClass persistedClass = new StatePersistor.PersistedClass(
                         fieldScores, scorecard,
                         teamNumber, matchNumber);
                 IOUtils.write(gson.toJson(persistedClass), fileOutputStream);
@@ -65,11 +65,11 @@ class ScorecardSubmitStatePersistor {
                     throws Exception {
                 try {
                     FileInputStream fileInputStream = application.openFileInput(
-                            ScorecardSubmitStatePersistor.FILENAME);
+                            StatePersistor.FILENAME);
                     if (fileInputStream != null) {
-                        ScorecardSubmitStatePersistor.PersistedClass persistedClass = gson.fromJson(
+                        StatePersistor.PersistedClass persistedClass = gson.fromJson(
                                 IOUtils.toString(fileInputStream),
-                                ScorecardSubmitStatePersistor.PersistedClass.class);
+                                StatePersistor.PersistedClass.class);
                         emitter.onNext(persistedClass);
                         emitter.onComplete();
                     }
@@ -93,7 +93,7 @@ class ScorecardSubmitStatePersistor {
         return Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
-                application.deleteFile(ScorecardSubmitStatePersistor.FILENAME);
+                application.deleteFile(StatePersistor.FILENAME);
             }
         });
     }

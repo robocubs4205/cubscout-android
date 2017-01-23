@@ -53,7 +53,7 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
 import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.UNCHECKED;
 
 public final class ScorecardSubmitActivity extends AppCompatActivity
-        implements ScorecardSubmitView {
+        implements MVPView {
 
     @BindView(R.id.scorecard)
     RecyclerView scorecardView;
@@ -73,7 +73,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     @BindView(R.id.scrollView)
     NestedScrollView scrollView;
 
-    private ScorecardSubmitPresenter presenter;
+    private Presenter presenter;
     @Nullable
     private Scorecard scorecard;
     @Nullable
@@ -99,9 +99,9 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
         ApplicationComponent applicationComponent = ((Application) getApplication())
                 .getApplicationComponent();
-        presenter = DaggerScorecardSubmitComponent.builder().scorecardSubmitModule(
-                new ScorecardSubmitModule(this)).applicationComponent(applicationComponent).build()
-                                                  .presenter();
+        presenter = DaggerComponent.builder().module(
+                new Module(this)).applicationComponent(applicationComponent).build()
+                                   .presenter();
     }
 
     @Override
