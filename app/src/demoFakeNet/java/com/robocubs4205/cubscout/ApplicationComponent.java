@@ -2,6 +2,7 @@ package com.robocubs4205.cubscout;
 
 import com.google.gson.Gson;
 import com.robocubs4205.cubscout.net.CubscoutAPI;
+import com.robocubs4205.cubscout.net.FakeCubscoutApi;
 import com.robocubs4205.cubscout.net.GsonModule;
 import com.robocubs4205.cubscout.net.NetModule;
 
@@ -17,7 +18,7 @@ public interface ApplicationComponent {
 
     Gson gson();
 
-    DemoDataProvider demoDataProvider();
+    FakeCubscoutApi demoDataProvider();
 
     Application application();
 }

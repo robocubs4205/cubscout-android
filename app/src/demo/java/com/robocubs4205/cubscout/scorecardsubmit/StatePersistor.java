@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.robocubs4205.cubscout.Application;
+import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Scorecard;
 
@@ -15,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -23,7 +25,6 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Action;
 
 /**
  * Created by trevor on 1/21/17.
@@ -43,18 +44,16 @@ class StatePersistor {
 
     public Completable serialize(final Map<Integer, FieldScore> fieldScores,
                                  final Scorecard scorecard,
-                                 final Integer teamNumber, final Integer matchNumber) {
-        return Completable.fromAction(new Action() {
-            @Override
-            public void run() throws Exception {
-                FileOutputStream fileOutputStream = application.openFileOutput(
-                        StatePersistor.FILENAME,
-                        Context.MODE_PRIVATE);
-                StatePersistor.PersistedClass persistedClass = new StatePersistor.PersistedClass(
-                        fieldScores, scorecard,
-                        teamNumber, matchNumber);
-                IOUtils.write(gson.toJson(persistedClass), fileOutputStream);
-            }
+                                 final Integer teamNumber, final Integer matchNumber,
+                                 final List<Event> eventList, final Event currentEvent) {
+        return Completable.fromAction(() -> {
+            FileOutputStream fileOutputStream = application.openFileOutput(
+                    StatePersistor.FILENAME,
+                    Context.MODE_PRIVATE);
+            PersistedClass persistedClass = new PersistedClass(
+                    fieldScores, scorecard,
+                    teamNumber, matchNumber, eventList, eventList.indexOf(currentEvent));
+            IOUtils.write(gson.toJson(persistedClass), fileOutputStream);
         });
     }
 
@@ -90,12 +89,7 @@ class StatePersistor {
     }
 
     public Completable clearCache() {
-        return Completable.fromAction(new Action() {
-            @Override
-            public void run() throws Exception {
-                application.deleteFile(StatePersistor.FILENAME);
-            }
-        });
+        return Completable.fromAction(() -> application.deleteFile(StatePersistor.FILENAME));
     }
 
     static class PersistedClass {
@@ -103,14 +97,19 @@ class StatePersistor {
         public final Map<Integer, FieldScore> fieldScores;
         public final Scorecard scorecard;
         public final Integer teamNumber;
+        public final List<Event> eventList;
+        public final int currentEventIndex;
 
         public PersistedClass(Map<Integer, FieldScore> fieldScores, Scorecard scorecard,
-                              Integer teamNumber, Integer MatchNumber) {
+                              Integer teamNumber, Integer matchNumber, List<Event> eventList,
+                              int currentEventIndex) {
 
             this.fieldScores = fieldScores;
             this.scorecard = scorecard;
             this.teamNumber = teamNumber;
-            matchNumber = MatchNumber;
+            this.matchNumber = matchNumber;
+            this.eventList = eventList;
+            this.currentEventIndex = currentEventIndex;
         }
     }
 }

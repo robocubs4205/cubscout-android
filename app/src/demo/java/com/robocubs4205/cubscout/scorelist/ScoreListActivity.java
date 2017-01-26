@@ -82,12 +82,9 @@ public class ScoreListActivity extends AppCompatActivity implements ScoreListVie
     }
 
     public void LoadResults(final List<Result> results) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                ScoreListActivity.this.results = results;
-                adapter.notifyDataSetChanged();
-            }
+        new Handler().post(() -> {
+            ScoreListActivity.this.results = results;
+            adapter.notifyDataSetChanged();
         });
     }
 

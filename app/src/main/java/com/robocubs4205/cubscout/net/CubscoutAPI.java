@@ -16,7 +16,7 @@ import io.reactivex.Observable;
  * Created by trevor on 1/1/17.
  */
 public interface CubscoutAPI {
-    Observable<GetEventsResponse> getCurrentEvents();
+    Observable<GetEventsResponse> getOngoingEvents();
 
     Observable<GetGamesResponse> getAllGames();
 
@@ -29,7 +29,7 @@ public interface CubscoutAPI {
 
     class GetEventsResponse {
         public List<Error> errors;
-        public List<Event> eventEntities;
+        public List<Event> events;
     }
 
     class GetGamesResponse {

@@ -127,12 +127,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     @Override
     public void loadSavedScores(@NonNull Map<Integer, FieldScore> scores) {
         fieldScores = scores;
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                notifySavedScoresChanged();
-            }
-        });
+        handler.post(this::notifySavedScoresChanged);
     }
 
 
@@ -145,23 +140,17 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
     @Override
     public void setTeamNumber(final Integer teamNumber) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (teamNumber != null) teamNumberView.setText(
-                        String.format(Locale.getDefault(), "%d", teamNumber));
-            }
+        handler.post(() -> {
+            if (teamNumber != null) teamNumberView.setText(
+                    String.format(Locale.getDefault(), "%d", teamNumber));
         });
     }
 
     @Override
     public void setMatchNumber(final Integer matchNumber) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (matchNumber != null) matchNumberView.setText(String.format(
-                        Locale.getDefault(), "%d", matchNumber));
-            }
+        handler.post(() -> {
+            if (matchNumber != null) matchNumberView.setText(String.format(
+                    Locale.getDefault(), "%d", matchNumber));
         });
     }
 
@@ -172,25 +161,19 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
 
     @Override
     public void notifyMatchNumberMissing() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                matchNumberView.setError("Required");
-                scrollView.scrollTo(0, 0);
-                matchNumberView.requestFocus();
-            }
+        handler.post(() -> {
+            matchNumberView.setError("Required");
+            scrollView.scrollTo(0, 0);
+            matchNumberView.requestFocus();
         });
     }
 
     @Override
     public void notifyTeamNumberMissing() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                teamNumberView.setError("Required");
-                scrollView.scrollTo(0, 0);
-                teamNumberView.requestFocus();
-            }
+        handler.post(() -> {
+            teamNumberView.setError("Required");
+            scrollView.scrollTo(0, 0);
+            teamNumberView.requestFocus();
         });
     }
 
@@ -442,22 +425,18 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                 super(itemView);
                 this.isNullable = isNullable;
                 ButterKnife.bind(this, itemView);
-                ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-                    @Override
-                    public void onRatingChanged(RatingBar ratingBar, float rating,
-                                                boolean fromUser) {
-                        if (isNullable) {
-                            assert nullCheckbox != null;
-                            presenter.setFieldValue(
-                                    new FieldScore(scorecard, getAdapterPosition(),
-                                                   Math.round(rating), nullCheckbox.isChecked() !=
-                                                           (nullWhen == UNCHECKED)));
-                        }
-                        else {
-                            presenter.setFieldValue(
-                                    new FieldScore(scorecard, getAdapterPosition(),
-                                                   Math.round(rating), false));
-                        }
+                ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> {
+                    if (isNullable) {
+                        assert nullCheckbox != null;
+                        presenter.setFieldValue(
+                                new FieldScore(scorecard, getAdapterPosition(),
+                                               Math.round(rating), nullCheckbox.isChecked() !=
+                                                       (nullWhen == UNCHECKED)));
+                    }
+                    else {
+                        presenter.setFieldValue(
+                                new FieldScore(scorecard, getAdapterPosition(),
+                                               Math.round(rating), false));
                     }
                 });
             }

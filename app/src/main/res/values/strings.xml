@@ -10,7 +10,6 @@
     <string name="team_search_default_text">Please enter a team number</string>
     <string name="robot_search_button_text">Search</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="avg_high_goal_made_label_text">Avg. high goals made\n(per match)</string>
     <string name="avg_low_goal_made_label_text">Avg. low goals made\n(per match)</string>
     <string name="high_goal_accuracy_label_text">High goal accuracy</string>

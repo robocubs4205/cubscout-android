@@ -1,4 +1,4 @@
-package com.robocubs4205.cubscout;
+package com.robocubs4205.cubscout.net;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,8 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
-import com.robocubs4205.cubscout.net.StubCubscoutApi;
+import com.robocubs4205.cubscout.Application;
+import com.robocubs4205.cubscout.ApplicationScope;
+import com.robocubs4205.cubscout.Event;
+import com.robocubs4205.cubscout.FieldScore;
+import com.robocubs4205.cubscout.Game;
+import com.robocubs4205.cubscout.Scorecard;
 import com.robocubs4205.cubscout.scorelist.Result;
+
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +29,6 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Action;
 
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.COUNT;
@@ -34,12 +40,12 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
  * Created by trevor on 1/10/17.
  */
 @ApplicationScope
-public class DemoDataProvider extends StubCubscoutApi {
+public class FakeCubscoutApi implements CubscoutAPI {
     private static Scorecard demoScorecard;
     private final DemoDataDbHelper dbHelper;
 
     @Inject
-    public DemoDataProvider(Application application) {
+    public FakeCubscoutApi(Application application) {
         super();
         dbHelper = new DemoDataDbHelper(application);
     }
@@ -71,22 +77,19 @@ public class DemoDataProvider extends StubCubscoutApi {
     public Completable submitMatch(final Integer teamNumber, final Integer matchNumber,
                                    final Scorecard scorecard,
                                    final Collection<FieldScore> values) {
-        return Completable.fromAction(new Action() {
-            @Override
-            public void run() throws Exception {
-                for (FieldScore score : values) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put("`index`", score.scorecardIndex);
-                    if (score.isNull) {
-                        contentValues.putNull("score");
-                    }
-                    else {
-                        contentValues.put("score", score.value);
-                    }
-                    contentValues.put("robot", teamNumber);
-                    dbHelper.getWritableDatabase().insertOrThrow("FieldScores", null,
-                                                                 contentValues);
+        return Completable.fromAction(() -> {
+            for (FieldScore score : values) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("`index`", score.scorecardIndex);
+                if (score.isNull) {
+                    contentValues.putNull("score");
                 }
+                else {
+                    contentValues.put("score", score.value);
+                }
+                contentValues.put("robot", teamNumber);
+                dbHelper.getWritableDatabase().insertOrThrow("FieldScores", null,
+                                                             contentValues);
             }
         });
     }
@@ -135,6 +138,32 @@ public class DemoDataProvider extends StubCubscoutApi {
                 cursor.close();
             }
         });
+    }
+
+    @Override
+    public Observable<GetEventsResponse> getOngoingEvents() {
+        GetEventsResponse stubResponse = new GetEventsResponse();
+        stubResponse.errors = new ArrayList<>();
+        stubResponse.events = new ArrayList<>();
+        Event event = new Event(1, "Mock event");
+        stubResponse.events.add(event);
+        return Observable.just(stubResponse);
+    }
+
+    @Override
+    public Observable<GetGamesResponse> getAllGames() {
+        GetGamesResponse stubResponse = new GetGamesResponse();
+        stubResponse.errors = new ArrayList<>();
+        stubResponse.gameEntities = new ArrayList<>();
+        stubResponse.gameEntities.add(new Game(1, "StrongHold", "FRC", 2016));
+        stubResponse.gameEntities.add(new Game(2, "Recycle Rush", "FRC", 2015));
+        stubResponse.gameEntities.add(new Game(3, "Velocity Vortex", "FTC", 2016));
+        return Observable.just(stubResponse);
+    }
+
+    @Override
+    public Observable<GetEventsResponse> getAllEvents() {
+        throw new NotImplementedException("");
     }
 
     private static class ResultComparator implements Comparator<Result> {

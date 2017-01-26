@@ -6,53 +6,73 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.google.gson.JsonParseException;
-import com.robocubs4205.cubscout.DemoDataProvider;
+import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Scorecard;
+import com.robocubs4205.cubscout.net.FakeCubscoutApi;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.UNCHECKED;
-
 /**
  * Created by trevor on 1/8/17.
  */
 
 final class Presenter {
     private final MVPView view;
-    private final DemoDataProvider api;
+    private final FakeCubscoutApi api;
     private final StatePersistor persistor;
     private final Map<Integer, FieldScore> fieldScores = new ArrayMap<>();
+    private final List<Event> ongoingEvents = new ArrayList<>();
     private Integer teamNumber = null;
     private Integer matchNumber = null;
     private Scorecard currentScorecard;
+    private Event currentEvent;
 
     private boolean isInitialized = false;
 
     @AnyThread
     @Inject
-    public Presenter(final MVPView view, final DemoDataProvider api,
+    public Presenter(final MVPView view, final FakeCubscoutApi api,
                      StatePersistor persistor) {
         this.view = view;
         this.api = api;
         this.persistor = persistor;
-        deserialize();
+        Observable.mergeDelayError(deserialize().toObservable(),
+                                   api.getOngoingEvents()
+                                      .doOnNext((response) -> {
+                                          if (response == null)
+                                              throw new AssertionError();
+                                          List<Event> concreteEvents = response.events;
+                                          ongoingEvents.clear();
+                                          ongoingEvents.addAll(concreteEvents);
+                                      }))
+
+                  .subscribeOn(Schedulers.io())
+                  .doOnTerminate(this::init)
+                  .subscribe();
+
+
     }
 
     @AnyThread
     private void clearCache() {
-        persistor.clearCache();
+        persistor.clearCache().subscribe();
     }
 
     @AnyThread
     private void init() {
-        Scorecard scorecard = DemoDataProvider.getDemoScorecard();
+        Scorecard scorecard = FakeCubscoutApi.getDemoScorecard();
         if (fieldScores.isEmpty() || !currentScorecard.equals(scorecard)) {
             for (int i = 0; i < scorecard.sections.size(); ++i) {
                 Scorecard.ScorecardSection section = scorecard.sections.get(i);
@@ -76,48 +96,35 @@ final class Presenter {
     }
 
     @AnyThread
-    private void deserialize() {
-        persistor.deserialize().subscribeOn(Schedulers.io()).subscribe(
-                new Consumer<StatePersistor.PersistedClass>() {
-                    @Override
-                    public void accept(StatePersistor.PersistedClass persistedClass)
-                            throws Exception {
-                        fieldScores.clear();
-                        fieldScores.putAll(persistedClass.fieldScores);
-                        currentScorecard = persistedClass.scorecard;
-                        teamNumber = persistedClass.teamNumber;
-                        matchNumber = persistedClass.matchNumber;
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        if (throwable instanceof JsonParseException) {
-                            clearCache();
-                        }
-                        init();
-                    }
-                }, new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        init();
-                    }
-                });
+    private Completable deserialize() {
+        return persistor.deserialize()
+                        .doOnNext(persistedClass -> {
+                            fieldScores.clear();
+                            fieldScores.putAll(persistedClass.fieldScores);
+                            currentScorecard = persistedClass.scorecard;
+                            teamNumber = persistedClass.teamNumber;
+                            matchNumber = persistedClass.matchNumber;
+                            ongoingEvents.clear();
+                            ongoingEvents.addAll(persistedClass.eventList);
+                            currentEvent = persistedClass.eventList.get(
+                                    persistedClass.currentEventIndex);
+                        })
+                        .doOnError(throwable -> {
+                            if (throwable instanceof JsonParseException) {
+                                clearCache();
+                            }
+                        }).ignoreElements();
     }
 
     @AnyThread
     private void serialize() {
-        persistor.serialize(fieldScores, currentScorecard, teamNumber, matchNumber).subscribe(
-                new Action() {
-                    @Override
-                    public void run() throws Exception {
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.e("ScorecardSubmit", "fail to serialize view state to disk", throwable);
-                    }
-                });
+        persistor.serialize(fieldScores, currentScorecard, teamNumber, matchNumber, ongoingEvents,
+                            currentEvent).subscribe(
+                () -> {
+                },
+                throwable ->
+                        Log.e("ScorecardSubmit", "fail to serialize view state to disk",
+                              throwable));
     }
 
     @AnyThread
@@ -126,7 +133,7 @@ final class Presenter {
     }
 
     @MainThread
-    public void setFieldValue(FieldScore value) {
+    public void setFieldValue(@NotNull FieldScore value) {
         if (isInitialized) {
             fieldScores.put(value.scorecardIndex, value);
             serialize();
@@ -144,12 +151,9 @@ final class Presenter {
         if (matchNumber != null && teamNumber != null) {
             api.submitMatch(teamNumber, matchNumber, currentScorecard, fieldScores.values())
                .subscribeOn(Schedulers.io())
-               .subscribe(new Action() {
-                   @Override
-                   public void run() throws Exception {
-                       clearCache();
-                       view.end();
-                   }
+               .subscribe(() -> {
+                   clearCache();
+                   view.end();
                });
         }
     }
@@ -168,6 +172,11 @@ final class Presenter {
             this.matchNumber = matchNumber;
             serialize();
         }
+    }
+
+    @MainThread
+    void setEvent(final Event event) {
+        currentEvent = event;
     }
 
 }
