@@ -3,11 +3,13 @@ package com.robocubs4205.cubscout.scorecardsubmit;
 import android.support.annotation.AnyThread;
 import android.support.annotation.Nullable;
 
+import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Scorecard;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,4 +38,7 @@ interface MVPView {
 
     @AnyThread
     void notifyTeamNumberMissing();
+
+    @AnyThread
+    void setOngoingEvents(List<Event> events);
 }

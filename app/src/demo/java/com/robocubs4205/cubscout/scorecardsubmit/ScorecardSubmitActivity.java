@@ -20,13 +20,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.robocubs4205.cubscout.Application;
 import com.robocubs4205.cubscout.ApplicationComponent;
+import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.R;
 import com.robocubs4205.cubscout.Scorecard;
@@ -35,6 +38,7 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -72,12 +76,15 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     TextInputLayout matchNumberViewWrapper;
     @BindView(R.id.scrollView)
     NestedScrollView scrollView;
-
+    @BindView(R.id.event_spinner)
+    Spinner ongoingEventSpinner;
+    EventSpinnerAdapter eventSpinnerAdapter;
     private Presenter presenter;
     @Nullable
     private Scorecard scorecard;
     @Nullable
     private Map<Integer, FieldScore> fieldScores;
+    private List<Event> ongoingEvents;
     private Handler handler;
 
     @Override
@@ -96,6 +103,9 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         layoutManager = new LinearLayoutManager(this);
         scorecardView.setAdapter(adapter);
         scorecardView.setLayoutManager(layoutManager);
+
+        eventSpinnerAdapter = new EventSpinnerAdapter();
+        ongoingEventSpinner.setAdapter(eventSpinnerAdapter);
 
         ApplicationComponent applicationComponent = ((Application) getApplication())
                 .getApplicationComponent();
@@ -127,17 +137,10 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
     @Override
     public void loadSavedScores(@NonNull Map<Integer, FieldScore> scores) {
         fieldScores = scores;
-        handler.post(this::notifySavedScoresChanged);
+        handler.post(() -> adapter.notifyDataSetChanged());
     }
 
-
-    private void notifySavedScoresChanged() {
-        assert fieldScores != null;
-        for (Integer index : fieldScores.keySet()) {
-            adapter.notifyItemChanged(index);
-        }
-    }
-
+    @SuppressWarnings("WrongThread")
     @Override
     public void setTeamNumber(final Integer teamNumber) {
         handler.post(() -> {
@@ -146,6 +149,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         });
     }
 
+    @SuppressWarnings("WrongThread")
     @Override
     public void setMatchNumber(final Integer matchNumber) {
         handler.post(() -> {
@@ -159,6 +163,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         finish();
     }
 
+    @SuppressWarnings("WrongThread")
     @Override
     public void notifyMatchNumberMissing() {
         handler.post(() -> {
@@ -168,6 +173,7 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
         });
     }
 
+    @SuppressWarnings("WrongThread")
     @Override
     public void notifyTeamNumberMissing() {
         handler.post(() -> {
@@ -175,6 +181,12 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
             scrollView.scrollTo(0, 0);
             teamNumberView.requestFocus();
         });
+    }
+
+    @Override
+    public void setOngoingEvents(List<Event> events) {
+        ongoingEvents = events;
+        handler.post(() -> eventSpinnerAdapter.notifyDataSetChanged());
     }
 
     @OnTextChanged(value = R.id.team_number_field,
@@ -592,6 +604,34 @@ public final class ScorecardSubmitActivity extends AppCompatActivity
                         throw new NotImplementedException("");
                 }
             }
+        }
+    }
+
+    private class EventSpinnerAdapter extends ArrayAdapter {
+        public EventSpinnerAdapter() {
+            super(ScorecardSubmitActivity.this, 0);
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(super.getContext())
+                                            .inflate(android.R.layout.simple_spinner_dropdown_item,
+                                                     parent, false);
+            }
+            ((TextView) convertView).setText(ongoingEvents.get(position).getName());
+            return convertView;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+            return getView(position, convertView, parent);
+        }
+
+        @Override
+        public int getCount() {
+            return ongoingEvents == null ? 0 : ongoingEvents.size();
         }
     }
 }

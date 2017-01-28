@@ -20,7 +20,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.UNCHECKED;
@@ -48,19 +47,20 @@ final class Presenter {
         this.view = view;
         this.api = api;
         this.persistor = persistor;
-        Observable.mergeDelayError(deserialize().toObservable(),
-                                   api.getOngoingEvents()
-                                      .doOnNext((response) -> {
-                                          if (response == null)
-                                              throw new AssertionError();
-                                          List<Event> concreteEvents = response.events;
-                                          ongoingEvents.clear();
-                                          ongoingEvents.addAll(concreteEvents);
-                                      }))
+        deserialize().toObservable()
+                     .concatWith(
+                             api.getOngoingEvents()
+                                .doOnNext((response) -> {
+                                    if (response == null)
+                                        throw new AssertionError();
+                                    List<Event> concreteEvents = response.events;
+                                    ongoingEvents.clear();
+                                    ongoingEvents.addAll(concreteEvents);
+                                }))
 
-                  .subscribeOn(Schedulers.io())
-                  .doOnTerminate(this::init)
-                  .subscribe();
+                     .subscribeOn(Schedulers.io())
+                     .doOnTerminate(this::init)
+                     .subscribe();
 
 
     }
@@ -92,6 +92,7 @@ final class Presenter {
         view.setMatchNumber(matchNumber);
         view.setTeamNumber(teamNumber);
         view.loadSavedScores(fieldScores);
+        view.setOngoingEvents(ongoingEvents);
         isInitialized = true;
     }
 
@@ -106,8 +107,13 @@ final class Presenter {
                             matchNumber = persistedClass.matchNumber;
                             ongoingEvents.clear();
                             ongoingEvents.addAll(persistedClass.eventList);
-                            currentEvent = persistedClass.eventList.get(
-                                    persistedClass.currentEventIndex);
+                            if (persistedClass.currentEventIndex == -1) {
+                                currentEvent = persistedClass.eventList.get(0);
+                            }
+                            else {
+                                currentEvent = persistedClass.eventList.get(
+                                        persistedClass.currentEventIndex);
+                            }
                         })
                         .doOnError(throwable -> {
                             if (throwable instanceof JsonParseException) {
