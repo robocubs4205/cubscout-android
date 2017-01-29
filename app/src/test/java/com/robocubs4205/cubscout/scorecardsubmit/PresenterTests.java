@@ -92,6 +92,7 @@ public class PresenterTests {
                                  ArgumentMatchers.anyList(),
                                  (Event) argThat(is(anything()))))
                 .thenReturn(Completable.complete());
+        when(persistor.clearCache()).thenReturn(Completable.complete());
     }
 
     @Test
