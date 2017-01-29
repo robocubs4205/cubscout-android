@@ -9,6 +9,7 @@ import com.google.gson.JsonParseException;
 import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Scorecard;
+import com.robocubs4205.cubscout.net.CubscoutAPI;
 import com.robocubs4205.cubscout.net.FakeCubscoutApi;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.
 
 final class Presenter {
     private final MVPView view;
-    private final FakeCubscoutApi api;
+    private final CubscoutAPI api;
     private final StatePersistor persistor;
     private final Map<Integer, FieldScore> fieldScores = new ArrayMap<>();
     private final List<Event> ongoingEvents = new ArrayList<>();
@@ -47,7 +48,7 @@ final class Presenter {
         this.view = view;
         this.api = api;
         this.persistor = persistor;
-        deserialize().toObservable()
+        deserialize().onErrorComplete().toObservable()
                      .concatWith(
                              api.getOngoingEvents()
                                 .doOnNext((response) -> {

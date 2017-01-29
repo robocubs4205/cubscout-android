@@ -8,7 +8,7 @@ import java.util.List;
  * Created by trevor on 1/14/17.
  */
 
-interface ScoreListView {
+interface MVPView {
     void LoadResults(List<Result> results);
 
     void setScorecard(Scorecard demoScorecard);

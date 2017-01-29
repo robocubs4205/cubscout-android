@@ -18,8 +18,8 @@ import io.reactivex.schedulers.Schedulers;
  * Created by trevor on 1/14/17.
  */
 
-final class ScoreListPresenter {
-    private final ScoreListView view;
+final class Presenter {
+    private final MVPView view;
     private final Application context;
     private final FakeCubscoutApi api;
     private final Gson gson;
@@ -27,9 +27,9 @@ final class ScoreListPresenter {
     private Disposable getResultsDisposable;
 
     @Inject
-    public ScoreListPresenter(final ScoreListView view, final Application context,
-                              FakeCubscoutApi api,
-                              Gson gson) {
+    public Presenter(final MVPView view, final Application context,
+                     FakeCubscoutApi api,
+                     Gson gson) {
 
         this.view = view;
         this.context = context;

@@ -34,10 +34,10 @@ import butterknife.OnItemSelected;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardSection;
 
-public class ScoreListActivity extends AppCompatActivity implements ScoreListView {
+public class ScoreListActivity extends AppCompatActivity implements MVPView {
 
     @Nullable
-    ScoreListPresenter presenter;
+    Presenter presenter;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -66,10 +66,10 @@ public class ScoreListActivity extends AppCompatActivity implements ScoreListVie
         teamListView.setLayoutManager(layoutManager);
         teamListView.setAdapter(adapter);
 
-        presenter = DaggerScoreListComponent.builder().applicationComponent(
+        presenter = DaggerComponent.builder().applicationComponent(
                 ((Application) getApplication()).getApplicationComponent())
-                                            .scoreListModule(new ScoreListModule(this)).build()
-                                            .presenter();
+                                   .module(new Module(this)).build()
+                                   .presenter();
     }
 
     @Override
