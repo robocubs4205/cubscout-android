@@ -23,4 +23,34 @@ public class NetModule {
     public CubscoutAPI provideCubscoutApi(Application application) {
         return new FakeCubscoutApi(application);
     }
+
+    @Provides
+    @ApplicationScope
+    public FakeRepositoryBacking fakeRepositoryBacking() {
+        return new FakeRepositoryBacking();
+    }
+
+    @Provides
+    @ApplicationScope
+    public FakeEventRepository eventRepository(FakeRepositoryBacking backing) {
+        return new FakeEventRepository(backing);
+    }
+
+    @Provides
+    @ApplicationScope
+    public GameRepository gameRepository(FakeRepositoryBacking backing) {
+        return new FakeGameRepository(backing);
+    }
+
+    @Provides
+    @ApplicationScope
+    public MatchRepository matchRepository(FakeRepositoryBacking backing) {
+        return new FakeMatchRepository(backing);
+    }
+
+    @Provides
+    @ApplicationScope
+    public TeamRepository teamRepository(FakeRepositoryBacking backing) {
+        return new FakeTeamRepository();
+    }
 }

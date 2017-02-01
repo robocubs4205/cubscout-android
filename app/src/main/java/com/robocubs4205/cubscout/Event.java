@@ -3,50 +3,37 @@ package com.robocubs4205.cubscout;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by trevor on 12/31/16.
  */
 public final class Event {
-    private long id;
-    private String name;
+    public final int id;
+    public final String name;
+    public final Game game;
+    public final Date startDate;
+    public final Date endDate;
+    public final List<Match> matches;
 
-    public Event(int id, String name) {
+    public Event(int id, String name, Game game, Date startDate, Date endDate,
+                 List<Match> matches) {
         this.id = id;
         this.name = name;
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.game = game;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.matches = matches;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Event)) {
-            return false;
-        }
-        else if (o == this) {
-            return true;
-        }
-        else {
-            Event rhs = (Event) o;
-            return new EqualsBuilder().append(id, rhs.id).build();
-        }
+        return EqualsBuilder.reflectionEquals(this, o, false);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 31).append(id).toHashCode();
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 }

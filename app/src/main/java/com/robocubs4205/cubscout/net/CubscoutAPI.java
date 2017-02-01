@@ -4,7 +4,6 @@ import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.Scorecard;
-import com.robocubs4205.cubscout.scorelist.Result;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,5 +34,13 @@ public interface CubscoutAPI {
     class GetGamesResponse {
         public List<Error> errors;
         public List<Game> gameEntities;
+    }
+
+    class Result {
+        List<FieldScore> fieldScores;
+
+        public Result(Scorecard scorecard, List<FieldScore> fieldScores, int teamNumber) {
+            fieldScores = fieldScores;
+        }
     }
 }

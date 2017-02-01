@@ -13,11 +13,11 @@ import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
 import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.Scorecard;
-import com.robocubs4205.cubscout.scorelist.Result;
 
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -145,7 +145,15 @@ public class FakeCubscoutApi implements CubscoutAPI {
         GetEventsResponse stubResponse = new GetEventsResponse();
         stubResponse.errors = new ArrayList<>();
         stubResponse.events = new ArrayList<>();
-        Event event = new Event(1, "Mock event");
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.clear();
+        startCalendar.set(1999, 12, 2);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.clear();
+        endCalendar.set(1999, 12, 8);
+        Event event = new Event(1, "Mock event",
+                                new Game(1, "Mock game", "FRC", 2016, demoScorecard, ),
+                                startCalendar.getTime(), endCalendar.getTime(), );
         stubResponse.events.add(event);
         return Observable.just(stubResponse);
     }
@@ -155,9 +163,9 @@ public class FakeCubscoutApi implements CubscoutAPI {
         GetGamesResponse stubResponse = new GetGamesResponse();
         stubResponse.errors = new ArrayList<>();
         stubResponse.gameEntities = new ArrayList<>();
-        stubResponse.gameEntities.add(new Game(1, "StrongHold", "FRC", 2016));
-        stubResponse.gameEntities.add(new Game(2, "Recycle Rush", "FRC", 2015));
-        stubResponse.gameEntities.add(new Game(3, "Velocity Vortex", "FTC", 2016));
+        stubResponse.gameEntities.add(new Game(1, "StrongHold", "FRC", 2016, demoScorecard, ));
+        stubResponse.gameEntities.add(new Game(2, "Recycle Rush", "FRC", 2015, demoScorecard, ));
+        stubResponse.gameEntities.add(new Game(3, "Velocity Vortex", "FTC", 2016, demoScorecard, ));
         return Observable.just(stubResponse);
     }
 
