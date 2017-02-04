@@ -12,8 +12,6 @@ import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.Match;
 import com.robocubs4205.cubscout.Team;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,13 +27,15 @@ class FakeRepositoryBacking {
     private final Map<Integer, Team> teams = new HashMap<>();
 
     public void insertOrUpdate(Game game) {
-        //TODO
-        throw new NotImplementedException("");
+        games.put(game.id, game);
+        for (Event event :
+                game.events) {
+            insertOrUpdateNoBackref(event);
+        }
     }
 
     public void delete(Game game) {
-        //TODO
-        throw new NotImplementedException("");
+        games.remove(game.id);
     }
 
     public Collection<Game> getGames() {
@@ -43,13 +43,20 @@ class FakeRepositoryBacking {
     }
 
     public void insertOrUpdate(Event event) {
-        //TODO
-        throw new NotImplementedException("");
+        insertOrUpdate(event.game);
+        insertOrUpdateNoBackref(event);
+    }
+
+    private void insertOrUpdateNoBackref(Event event) {
+        events.put(event.id, event);
+        for (Match match :
+                event.matches) {
+            insertOrUpdateNoBackref(match);
+        }
     }
 
     public void delete(Event event) {
-        //TODO
-        throw new NotImplementedException("");
+        events.remove(event.id);
     }
 
     public Collection<Event> getEvents() {
@@ -57,12 +64,16 @@ class FakeRepositoryBacking {
     }
 
     public void insertOrUpdate(Match match) {
+        insertOrUpdate(match.event);
+        insertOrUpdateNoBackref(match);
+    }
+
+    private void insertOrUpdateNoBackref(Match match) {
         matches.put(match.id, match);
     }
 
     public void delete(Match match) {
-        //TODO
-        throw new NotImplementedException("");
+        matches.remove(match.id);
     }
 
     public Collection<Match> getMatches() {
@@ -70,13 +81,11 @@ class FakeRepositoryBacking {
     }
 
     public void insertOrUpdate(Team team) {
-        //TODO
-        throw new NotImplementedException("");
+        teams.put(team.id, team);
     }
 
     public void delete(Team team) {
-        //TODO
-        throw new NotImplementedException("");
+        teams.remove(team.id);
     }
 
     public Collection<Team> getTeams() {
