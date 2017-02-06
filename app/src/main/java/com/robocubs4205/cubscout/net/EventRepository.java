@@ -136,8 +136,8 @@ public interface EventRepository {
 
     /**
      * persist changes to which matches are associated with the events. Does not persist changes to
-     * the matches. If the matches are new or edited, they must be persisted explicitely. Will fail
-     * if an id does not coorespond to an existing match.
+     * the matches themselves. If the matches are new or edited, they must be persisted explicitely.
+     * Will fail if an id does not coorespond to an existing match.
      *
      * @param events events to persist change to
      * @return {@link Completable} to notify caller when persisting is done. caller must call
@@ -147,7 +147,7 @@ public interface EventRepository {
 
     /**
      * persist changes to which matches are associated with the events. Does not persist changes to
-     * the matches. If the matches are new or edited, they must be persisted explicitely. Will fail
+     * the matches themselves. If the matches are new or edited, they must be persisted explicitely. Will fail
      * if an id does not coorespond to an existing match.
      *
      * @param events events to persist change to
@@ -192,33 +192,33 @@ public interface EventRepository {
 
         /**
          * filter events by id. if specified multiple times or in combination with
-         * {@link #withIDs(int...)} or {@link #withIDs(Collection)}, events matching any id given
+         * {@link #withIds(int...)} or {@link #withIds(Collection)}, events matching any id given
          * to any of the three will be included
          *
          * @param id id to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
-        QueryBuilder withID(int id);
+        QueryBuilder withId(int id);
 
         /**
          * filter events by id. if specified multiple times or in combination  with
-         * {@link #withID(int)} or {@link #withIDs(Collection)}, events matching any id given to
+         * {@link #withId(int)} or {@link #withIds(Collection)}, events matching any id given to
          * any of the three will be included
          *
          * @param ids ids to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
-        QueryBuilder withIDs(int... ids);
+        QueryBuilder withIds(int... ids);
 
         /**
          * filter events by id. if specified multiple times or in combination with
-         * {@link #withID(int)} or {@link #withIDs(int...)}, events matching any id given to any of
+         * {@link #withId(int)} or {@link #withIds(int...)}, events matching any id given to any of
          * the three will be included
          *
          * @param ids ids to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
-        QueryBuilder withIDs(Collection<Integer> ids);
+        QueryBuilder withIds(Collection<Integer> ids);
 
         /**
          * filter events by name. if specified multiple times or in combination with
@@ -226,7 +226,7 @@ public interface EventRepository {
          * name given to any of the three will be included
          *
          * @param name name to filter by
-         * @return
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withName(String name);
 
@@ -236,7 +236,7 @@ public interface EventRepository {
          * name given to any of the three will be included
          *
          * @param names name to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withNames(String... names);
 
@@ -246,7 +246,7 @@ public interface EventRepository {
          * name given to any of the three will be included
          *
          * @param names name to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withNames(Collection<String> names);
 
@@ -257,7 +257,7 @@ public interface EventRepository {
          * games provided to any of the preceding functions will be matched
          *
          * @param game game to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withGame(Game game);
 
@@ -268,7 +268,7 @@ public interface EventRepository {
          * games provided to any of the preceding functions will be matched
          *
          * @param games games to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withGames(Game... games);
 
@@ -279,7 +279,7 @@ public interface EventRepository {
          * games provided to any of the preceding functions will be matched
          *
          * @param games games to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withGames(Collection<Game> games);
 
@@ -290,7 +290,7 @@ public interface EventRepository {
          * games provided to any of the preceding functions will be matched
          *
          * @param id id of game to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withGameID(int id);
 
@@ -301,7 +301,7 @@ public interface EventRepository {
          * games provided to any of the preceding functions will be matched
          *
          * @param ids ids of games to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withGameIDs(int... ids);
 
@@ -312,7 +312,7 @@ public interface EventRepository {
          * provided to any of the preceding functions will be matched
          *
          * @param ids ids of games to filter by
-         * @return {@link QueryBuilder}
+         * @return this {@link QueryBuilder}
          */
         QueryBuilder withGameIDs(Collection<Integer> ids);
 
@@ -345,14 +345,15 @@ public interface EventRepository {
          * calling after calling delete returns an empty stream. calling delete before the stream
          * finishes is undefined behavior
          *
-         * @return stream of the matching events
+         * @return {@link Observable}stream of the matching events
          */
         Observable<Event> get();
 
         /**
          * delete all matching events
          *
-         * @return
+         * @return {@link Completable} to notify caller when deletion is complete. caller must call
+         * {@link Completable#subscribe()} in order for deletion to happen
          */
         Completable delete();
     }
