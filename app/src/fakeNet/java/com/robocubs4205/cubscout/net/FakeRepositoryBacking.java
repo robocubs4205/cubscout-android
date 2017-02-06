@@ -27,10 +27,37 @@ class FakeRepositoryBacking {
     private final Map<Integer, Team> teams = new HashMap<>();
 
     public void insertOrUpdate(Game game) {
-        games.put(game.id, game);
-        for (Event event :
-                game.events) {
+        insertOrUpdateProperties(game);
+        for (Event event : game.events) {
             insertOrUpdateNoBackref(event);
+        }
+    }
+
+    public void insertOrUpdate(Game... games) {
+        for (Game game : games) {
+            insertOrUpdate(game);
+        }
+    }
+
+    public void insertOrUpdate(Collection<Game> games) {
+        for (Game game : games) {
+            insertOrUpdate(game);
+        }
+    }
+
+    public void insertOrUpdateProperties(Game game) {
+        this.games.put(game.id, game);
+    }
+
+    public void insertOrUpdateProperties(Game... games) {
+        for (Game game : games) {
+            insertOrUpdateProperties(game);
+        }
+    }
+
+    public void insertOrUpdateProperties(Collection<Game> games) {
+        for (Game game : games) {
+            insertOrUpdateProperties(game);
         }
     }
 
@@ -48,11 +75,15 @@ class FakeRepositoryBacking {
     }
 
     private void insertOrUpdateNoBackref(Event event) {
-        events.put(event.id, event);
+        insertOrUpateProperties(event);
         for (Match match :
                 event.matches) {
             insertOrUpdateNoBackref(match);
         }
+    }
+
+    public void insertOrUpateProperties(Event event) {
+        events.put(event.id, event);
     }
 
     public void delete(Event event) {
@@ -61,6 +92,10 @@ class FakeRepositoryBacking {
 
     public Collection<Event> getEvents() {
         return events.values();
+    }
+
+    public Map<Integer, Event> getEventMap() {
+        return events;
     }
 
     public void insertOrUpdate(Match match) {

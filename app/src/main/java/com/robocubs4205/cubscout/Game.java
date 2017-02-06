@@ -73,12 +73,12 @@ public class Game {
             this.scorecard = scorecard;
         }
 
-        GameBuilder addEvent(EventInfo eventInfo) {
+        public GameBuilder addEvent(EventInfo eventInfo) {
             eventInfos.add(eventInfo);
             return this;
         }
 
-        GameBuilder addMatch(int eventId, MatchInfo matchInfo) {
+        public GameBuilder addMatch(int eventId, MatchInfo matchInfo) {
             matchInfos.put(eventId, matchInfo);
             return this;
         }

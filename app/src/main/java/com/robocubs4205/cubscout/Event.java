@@ -108,7 +108,7 @@ public final class Event {
         }
     }
 
-    static class EventInfo {
+    public static class EventInfo {
         public final int id;
         public final String name;
         public final Date startDate;
@@ -122,7 +122,7 @@ public final class Event {
             this.endDate = endDate;
         }
 
-        static EventInfo from(Event event) {
+        public static EventInfo from(Event event) {
             return new EventInfo(event.id, event.name, event.startDate, event.endDate);
         }
 
