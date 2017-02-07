@@ -11,13 +11,12 @@ import com.robocubs4205.cubscout.Application;
 import com.robocubs4205.cubscout.ApplicationScope;
 import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.FieldScore;
-import com.robocubs4205.cubscout.Game;
 import com.robocubs4205.cubscout.Scorecard;
-import com.robocubs4205.cubscout.scorelist.Result;
 
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,12 +29,14 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 
+import static com.robocubs4205.cubscout.Event.EventBuilder;
+import static com.robocubs4205.cubscout.Game.GameBuilder;
+import static com.robocubs4205.cubscout.Game.GameInfo;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.COUNT;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardFieldSection.Type.RATING;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection;
 import static com.robocubs4205.cubscout.Scorecard.ScorecardNullableFieldSection.NullWhen.UNCHECKED;
-
 /**
  * Created by trevor on 1/10/17.
  */
@@ -145,7 +146,17 @@ public class FakeCubscoutApi implements CubscoutAPI {
         GetEventsResponse stubResponse = new GetEventsResponse();
         stubResponse.errors = new ArrayList<>();
         stubResponse.events = new ArrayList<>();
-        Event event = new Event(1, "Mock event");
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.clear();
+        startCalendar.set(1999, 12, 2);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.clear();
+        endCalendar.set(1999, 12, 8);
+        Event event = new EventBuilder(1, "Mock event",
+                                       new GameInfo(1, "Mock game", "FRC", 2016,
+                                                    demoScorecard),
+                                       startCalendar.getTime(), endCalendar.getTime())
+                .build();
         stubResponse.events.add(event);
         return Observable.just(stubResponse);
     }
@@ -155,9 +166,12 @@ public class FakeCubscoutApi implements CubscoutAPI {
         GetGamesResponse stubResponse = new GetGamesResponse();
         stubResponse.errors = new ArrayList<>();
         stubResponse.gameEntities = new ArrayList<>();
-        stubResponse.gameEntities.add(new Game(1, "StrongHold", "FRC", 2016));
-        stubResponse.gameEntities.add(new Game(2, "Recycle Rush", "FRC", 2015));
-        stubResponse.gameEntities.add(new Game(3, "Velocity Vortex", "FTC", 2016));
+        stubResponse.gameEntities.add(
+                new GameBuilder(1, "StrongHold", "FRC", 2016, demoScorecard).build());
+        stubResponse.gameEntities.add(
+                new GameBuilder(2, "Recycle Rush", "FRC", 2015, demoScorecard).build());
+        stubResponse.gameEntities.add(
+                new GameBuilder(3, "Velocity Vortex", "FTC", 2016, demoScorecard).build());
         return Observable.just(stubResponse);
     }
 
