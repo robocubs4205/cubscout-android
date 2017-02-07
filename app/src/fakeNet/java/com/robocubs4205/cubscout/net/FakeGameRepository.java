@@ -1,23 +1,22 @@
 package com.robocubs4205.cubscout.net;
 
 import com.google.common.primitives.Ints;
-import com.robocubs4205.cubscout.Event;
 import com.robocubs4205.cubscout.Game;
+import com.robocubs4205.util.Pair;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 import static com.robocubs4205.cubscout.Event.EventInfo;
 import static com.robocubs4205.cubscout.Game.GameBuilder;
+import static com.robocubs4205.cubscout.Game.GameInfo;
 
 /**
  * Created by trevor on 1/29/17.
@@ -131,33 +130,23 @@ public class FakeGameRepository implements GameRepository {
     public Completable persistEventIds(Game... games) {
         return persistEventIds(Arrays.asList(games));
     }
-
     @Override
     public Completable persistEventIds(Collection<Game> games) {
-        return Completable.fromAction(() -> {
-            Collection<Pair<Game, Game>> oldAndNewGames = new LinkedList<Pair<Game, Game>>();
-            for (Game oldGame : backing.getGames()) {
-                for (Game newGame : games) {
-                    if (oldGame.id == newGame.id) oldAndNewGames.add(Pair.of(oldGame, newGame));
-                }
-            }
-            Collection<Game> persistedGames = new LinkedList<>();
-            for (Pair<Game, Game> oldAndNewGame : oldAndNewGames) {
-                Game oldGame = oldAndNewGame.getLeft();
-                Game newGame = oldAndNewGame.getRight();
-                GameBuilder builder = new GameBuilder(oldGame.id, oldGame.name, oldGame.type,
-                                                      oldGame.year, oldGame.scorecard);
-                for (Event event : newGame.events) {
-                    if (!backing.getEventMap().containsKey(event.id)) {
-                        throw new IllegalStateException(
-                                "new game's events do not exist in repository");
-                    }
-                    builder.addEvent(EventInfo.from(backing.getEventMap().get(event.id)));
-                }
-                persistedGames.add(builder.build());
-            }
-            backing.insertOrUpdate(persistedGames);
-        });
+        return Observable.fromIterable(backing.getGames())
+                         .flatMap(oldGame -> Observable.fromIterable(games)
+                                                       .map(newGame -> Pair.of(oldGame, newGame)))
+                         .filter(pair -> pair.left().id == pair.right().id)
+                         .map(pair -> pair
+                                 .mapRight(oldGame -> new GameBuilder(GameInfo.from(oldGame))))
+                         .flatMap(pair -> Observable.fromIterable(pair.left().events)
+                                                    .zipWith(Observable.just(pair.right()).repeat(),
+                                                             Pair::of)
+                                                    .doOnNext(pair2 -> pair2.right().addEvent(
+                                                            EventInfo.from(pair2.left())))
+                                                    .firstElement().map(Pair::right)
+                                                    .map(GameBuilder::build).toObservable())
+                         .toList()
+                         .doOnSuccess(backing::insertOrUpdateProperties).toCompletable();
     }
 
     @Override

@@ -73,6 +73,14 @@ public class Game {
             this.scorecard = scorecard;
         }
 
+        public GameBuilder(GameInfo info) {
+            this.id = info.id;
+            this.name = info.name;
+            this.type = info.type;
+            this.year = info.year;
+            this.scorecard = info.scorecard;
+        }
+
         public GameBuilder addEvent(EventInfo eventInfo) {
             eventInfos.add(eventInfo);
             return this;
@@ -101,6 +109,10 @@ public class Game {
             this.type = type;
             this.year = year;
             this.scorecard = scorecard;
+        }
+
+        public static GameInfo from(Game game) {
+            return new GameInfo(game.id, game.name, game.type, game.year, game.scorecard);
         }
 
         @Override
